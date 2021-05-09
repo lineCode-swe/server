@@ -14,12 +14,12 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryRedis implements UserRepository {
 
     private Jedis db;
 
     @Inject
-    public UserRepositoryImpl(Jedis db) {
+    public UserRepositoryRedis(Jedis db) {
         this.db = db;
     }
 
