@@ -1,3 +1,12 @@
+/*
+ * PORTACS
+ * piattaforma di controllo mobilità autonoma
+ *
+ * Copyright lineCode group <linecode.swe@gmail.com> 2020 - 2021
+ * Distributed under open-source licence (see accompanying file LICENCE).
+ */
+
+
 package org.linecode.server;
 
 public class Position {
@@ -27,10 +36,12 @@ public class Position {
 
     @Override
     public boolean equals(Object x){
-        if(x == null)
+        if(x == null) {
             return false;
-        if(x.getClass() != this.getClass())
+        }
+        if(x.getClass() != this.getClass()) {
             return false;
+        }
 
         final Position cmp = (Position) x;
         return this.x == cmp.getX() && this.y == cmp.getY();

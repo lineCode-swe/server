@@ -1,3 +1,12 @@
+/*
+ * PORTACS
+ * piattaforma di controllo mobilità autonoma
+ *
+ * Copyright lineCode group <linecode.swe@gmail.com> 2020 - 2021
+ * Distributed under open-source licence (see accompanying file LICENCE).
+ */
+
+
 package org.linecode.server.persistence;
 
 import org.linecode.server.Position;
@@ -50,6 +59,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return position.toString() + " , Locked: " + locked + " , Obstacle : " + obstacle + " , Unit : " + unit + " , Poi " + poi + " , Base di ricarica " + baseRicarica + " , Senso = " + senso +"}";
+        return position.toString() + " , Locked: " + locked + " , Obstacle : " + obstacle + " , Unit : " + unit +
+                " , Poi " + poi + " , Base di ricarica " + baseRicarica + " , Senso = " + senso +"}";
     }
 }
