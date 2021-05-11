@@ -11,6 +11,8 @@ package org.linecode.server.persistence;
 
 import org.linecode.server.Position;
 
+
+
 public class Cell {
     private final Position position;
     private final boolean locked = false;

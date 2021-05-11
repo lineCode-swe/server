@@ -8,5 +8,8 @@
 
 package org.linecode.server.business;
 
+
+
+
 public interface UserService {
 }

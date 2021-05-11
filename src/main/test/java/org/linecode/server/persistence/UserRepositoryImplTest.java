@@ -2,6 +2,7 @@ package org.linecode.server.persistence;
 
 import org.junit.Test;
 
+
 public class UserRepositoryImplTest {
 
     @Test
