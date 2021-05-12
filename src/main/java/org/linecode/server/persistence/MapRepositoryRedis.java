@@ -24,7 +24,6 @@ public class MapRepositoryRedis implements MapRepository{
 
     @Override
     public void setNewMap(String mapSchema) {
-
     }
 
     @Override
@@ -35,6 +34,16 @@ public class MapRepositoryRedis implements MapRepository{
     @Override
     public int getHeight() {
         return 0;
+    }
+
+    @Override
+    public void setLength(int length) {
+
+    }
+
+    @Override
+    public void setHeight(int height) {
+
     }
 
     @Override

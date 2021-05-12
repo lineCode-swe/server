@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface MapService {
     public void newObstacleList(List<Position> obstacles);
-    public Grid getGrid();
+    public Grid getMap();
     public void newMap(String mapSchema);
     public List<Position> getNextPath(String id);
     public void connectMapSignal(Slot1<Grid> slot);

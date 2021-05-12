@@ -14,5 +14,7 @@ public interface MapRepository {
     public void setNewMap(String mapSchema);
     public int getLength();
     public int getHeight();
+    public void setLength(int length);
+    public void setHeight(int height);
     public Cell getCell(int length, int height);
 }

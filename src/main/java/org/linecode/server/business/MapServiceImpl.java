@@ -45,27 +45,31 @@ public class MapServiceImpl implements MapService{
     }
 
     @Override
-    public Grid getGrid() {
+    public Grid getMap() {
         return map;
     }
 
     @Override
     public void newMap(String mapSchema) {
 
+
+        //TODO Algoritmo di conversione String -> Cell -> Grid
+        //TODO Salvaggio di Cell in MapRepository tramite un metodo
     }
 
     @Override
     public List<Position> getNextPath(String id) {
+        //TODO Estrapolare dal POC UnitEndpoint l'algoritmo di pathfinding
         return null;
     }
 
     @Override
-    public void connectMapSignal(Slot1<Grid> map) {
-
+    public void connectMapSignal(Slot1<Grid> slot) {
+        mapSignal.connect(slot);
     }
 
     @Override
-    public void connectObstaclesSignal(Slot1<List<Position>> obstacles) {
-
+    public void connectObstaclesSignal(Slot1<List<Position>> slot) {
+        obstaclesSignal.connect(slot);
     }
 }
