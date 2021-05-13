@@ -19,9 +19,7 @@ public class ObstacleRepositoryRedis implements ObstacleRepository{
     private final Jedis db;
 
     @Inject
-    public ObstacleRepositoryRedis(Jedis db) {
-        this.db = db;
-    }
+    public ObstacleRepositoryRedis(Jedis db) { this.db = db; }
 
     @Override
     public List<String> getObstaclesKey() {
@@ -30,7 +28,6 @@ public class ObstacleRepositoryRedis implements ObstacleRepository{
 
     @Override
     public void setObstacle(Position obstacle) {
-
     }
 
     @Override

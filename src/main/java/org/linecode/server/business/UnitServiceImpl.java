@@ -101,12 +101,14 @@ public class UnitServiceImpl implements UnitService{
     @Override
     public void stop(String id) {
         stopSignal.emit(id);
+        //TODO Chiedere cosa si vuole emittare
 
     }
 
     @Override
     public void base(String id) {
         baseSignal.emit(id);
+        //TODO Chiedere cosa si vuole emittare
 
     }
 

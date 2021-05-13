@@ -27,21 +27,25 @@ public class UserServiceImpl implements  UserService{
 
     @Override
     public void newUser(String user, String password, Boolean admin) {
-
+            repo.newUser(user,password,admin);
     }
 
     @Override
     public void delUser(String user) {
-
+            repo.delUser(user);
     }
 
     @Override
     public AuthStatus login(String user, String password) {
-        return null;
+        if (password.equals(repo.getPassword(user))){
+            if(repo.isAdmin(user)){
+                return AuthStatus.ADMIN;
+            } else return AuthStatus.AUTH;
+        } else return AuthStatus.NO_AUTH;
     }
 
     @Override
     public void connectUsersSignal(Slot1<List<User>> slot) {
-
+        userSignal.connect(slot);
     }
 }
