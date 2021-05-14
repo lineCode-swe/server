@@ -27,13 +27,14 @@ public class UnitServiceImpl implements UnitService{
     private final Signal1<String> startSignal;
     private final Signal1<String> stopSignal;
     private final Signal1<String> baseSignal;
+    private final Signal1<String> poiSignal;
 
     public UnitServiceImpl(UnitRepository repo, Signal1<String> unitCloseSignal,
-                           Signal2<String, Position> positionSignal, Signal2<String,UnitStatus> statusSignal,
+                           Signal2<String, Position> positionSignal, Signal2<String, UnitStatus> statusSignal,
                            Signal2<String, Integer> errorSignal,
                            Signal2<String, Integer> speedSignal,
                            Signal1<String> startSignal, Signal1<String> stopSignal,
-                           Signal1<String> baseSignal) {
+                           Signal1<String> baseSignal, Signal1<String> poiSignal) {
         this.repo = repo;
         this.unitCloseSignal = unitCloseSignal;
         this.positionSignal = positionSignal;
@@ -43,6 +44,7 @@ public class UnitServiceImpl implements UnitService{
         this.startSignal = startSignal;
         this.stopSignal = stopSignal;
         this.baseSignal = baseSignal;
+        this.poiSignal = poiSignal;
     }
 
 
@@ -59,15 +61,19 @@ public class UnitServiceImpl implements UnitService{
     @Override
     public List<Unit> getUnits() {
         Set<String> temporal = repo.getUnits();
-        List<Unit> ret = null;
+        List<Unit> units = null;
+        /*for(int i=0; i<temporal.size(); ++i){
+            units.add(new Unit(temporal))
+        }*/
+
         // TODO Conversione da Set<String> -> List<Unit>
-        return ret;
+        // Set<String> : Insieme delle stringhe
+        return units;
     }
 
     @Override
-    public List<Unit> getPoiList() {
-        // TODO ????????
-        return null;
+    public List<Position> getPoiList(String id) {
+        return repo.getPoiList(id);
     }
 
     @Override
@@ -150,5 +156,10 @@ public class UnitServiceImpl implements UnitService{
     @Override
     public void connectBaseSignal(Slot1<String> slot) {
         baseSignal.connect(slot);
+    }
+
+    @Override
+    public void connectPoiList(Slot1<String> slot) {
+        poiSignal.connect(slot);
     }
 }

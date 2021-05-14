@@ -17,7 +17,7 @@ public interface UnitService {
     public void newUnit(String id, String name, Position base);
     public void delUnit(String id);
     public List<Unit> getUnits();
-    public List<Unit> getPoiList();
+    public List<Position> getPoiList(String id);
     public void newPosition(String id,Position position);
     public void newStatus(String id,UnitStatus status);
     public void newError(String id,int error);
@@ -33,6 +33,7 @@ public interface UnitService {
     public void connectStartSignal(Slot1<String> slot);
     public void connectStopSignal(Slot1<String> slot);
     public void connectBaseSignal(Slot1<String> slot);
+    public void connectPoiList(Slot1<String> slot);
 
 
 }

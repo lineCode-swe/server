@@ -15,23 +15,24 @@ import org.linecode.server.Position;
 
 public class Cell {
     private final Position position;
-    private final boolean locked = false;
-    private final boolean obstacle = false;
-    private final boolean unit = false;
-    private final boolean poi = false;
-    private final boolean baseRicarica=false;
-    private Direction senso ; // "UP,DOWN,LEFT,RIGHT"
+    private final boolean locked;
+    private final boolean obstacle;
+    private boolean unit = false;
+    private boolean poi = false;
+    private final boolean base;
+    private final Direction direction ; // "UP,DOWN,LEFT,RIGHT" TODO: Chiedere a Achimetto se è final
+
+
+    public Cell(Position position, boolean locked, boolean obstacle, boolean base, Direction direction) {
+        this.position = position;
+        this.locked = locked;
+        this.obstacle = obstacle;
+        this.base = base;
+        this.direction = direction;
+    }
 
     public boolean isBaseRicarica() {
-        return baseRicarica;
-    }
-
-    public Cell(int x, int y) {
-        this.position = new Position(x,y);
-    }
-
-    public Cell(Position position){
-        this.position = position;
+        return base;
     }
 
     public Position getPosition() {
@@ -54,14 +55,25 @@ public class Cell {
         return poi;
     }
 
-    public Direction getSenso() {
-        return senso;
+    public Direction getDirection() {
+        return direction;
     }
 
+    public void setUnit(boolean unit) {
+        this.unit = unit;
+    }
+
+    public Cell createPoi(boolean poi) {
+        this.poi = poi;
+        return this;
+    }
+    public void setPoi(boolean poi) {
+        this.poi = poi;
+    }
 
     @Override
     public String toString() {
         return position.toString() + " , Locked: " + locked + " , Obstacle : " + obstacle + " , Unit : " + unit +
-                " , Poi " + poi + " , Base di ricarica " + baseRicarica + " , Senso = " + senso +"}";
+                " , Poi " + poi + " , Base di ricarica " + base + " , Senso = " + direction +"}";
     }
 }

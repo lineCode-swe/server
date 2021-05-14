@@ -15,22 +15,15 @@ import java.util.List;
 
 public class Grid {
 
-    private final Cell[][] g;
+    private final List<Cell> cells;
     private final int length, height;
 
-    private int unitx = 0, unity = 0;
-    private int poix = 0, poiy = 0;
-
-    public Grid(int lenght, int height) {
-        g = new Cell[lenght][height];
-        this.length = lenght;
+    public Grid(List<Cell> cells, int length, int height) {
+        this.cells = cells;
+        this.length = length;
         this.height = height;
-        for (int x = 0; x < lenght; ++x ) {
-            for (int y = 0; y < height; ++y) {
-                g[x][y] = new Cell(x, y);
-            }
-        }
     }
+
 
     public int getLength() {
         return length;
@@ -43,23 +36,17 @@ public class Grid {
     //public Cell getCell(int x, int y) { return g[x][y]; }
 
     public Cell getCell(Position p) {
-        return g[p.getX()][p.getY()];
-    }
-
-
-    public Position getPoi() {
-        return new Position(poix, poiy);
-    }
-
-    public List<Cell> getGrid() {
-        List<Cell> l = new ArrayList<Cell>();
-
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < length; ++x) {
-                l.add(g[height][length]);
+        Cell toReturn=null;
+        for(int i=0; i< cells.size();++i){
+            if(cells.get(i).getPosition().equals(p)){
+                toReturn=cells.get(i);
             }
         }
+        return toReturn; //TODO: Possibile nullpointer
+    }
 
-        return l;
+
+    public List<Cell> getGrid() {
+       return cells;
     }
 }

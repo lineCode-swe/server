@@ -21,9 +21,11 @@ public interface UnitRepository {
     public String getName(String id);
     public Position getBase(String id);
     public Position getPosition(String id);
+    public List<Position> getPoiList(String id);
     public void setPosition(String id, Position position);
     public void setStatus(String id, int status);
     public void setError(String id, int error);
     public void setPoiList(String id, List<Position> pois);
     public void setSpeed(String id, int speed);
+
 }

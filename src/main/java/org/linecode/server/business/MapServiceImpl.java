@@ -10,10 +10,7 @@ package org.linecode.server.business;
 import com.github.msteinbeck.sig4j.signal.Signal1;
 import com.github.msteinbeck.sig4j.slot.Slot1;
 import org.linecode.server.Position;
-import org.linecode.server.persistence.Cell;
-import org.linecode.server.persistence.MapRepository;
-import org.linecode.server.persistence.ObstacleRepository;
-import org.linecode.server.persistence.UnitRepository;
+import org.linecode.server.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,34 +53,43 @@ public class MapServiceImpl implements MapService{
         char[] characters = mapSchema.toCharArray();
         List<Cell> lista= new ArrayList<Cell>();
         int x=0,y=0;
-
-        //TODO Chiedere ad achimetto come settare una cella locked
         for (int j=0; j<mapSchema.length();++j){
             switch(characters[j]) {
                 case 'x':
-                    lista.add(new Cell(new Position(x,y)));
+                    lista.add(new Cell(new Position(x,y),true,false,false, Direction.NONE));
                     break;
                 case '^':
+                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.UP));
                     break;
                 case '_':
+                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.DOWN));
                     break;
                 case '>':
+                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.RIGHT));
                     break;
                 case '<':
+                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.LEFT));
                     break;
-                case 'B':
+               case 'B':
+                    lista.add(new Cell(new Position(x,y),false,false,true, Direction.ALL));
                     break;
                 case 'P':
+                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.ALL).createPoi(true));
                     break;
                 case '\n':
+                    ++y;
+                    x=0;
                     break;
                 default:
                 case '+':
+                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.ALL));
                     break;
             }
+            ++x;
         }
-        //TODO Algoritmo di conversione String -> Cell -> Grid
-        //TODO Salvaggio di Cell in MapRepository tramite un metodo
+        map = new Grid(lista,lista.get(lista.size()-1).getPosition().getX(),lista.get(lista.size()-1).getPosition().getY());
+        mapRepo.setNewMap(mapSchema);
+
     }
 
     @Override

@@ -56,6 +56,11 @@ public class UnitRepositoryRedis implements UnitRepository {
     }
 
     @Override
+    public List<Position> getPoiList(String id) {
+        return null;
+    }
+
+    @Override
     public void setPosition(String id, Position position) {
 
     }
