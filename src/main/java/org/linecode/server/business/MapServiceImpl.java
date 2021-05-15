@@ -13,6 +13,7 @@ import org.linecode.server.Position;
 import org.linecode.server.persistence.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MapServiceImpl implements MapService{
@@ -95,8 +96,88 @@ public class MapServiceImpl implements MapService{
     @Override
     public List<Position> getNextPath(String id) {
         //TODO Estrapolare dal POC UnitEndpoint l'algoritmo di pathfinding
+        List<Position> path = new ArrayList<Position>();
+        List<Position> pois = unitRepo.getPoiList(id);
+        /*for(int i =0; i<pois.size()-1;++i){
+
+        }*/
+
+        int distance= getPath(map,unitRepo.getPosition(id),pois.get(0),path);
+        return path;
+
+    }
+
+     private int getPath(Grid map, Position start, Position end, List<Position> path) {
+        int[][] distances = new int[map.getLength()][map.getHeight()];
+        for (int i = 0; i < map.getLength(); ++i) {
+            for (int j = 0; j < map.getHeight(); ++j){
+                distances[i][j] = Integer.MAX_VALUE;
+            }
+        }
+
+        int distance = 0;
+        List<Position> currentCells = Arrays.asList(start);
+
+        while (distances[end.getX()][end.getY()] == Integer.MAX_VALUE
+                && !currentCells.isEmpty()) {
+            List<Position> nextCells = new ArrayList<>();
+
+            for (Position cell : currentCells) {
+                if (distances[cell.getX()][cell.getY()] == Integer.MAX_VALUE
+                        && !map.getCell(cell).isObstacle()
+                        && (!map.getCell(cell).isUnit() || cell.equals(start))
+                        && !map.getCell(cell).isLocked()) {
+                    distances[cell.getX()][cell.getY()] = distance;
+                    addNeighbors(cell, nextCells);
+                }
+            }
+
+            currentCells = nextCells;
+            ++distance;
+        }
+
+        if (distances[end.getX()][end.getY()] < Integer.MAX_VALUE) {
+            Position cell = end;
+            path.add(0,end);
+            for (int d = distances[end.getX()][end.getY()]-1; d >= 0; d--) {
+                cell = getNeighbor(cell, d, distances);
+                path.add(0,cell);
+            }
+        }
+
+        return distances[end.getX()][end.getY()];
+    }
+
+    private boolean isValid(int x, int y) {
+        return (x >= 0) && (x < map.getLength()) &&
+                (y >= 0) && (y < map.getHeight());
+    }
+
+    private void addNeighbors(Position pos, List<Position> list) {
+        int[][] ds = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        for (int[] d : ds) {
+            int row = pos.getX() + d[0];
+            int col = pos.getY() + d[1];
+            if (isValid(row, col))
+                list.add(new Position(row, col));
+        }
+    }
+
+    private Position getNeighbor(Position cell, int distance, int[][] distances) {
+        int[][] ds = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        for (int[] d : ds) {
+            int row = cell.getX()+ d[0];
+            int col = cell.getY() + d[1];
+            if (isValid(row, col)
+                    && distances[row][col] == distance)
+                return new Position(row, col);
+        }
+
         return null;
     }
+
+
 
     @Override
     public void connectMapSignal(Slot1<Grid> slot) {

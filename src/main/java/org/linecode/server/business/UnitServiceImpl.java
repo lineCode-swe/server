@@ -100,21 +100,19 @@ public class UnitServiceImpl implements UnitService{
     public void start(String id, List<Position> poiList) {
         repo.setPoiList(id,poiList);
         startSignal.emit(id);
-        //TODO Chiedere cosa si vuole emittare
+
 
     }
 
     @Override
     public void stop(String id) {
         stopSignal.emit(id);
-        //TODO Chiedere cosa si vuole emittare
 
     }
 
     @Override
     public void base(String id) {
         baseSignal.emit(id);
-        //TODO Chiedere cosa si vuole emittare
 
     }
 
