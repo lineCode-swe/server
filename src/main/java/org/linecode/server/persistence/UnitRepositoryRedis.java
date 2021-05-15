@@ -21,13 +21,14 @@ public class UnitRepositoryRedis implements UnitRepository {
 
     @Inject
     public UnitRepositoryRedis(Jedis db) {
-        this.db = db;
+        this.db = new Jedis("localhost");
+
     }
 
 
     @Override
     public void newUnit(String id, String name, Position base) {
-
+        //UnitRepositoryRedis.hset("1", "name","prova",);
     }
 
     @Override

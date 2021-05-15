@@ -19,11 +19,13 @@ public class MapRepositoryRedis implements MapRepository{
 
     @Inject
     public MapRepositoryRedis(Jedis db) {
+
         this.db = db;
     }
 
     @Override
     public void setNewMap(String mapSchema) {
+
     }
 
     @Override
