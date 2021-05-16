@@ -12,8 +12,7 @@ import org.linecode.server.Position;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class UnitRepositoryRedis implements UnitRepository {
 
@@ -22,68 +21,88 @@ public class UnitRepositoryRedis implements UnitRepository {
     @Inject
     public UnitRepositoryRedis(Jedis db) {
         this.db = new Jedis("localhost");
-
     }
-
 
     @Override
     public void newUnit(String id, String name, Position base) {
-        //UnitRepositoryRedis.hset("1", "name","prova",);
+        Map<String, String> keyValue= new HashMap<>();
+        keyValue.put("name",name);
+        keyValue.put("base_x",String.valueOf(base.getX()));
+        keyValue.put("base_y",String.valueOf(base.getY()));
+        keyValue.put("position_x","0");
+        keyValue.put("position_y","0");
+        keyValue.put("status","0");
+        keyValue.put("error","0");
+        keyValue.put("speed","0");
+        db.sadd("unit",id);
+        db.hmset(id,keyValue);
     }
 
     @Override
     public void delUnit(String id) {
-
+        db.srem("unit", id);
     }
 
-    @Override
+    @Override // cosa deve restituire? solo gli id? tutto?
     public Set<String> getUnits() {
         return null;
     }
 
     @Override
     public String getName(String id) {
-        return null;
+        return db.hget(id,"name");
     }
 
     @Override
     public Position getBase(String id) {
-        return null;
+        int x=Integer.parseInt(db.hget(id,"base_x"));
+        int y=Integer.parseInt(db.hget(id,"base_y"));
+        return new Position(x,y);
     }
 
     @Override
     public Position getPosition(String id) {
-        return null;
+        int x=Integer.parseInt(db.hget(id,"position_x"));
+        int y=Integer.parseInt(db.hget(id,"position_y"));
+        return new Position(x,y);
     }
 
     @Override
     public List<Position> getPoiList(String id) {
-        return null;
+        List<Position> POIlist= new ArrayList<Position>();
+        for(int i=0 ; i<db.llen("poi"+id) ; i++) {
+            POIlist.add(new Position(db.lindex("poi:"+id,i)));
+        }
+        return POIlist;
     }
 
     @Override
     public void setPosition(String id, Position position) {
-
+        Map<String, String> keyValue= new HashMap<>();
+        keyValue.put("position_x",String.valueOf(position.getX()));
+        keyValue.put("position_y",String.valueOf(position.getY()));
+        db.hmset(id,keyValue);
     }
 
     @Override
     public void setStatus(String id, int status) {
-
+        db.hset(id,"status",String.valueOf(status));
     }
 
     @Override
     public void setError(String id, int error) {
-
+        db.hset(id,"error",String.valueOf(error));
     }
 
     @Override
     public void setPoiList(String id, List<Position> pois) {
-
+        for(Position POIlist:pois)
+            db.rpush("poi:"+id,POIlist.toString());
     }
 
     @Override
     public void setSpeed(String id, int speed) {
-
+        db.hset(id,"speed",String.valueOf(speed));
     }
 }
 
