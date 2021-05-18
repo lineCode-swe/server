@@ -8,12 +8,12 @@
 
 package org.linecode.server.persistence;
 
-import java.util.List;
+import java.util.Set;
 
 public interface UserRepository {
     public void newUser(String user, String password, Boolean admin);
     public void delUser(String user);
     public String getPassword(String user);
     public Boolean isAdmin(String user);
-    public List<String> getUsers();
+    public Set<String> getUsers();
 }

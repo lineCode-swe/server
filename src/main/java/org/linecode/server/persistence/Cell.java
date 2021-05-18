@@ -16,7 +16,7 @@ import org.linecode.server.Position;
 public class Cell {
     private final Position position;
     private final boolean locked;
-    private final boolean obstacle;
+    private final boolean obstacle; // credo vada invertito obstacle (dovrebbe essere un ostacolo temporaneo) con poi (che invece dovrebbe essere fissato vero o falso)
     private boolean unit = false;
     private boolean poi = false;
     private final boolean base;

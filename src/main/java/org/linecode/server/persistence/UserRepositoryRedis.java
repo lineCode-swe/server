@@ -11,10 +11,7 @@ package org.linecode.server.persistence;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserRepositoryRedis implements UserRepository {
 
@@ -30,6 +27,7 @@ public class UserRepositoryRedis implements UserRepository {
         Map<String, String> keyValue= new HashMap<>();
         keyValue.put("password",password);
         keyValue.put("admin",Boolean.toString(admin));
+        db.sadd("user",user);
         db.hmset(user,keyValue);
     }
 
@@ -49,7 +47,7 @@ public class UserRepositoryRedis implements UserRepository {
     }
 
     @Override
-    public List<String> getUsers() { // solo i nomi?
-        return new ArrayList<String>();
+    public Set<String> getUsers() {
+        return db.smembers("user");
     }
 }
