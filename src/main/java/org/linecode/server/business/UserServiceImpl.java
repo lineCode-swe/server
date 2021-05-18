@@ -40,8 +40,10 @@ public class UserServiceImpl implements  UserService{
         if (password.equals(repo.getPassword(user))){
             if(repo.isAdmin(user)){
                 return AuthStatus.ADMIN;
-            } else return AuthStatus.AUTH;
-        } else return AuthStatus.NO_AUTH;
+            } else {
+                return AuthStatus.AUTH;}
+        } else {
+            return AuthStatus.NO_AUTH;}
     }
 
     @Override

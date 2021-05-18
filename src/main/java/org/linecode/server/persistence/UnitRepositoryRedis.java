@@ -12,7 +12,11 @@ import org.linecode.server.Position;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.ArrayList;
 
 public class UnitRepositoryRedis implements UnitRepository {
 
@@ -96,8 +100,9 @@ public class UnitRepositoryRedis implements UnitRepository {
 
     @Override
     public void setPoiList(String id, List<Position> pois) {
-        for(Position POIlist:pois)
-            db.rpush("poi:"+id,POIlist.toString());
+        for(Position POIlist:pois) {
+            db.rpush("poi:" + id, POIlist.toString());
+        }
     }
 
     @Override

@@ -19,7 +19,9 @@ public class ObstacleRepositoryRedis implements ObstacleRepository{
     private final Jedis db;
 
     @Inject
-    public ObstacleRepositoryRedis(Jedis db) { this.db = db; }
+    public ObstacleRepositoryRedis(Jedis db) {
+        this.db = db;
+    }
 
     @Override
     public List<String> getObstaclesKey() {

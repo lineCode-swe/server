@@ -10,7 +10,11 @@ package org.linecode.server.business;
 import com.github.msteinbeck.sig4j.signal.Signal1;
 import com.github.msteinbeck.sig4j.slot.Slot1;
 import org.linecode.server.Position;
-import org.linecode.server.persistence.*;
+import org.linecode.server.persistence.Cell;
+import org.linecode.server.persistence.MapRepository;
+import org.linecode.server.persistence.ObstacleRepository;
+import org.linecode.server.persistence.UnitRepository;
+import org.linecode.server.persistence.Direction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +92,8 @@ public class MapServiceImpl implements MapService{
             }
             ++x;
         }
-        map = new Grid(lista,lista.get(lista.size()-1).getPosition().getX(),lista.get(lista.size()-1).getPosition().getY());
+        map = new Grid(lista,lista.get(lista.size()-1).getPosition().getX(),
+                lista.get(lista.size()-1).getPosition().getY());
         mapRepo.setNewMap(mapSchema);
 
     }
@@ -158,8 +163,9 @@ public class MapServiceImpl implements MapService{
         for (int[] d : ds) {
             int row = pos.getX() + d[0];
             int col = pos.getY() + d[1];
-            if (isValid(row, col))
+            if (isValid(row, col)) {
                 list.add(new Position(row, col));
+            }
         }
     }
 
@@ -170,8 +176,9 @@ public class MapServiceImpl implements MapService{
             int row = cell.getX()+ d[0];
             int col = cell.getY() + d[1];
             if (isValid(row, col)
-                    && distances[row][col] == distance)
+                    && distances[row][col] == distance) {
                 return new Position(row, col);
+            }
         }
 
         return null;
