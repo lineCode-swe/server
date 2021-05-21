@@ -1,3 +1,10 @@
+/*
+ * PORTACS
+ * piattaforma di controllo mobilità autonoma
+ *
+ * Copyright lineCode group <linecode.swe@gmail.com> 2020 - 2021
+ * Distributed under open-source licence (see accompanying file LICENCE).
+ */
 package org.linecode.server.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +20,8 @@ public class UnitEndpoint {
     private final MapService mapService;
     private final ObjectMapper mapper;
 
-    public UnitEndpoint(Session session, ResetTimer timer, UnitService unitService, MapService mapService, ObjectMapper mapper) {
+    public UnitEndpoint(Session session, ResetTimer timer, UnitService unitService,
+                        MapService mapService, ObjectMapper mapper) {
         this.session = session;
         this.timer = timer;
         this.unitService = unitService;

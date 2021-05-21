@@ -10,7 +10,15 @@ package org.linecode.server.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.linecode.server.Position;
-import org.linecode.server.business.*;
+import org.linecode.server.business.AuthStatus;
+import org.linecode.server.business.MapService;
+import org.linecode.server.business.UnitService;
+import org.linecode.server.business.UserService;
+import org.linecode.server.business.Grid;
+import org.linecode.server.business.User;
+import org.linecode.server.business.Unit;
+import org.linecode.server.business.UnitStatus;
+
 
 import javax.websocket.Session;
 import java.util.List;
@@ -24,7 +32,8 @@ public class UiEndpoint {
     private final MapService mapService;
     private final ObjectMapper mapper;
 
-    public UiEndpoint(Session session, AuthStatus logged, ResetTimer timer, UserService userService, UnitService unitService, MapService mapService, ObjectMapper mapper) {
+    public UiEndpoint(Session session, AuthStatus logged, ResetTimer timer, UserService userService,
+                      UnitService unitService, MapService mapService, ObjectMapper mapper) {
         this.session = session;
         this.logged = logged;
         this.timer = timer;
