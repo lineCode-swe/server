@@ -17,5 +17,6 @@ public interface ObstacleRepository {
     public List<String> getObstaclesKey();
     public void setObstacle(Position obstacle);
     public Position getPosition();
+    public boolean checkObstacle(Position p);
 
 }

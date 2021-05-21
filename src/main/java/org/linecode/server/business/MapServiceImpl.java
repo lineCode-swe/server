@@ -43,6 +43,8 @@ public class MapServiceImpl implements MapService{
     }
 
 
+
+
     @Override
     public void newObstacleList(List<Position> obstacles) {
 
@@ -61,25 +63,25 @@ public class MapServiceImpl implements MapService{
         for (int j=0; j<mapSchema.length();++j){
             switch(characters[j]) {
                 case 'x':
-                    lista.add(new Cell(new Position(x,y),true,false,false, Direction.NONE));
+                    lista.add(new Cell(new Position(x,y),true,false, Direction.NONE));
                     break;
                 case '^':
-                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.UP));
+                    lista.add(new Cell(new Position(x,y),false,false, Direction.UP));
                     break;
                 case '_':
-                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.DOWN));
+                    lista.add(new Cell(new Position(x,y),false,false, Direction.DOWN));
                     break;
                 case '>':
-                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.RIGHT));
+                    lista.add(new Cell(new Position(x,y),false,false, Direction.RIGHT));
                     break;
                 case '<':
-                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.LEFT));
+                    lista.add(new Cell(new Position(x,y),false,false, Direction.LEFT));
                     break;
                case 'B':
-                    lista.add(new Cell(new Position(x,y),false,false,true, Direction.ALL));
+                    lista.add(new Cell(new Position(x,y),false,true, Direction.ALL));
                     break;
                 case 'P':
-                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.ALL).createPoi(true));
+                    lista.add(new Cell(new Position(x,y),false,false, Direction.ALL).createPoi(true));
                     break;
                 case '\n':
                     ++y;
@@ -87,7 +89,7 @@ public class MapServiceImpl implements MapService{
                     break;
                 default:
                 case '+':
-                    lista.add(new Cell(new Position(x,y),false,false,false, Direction.ALL));
+                    lista.add(new Cell(new Position(x,y),false,false, Direction.ALL));
                     break;
             }
             ++x;
@@ -129,8 +131,8 @@ public class MapServiceImpl implements MapService{
 
             for (Position cell : currentCells) {
                 if (distances[cell.getX()][cell.getY()] == Integer.MAX_VALUE
-                        && !map.getCell(cell).isObstacle()
-                        && (!map.getCell(cell).isUnit() || cell.equals(start))
+                        && !obsRepo.checkObstacle(cell)
+                        && (!unitRepo.checkUnit(cell) || cell.equals(start))
                         && !map.getCell(cell).isLocked()) {
                     distances[cell.getX()][cell.getY()] = distance;
                     addNeighbors(cell, nextCells);
@@ -153,7 +155,7 @@ public class MapServiceImpl implements MapService{
         return distances[end.getX()][end.getY()];
     }
 
-    private boolean isValid(int x, int y) {
+    protected boolean isValid(int x, int y) {
         return (x >= 0) && (x < map.getLength()) &&
                 (y >= 0) && (y < map.getHeight());
     }

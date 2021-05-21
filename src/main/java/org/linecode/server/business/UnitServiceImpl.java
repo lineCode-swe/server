@@ -62,9 +62,6 @@ public class UnitServiceImpl implements UnitService{
     public List<Unit> getUnits() {
         Set<String> temporal = repo.getUnits();
         List<Unit> units = null;
-        /*for(int i=0; i<temporal.size(); ++i){
-            units.add(new Unit(temporal))
-        }*/
 
         // TODO Conversione da Set<String> -> List<Unit>
         // Set<String> : Insieme delle stringhe

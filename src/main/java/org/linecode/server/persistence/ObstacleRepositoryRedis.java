@@ -36,4 +36,9 @@ public class ObstacleRepositoryRedis implements ObstacleRepository{
     public Position getPosition() {
         return null;
     }
+
+    public boolean checkObstacle(Position p){
+        return false;
+        //TODO: Data una posizione ritornare se vi è un ostacolo in quella posizione
+    }
 }

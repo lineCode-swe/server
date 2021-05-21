@@ -27,5 +27,6 @@ public interface UnitRepository {
     public void setError(String id, int error);
     public void setPoiList(String id, List<Position> pois);
     public void setSpeed(String id, int speed);
+    public boolean checkUnit(Position p);
 
 }

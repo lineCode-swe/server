@@ -16,17 +16,14 @@ import org.linecode.server.Position;
 public class Cell {
     private final Position position;
     private final boolean locked;
-    private final boolean obstacle;
-    private boolean unit = false;
     private boolean poi = false;
     private final boolean base;
     private final Direction direction ; // "UP,DOWN,LEFT,RIGHT" TODO: Chiedere a Achimetto se è final
 
 
-    public Cell(Position position, boolean locked, boolean obstacle, boolean base, Direction direction) {
+    public Cell(Position position, boolean locked, boolean base, Direction direction) {
         this.position = position;
         this.locked = locked;
-        this.obstacle = obstacle;
         this.base = base;
         this.direction = direction;
     }
@@ -43,14 +40,6 @@ public class Cell {
         return locked;
     }
 
-    public boolean isObstacle() {
-        return obstacle;
-    }
-
-    public boolean isUnit() {
-        return unit;
-    }
-
     public boolean isPoi() {
         return poi;
     }
@@ -59,9 +48,6 @@ public class Cell {
         return direction;
     }
 
-    public void setUnit(boolean unit) {
-        this.unit = unit;
-    }
 
     public Cell createPoi(boolean poi) {
         this.poi = poi;
@@ -73,7 +59,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return position.toString() + " , Locked: " + locked + " , Obstacle : " + obstacle + " , Unit : " + unit +
-                " , Poi " + poi + " , Base di ricarica " + base + " , Senso = " + direction +"}";
+        return position.toString() + " , Locked: " + locked + " , Poi " + poi +
+                " , Base di ricarica " + base + " , Senso = " + direction +"}";
     }
 }

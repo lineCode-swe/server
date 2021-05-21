@@ -109,5 +109,10 @@ public class UnitRepositoryRedis implements UnitRepository {
     public void setSpeed(String id, int speed) {
         db.hset(id,"speed",String.valueOf(speed));
     }
+
+    public boolean checkUnit(Position p){
+        return false;
+        //TODO: Data una posizione ritornare se vi è un unità in quella posizione
+    }
 }
 
