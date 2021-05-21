@@ -160,7 +160,7 @@ public class MapServiceImpl implements MapService{
                 (y >= 0) && (y < map.getHeight());
     }
 
-    private void addNeighbors(Position pos, List<Position> list) {
+    protected void addNeighbors(Position pos, List<Position> list) {
         int[][] ds = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
         for (int[] d : ds) {
             int row = pos.getX() + d[0];
@@ -171,7 +171,7 @@ public class MapServiceImpl implements MapService{
         }
     }
 
-    private Position getNeighbor(Position cell, int distance, int[][] distances) {
+    protected Position getNeighbor(Position cell, int distance, int[][] distances) {
         int[][] ds = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
         for (int[] d : ds) {

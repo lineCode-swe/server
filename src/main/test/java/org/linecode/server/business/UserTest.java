@@ -13,7 +13,4 @@ public class UserTest {
         assertEquals("Valton", admin.getUsername());
     }
 
-    @Test
-    public void testIsAdmin() {
-    }
 }

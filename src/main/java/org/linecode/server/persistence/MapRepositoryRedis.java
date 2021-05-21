@@ -52,7 +52,9 @@ public class MapRepositoryRedis implements MapRepository{
     @Override
     public Cell getCell(int length, int height) { // ho messo il poi al posto dell'obstacle
         String cellName="cell:" + String.valueOf(length) + ":" + String.valueOf(height);
-        return new Cell(new Position(length,height),Boolean.parseBoolean(db.hget(cellName,"locked")),Boolean.parseBoolean(db.hget(cellName,"poi")),Boolean.parseBoolean(db.hget(cellName,"base")),Direction.valueOf(db.hget(cellName,"direction")));
+        return new Cell(new Position(length,height),Boolean.parseBoolean(db.hget(cellName,"locked"))
+                ,Boolean.parseBoolean(db.hget(cellName,"base")),
+                Direction.valueOf(db.hget(cellName,"direction")));
     }
 
     @Override // aggiunto perché mancava nell'architettura
@@ -65,7 +67,7 @@ public class MapRepositoryRedis implements MapRepository{
             keyValue.put("position_y",String.valueOf(cell.getPosition().getY())); //ma forse sono utili?
             keyValue.put("locked",Boolean.toString(cell.isLocked()));
             keyValue.put("poi",Boolean.toString(cell.isPoi()));
-            keyValue.put("base",Boolean.toString(cell.isBaseRicarica());
+            keyValue.put("base",Boolean.toString(cell.isBaseRicarica()));
             keyValue.put("direction",cell.getDirection().toString());
             db.hmset(cellName,keyValue);
             keyValue.clear();

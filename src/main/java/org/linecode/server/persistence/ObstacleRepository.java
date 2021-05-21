@@ -16,7 +16,7 @@ import java.util.Set;
 public interface ObstacleRepository {
     public Set<String> getObstaclesKey();
     public void setObstacle(Position obstacle);
-    public Position getPosition();
+    public Position getPosition(String id);
     public boolean checkObstacle(Position p);
 
 }

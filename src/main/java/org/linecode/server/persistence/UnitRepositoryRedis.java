@@ -50,6 +50,7 @@ public class UnitRepositoryRedis implements UnitRepository {
     @Override
     public Set<String> getUnits() {
         return db.smembers("unit");
+
     }
 
     @Override

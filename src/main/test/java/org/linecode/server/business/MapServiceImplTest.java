@@ -9,8 +9,11 @@ import org.linecode.server.persistence.ObstacleRepository;
 import org.linecode.server.persistence.UnitRepository;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 
@@ -54,6 +57,19 @@ public class MapServiceImplTest extends TestCase {
     }
 
 
+    @Test
+    public void testAddNeighborsAll(){
+        when(map.getLength()).thenReturn(10);
+        when(map.getHeight()).thenReturn(10);
+        List<Position> input = new ArrayList<Position>();
+        List<Position> expected = new ArrayList<Position>();
+        expected.add(new Position(4,5));
+        expected.add(new Position(6,5));
+        expected.add(new Position(5,4));
+        expected.add(new Position(5,6));
+        test.addNeighbors(new Position(5,5),input);
+        assertEquals(expected,input);
+    }
 
 
 

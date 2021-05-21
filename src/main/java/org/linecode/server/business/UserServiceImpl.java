@@ -16,7 +16,7 @@ import java.util.List;
 
 public class UserServiceImpl implements  UserService{
 
-    private final UserRepository repo;
+    protected final UserRepository repo;
     private final Signal1<List<User>> userSignal;
 
     public UserServiceImpl(UserRepository repo, Signal1<List<User>> userSignal) {

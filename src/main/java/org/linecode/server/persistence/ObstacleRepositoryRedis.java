@@ -43,6 +43,7 @@ public class ObstacleRepositoryRedis implements ObstacleRepository{
         db.hmset("obs:"+index,keyValue);
     }
 
+
     @Override
     public Position getPosition(String id) { // mancava il parametro in ingresso, ho aggiunto l'id dell'obstacle
         int x=Integer.parseInt(db.hget(id,"position_x"));
