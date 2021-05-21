@@ -47,9 +47,9 @@ public class UnitRepositoryRedis implements UnitRepository {
         db.srem("unit", id);
     }
 
-    @Override // cosa deve restituire? solo gli id? tutto?
+    @Override
     public Set<String> getUnits() {
-        return null;
+        return db.smembers("unit");
     }
 
     @Override
@@ -100,9 +100,8 @@ public class UnitRepositoryRedis implements UnitRepository {
 
     @Override
     public void setPoiList(String id, List<Position> pois) {
-        for(Position POIlist:pois) {
+        for(Position POIlist:pois)
             db.rpush("poi:" + id, POIlist.toString());
-        }
     }
 
     @Override
