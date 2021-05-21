@@ -14,7 +14,10 @@ import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class ObstacleRepositoryRedis implements ObstacleRepository{
     private final Jedis db;

@@ -72,6 +72,28 @@ public class MapServiceImplTest extends TestCase {
     }
 
 
+    // TODO: Checkare questo test
+    @Test
+    public void testGetNeighborReturnPosition(){
+        when(map.getLength()).thenReturn(10);
+        when(map.getHeight()).thenReturn(10);
+        Position cell = new Position(2,2);
+        int distance = 5;
+        int[][] distances = {{1,1,1,1},{1,1,5,1},{1,1,1,1},{1,1,1,1}};
+        assertEquals(new Position(1,2),test.getNeighbor(cell,distance,distances));
+    }
+
+
+    @Test
+    public void testGetNeighborReturnNull(){
+        when(map.getLength()).thenReturn(10);
+        when(map.getHeight()).thenReturn(10);
+        Position cell = new Position(2,2);
+        int distance = 5;
+        int[][] distances = {{1,1,1,1},{1,1,1,1},{1,1,1,1},{1,1,1,1}};
+        assertEquals(null,test.getNeighbor(cell,distance,distances));
+    }
+
 
 
 }

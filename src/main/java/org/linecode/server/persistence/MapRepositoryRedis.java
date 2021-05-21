@@ -22,7 +22,8 @@ public class MapRepositoryRedis implements MapRepository{
     private final Jedis db;
 
     @Inject
-    public MapRepositoryRedis(Jedis db) { this.db = new Jedis("localhost"); }
+    public MapRepositoryRedis(Jedis db) {
+        this.db = new Jedis("localhost"); }
 
     @Override
     public void setNewMap(String mapSchema) {
@@ -61,10 +62,13 @@ public class MapRepositoryRedis implements MapRepository{
     public void setCells(List<Cell> cellList) {
         Map<String, String> keyValue= new HashMap<>();
         for(Cell cell:cellList) {
-            String cellName="cell:" + String.valueOf(cell.getPosition().getX()) + ":" + String.valueOf(cell.getPosition().getY());
+            String cellName="cell:" + String.valueOf(cell.getPosition().getX()) + ":" +
+                    String.valueOf(cell.getPosition().getY());
             db.sadd("cell",cellName);
-            keyValue.put("position_x",String.valueOf(cell.getPosition().getX())); //le coordinate non servono perché già presenti nel nome
-            keyValue.put("position_y",String.valueOf(cell.getPosition().getY())); //ma forse sono utili?
+            keyValue.put("position_x",String.valueOf(cell.getPosition().getX()));
+            //le coordinate non servono perché già presenti nel nome
+            keyValue.put("position_y",String.valueOf(cell.getPosition().getY()));
+            //ma forse sono utili?
             keyValue.put("locked",Boolean.toString(cell.isLocked()));
             keyValue.put("poi",Boolean.toString(cell.isPoi()));
             keyValue.put("base",Boolean.toString(cell.isBaseRicarica()));

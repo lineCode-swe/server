@@ -101,8 +101,9 @@ public class UnitRepositoryRedis implements UnitRepository {
 
     @Override
     public void setPoiList(String id, List<Position> pois) {
-        for(Position POIlist:pois)
+        for(Position POIlist:pois) {
             db.rpush("poi:" + id, POIlist.toString());
+        }
     }
 
     @Override

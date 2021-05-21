@@ -11,7 +11,9 @@ package org.linecode.server.persistence;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class UserRepositoryRedis implements UserRepository {
 
