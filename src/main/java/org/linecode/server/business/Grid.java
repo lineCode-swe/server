@@ -49,4 +49,19 @@ public class Grid {
     public List<Cell> getGrid() {
        return cells;
     }
+
+    @Override
+    public boolean equals(Object x){
+
+        if(x == null) {
+            return false;
+        }
+        if(x.getClass() != this.getClass()) {
+            return false;
+        }
+
+        final Grid cmp = (Grid) x;
+        return this.cells.equals(cmp.getGrid());
+    }
+
 }

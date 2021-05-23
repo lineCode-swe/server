@@ -63,36 +63,43 @@ public class MapServiceImpl implements MapService{
         for (int j=0; j<mapSchema.length();++j){
             switch(characters[j]) {
                 case 'x':
-                    lista.add(new Cell(new Position(x,y),true,false, Direction.NONE));
+                    lista.add(new Cell(new Position(x, y), true, false, Direction.NONE));
+                    ++x;
                     break;
                 case '^':
-                    lista.add(new Cell(new Position(x,y),false,false, Direction.UP));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.UP));
+                    ++x;
                     break;
                 case '_':
-                    lista.add(new Cell(new Position(x,y),false,false, Direction.DOWN));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.DOWN));
+                    ++x;
                     break;
                 case '>':
-                    lista.add(new Cell(new Position(x,y),false,false, Direction.RIGHT));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.RIGHT));
+                    ++x;
                     break;
                 case '<':
-                    lista.add(new Cell(new Position(x,y),false,false, Direction.LEFT));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.LEFT));
+                    ++x;
                     break;
-               case 'B':
-                    lista.add(new Cell(new Position(x,y),false,true, Direction.ALL));
+                case 'B':
+                    lista.add(new Cell(new Position(x, y), false, true, Direction.ALL));
+                    ++x;
                     break;
                 case 'P':
-                    lista.add(new Cell(new Position(x,y),false,false, Direction.ALL).createPoi(true));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.ALL).createPoi(true));
+                    ++x;
                     break;
                 case '\n':
                     ++y;
-                    x=0;
+                    x = 0;
                     break;
                 default:
                 case '+':
-                    lista.add(new Cell(new Position(x,y),false,false, Direction.ALL));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.ALL));
+                    ++x;
                     break;
             }
-            ++x;
         }
         map = new Grid(lista,lista.get(lista.size()-1).getPosition().getX(),
                 lista.get(lista.size()-1).getPosition().getY());

@@ -28,7 +28,7 @@ public class Cell {
         this.direction = direction;
     }
 
-    public boolean isBaseRicarica() {
+    public boolean isBase() {
         return base;
     }
 
@@ -62,4 +62,19 @@ public class Cell {
         return position.toString() + " , Locked: " + locked + " , Poi " + poi +
                 " , Base di ricarica " + base + " , Senso = " + direction +"}";
     }
+
+    @Override
+    public boolean equals(Object x){
+        if(x == null) {
+            return false;
+        }
+        if(x.getClass() != this.getClass()) {
+            return false;
+        }
+
+        final Cell cmp = (Cell) x;
+        return this.position.equals(cmp.getPosition()) && this.poi==cmp.isPoi() && this.base==cmp.isBase()
+                && this.direction == cmp.getDirection() && this.locked==cmp.isLocked();
+    }
+
 }

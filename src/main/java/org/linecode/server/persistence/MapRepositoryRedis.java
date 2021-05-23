@@ -69,7 +69,7 @@ public class MapRepositoryRedis implements MapRepository{
             db.sadd("cell",cellName);
             keyValue.put("locked",Boolean.toString(cell.isLocked()));
             keyValue.put("poi",Boolean.toString(cell.isPoi()));
-            keyValue.put("base",Boolean.toString(cell.isBaseRicarica()));
+            keyValue.put("base",Boolean.toString(cell.isBase()));
             keyValue.put("direction",cell.getDirection().toString());
             db.hmset(cellName,keyValue);
             keyValue.clear();
