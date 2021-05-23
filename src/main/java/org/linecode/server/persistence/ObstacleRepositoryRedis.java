@@ -44,6 +44,7 @@ public class ObstacleRepositoryRedis implements ObstacleRepository{
         int index= Math.toIntExact(db.llen("obs")); // se ne viene cancellato uno questa cosa potrebbe non funzionare
         db.sadd("obs","obs:"+index);
         db.hmset("obs:"+index,keyValue);
+        db.bgsave();
     }
 
 

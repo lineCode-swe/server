@@ -40,17 +40,18 @@ public class UnitRepositoryRedis implements UnitRepository {
         keyValue.put("speed","0");
         db.sadd("unit",id);
         db.hmset(id,keyValue);
+        db.bgsave();
     }
 
     @Override
     public void delUnit(String id) {
         db.srem("unit", id);
+        db.bgsave();
     }
 
     @Override
     public Set<String> getUnits() {
         return db.smembers("unit");
-
     }
 
     @Override
@@ -87,16 +88,19 @@ public class UnitRepositoryRedis implements UnitRepository {
         keyValue.put("position_x",String.valueOf(position.getX()));
         keyValue.put("position_y",String.valueOf(position.getY()));
         db.hmset(id,keyValue);
+        db.bgsave();
     }
 
     @Override
     public void setStatus(String id, int status) {
         db.hset(id,"status",String.valueOf(status));
+        db.bgsave();
     }
 
     @Override
     public void setError(String id, int error) {
         db.hset(id,"error",String.valueOf(error));
+        db.bgsave();
     }
 
     @Override
@@ -104,11 +108,13 @@ public class UnitRepositoryRedis implements UnitRepository {
         for(Position POIlist:pois) {
             db.rpush("poi:" + id, POIlist.toString());
         }
+        db.bgsave();
     }
 
     @Override
     public void setSpeed(String id, int speed) {
         db.hset(id,"speed",String.valueOf(speed));
+        db.bgsave();
     }
 
     public boolean checkUnit(Position p){

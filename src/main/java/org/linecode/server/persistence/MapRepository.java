@@ -13,7 +13,7 @@ package org.linecode.server.persistence;
 import java.util.List;
 
 public interface MapRepository {
-    public void setNewMap(String mapSchema);
+//    public void setNewMap(String mapSchema);
     public int getLength();
     public int getHeight();
     public void setLength(int length);

@@ -25,10 +25,11 @@ public class MapRepositoryRedis implements MapRepository{
     public MapRepositoryRedis(Jedis db) {
         this.db = new Jedis("localhost"); }
 
-    @Override
-    public void setNewMap(String mapSchema) {
-
-    }
+//    @Override
+//    public void setNewMap(String mapSchema) { // forse va eliminata o va modificata la struttura del db
+//        db.set("map",mapSchema);
+//        db.bgsave();
+//    }
 
     @Override
     public int getLength() {
@@ -43,32 +44,29 @@ public class MapRepositoryRedis implements MapRepository{
     @Override
     public void setLength(int length) {
         db.set("length", String.valueOf(length));
+        db.bgsave();
     }
 
     @Override
     public void setHeight(int height) {
         db.set("height", String.valueOf(height));
+        db.bgsave();
     }
 
     @Override
     public Cell getCell(int length, int height) { // ho messo il poi al posto dell'obstacle
-        String cellName="cell:" + String.valueOf(length) + ":" + String.valueOf(height);
+        String cellName="cell:" + length + ":" + height;
         return new Cell(new Position(length,height),Boolean.parseBoolean(db.hget(cellName,"locked"))
                 ,Boolean.parseBoolean(db.hget(cellName,"base")),
                 Direction.valueOf(db.hget(cellName,"direction")));
     }
 
-    @Override // aggiunto perché mancava nell'architettura
+    @Override
     public void setCells(List<Cell> cellList) {
         Map<String, String> keyValue= new HashMap<>();
         for(Cell cell:cellList) {
-            String cellName="cell:" + String.valueOf(cell.getPosition().getX()) + ":" +
-                    String.valueOf(cell.getPosition().getY());
+            String cellName="cell:" + cell.getPosition().getX() + ":" + cell.getPosition().getY();
             db.sadd("cell",cellName);
-            keyValue.put("position_x",String.valueOf(cell.getPosition().getX()));
-            //le coordinate non servono perché già presenti nel nome
-            keyValue.put("position_y",String.valueOf(cell.getPosition().getY()));
-            //ma forse sono utili?
             keyValue.put("locked",Boolean.toString(cell.isLocked()));
             keyValue.put("poi",Boolean.toString(cell.isPoi()));
             keyValue.put("base",Boolean.toString(cell.isBaseRicarica()));
@@ -76,5 +74,6 @@ public class MapRepositoryRedis implements MapRepository{
             db.hmset(cellName,keyValue);
             keyValue.clear();
         }
+        db.bgsave();
     }
 }
