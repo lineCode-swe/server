@@ -47,6 +47,9 @@ public class MapServiceImpl implements MapService{
 
     @Override
     public void newObstacleList(List<Position> obstacles) {
+        for(Position obstacle : obstacles){
+            obsRepo.setObstacle(obstacle);
+        }
 
     }
 
@@ -103,7 +106,7 @@ public class MapServiceImpl implements MapService{
         }
         map = new Grid(lista,lista.get(lista.size()-1).getPosition().getX(),
                 lista.get(lista.size()-1).getPosition().getY());
-        mapRepo.setNewMap(mapSchema);
+        //mapRepo.setNewMap(mapSchema);
 
     }
 
@@ -112,9 +115,6 @@ public class MapServiceImpl implements MapService{
         //TODO Estrapolare dal POC UnitEndpoint l'algoritmo di pathfinding
         List<Position> path = new ArrayList<Position>();
         List<Position> pois = unitRepo.getPoiList(id);
-        /*for(int i =0; i<pois.size()-1;++i){
-
-        }*/
 
         int distance= getPath(map,unitRepo.getPosition(id),pois.get(0),path);
         return path;
