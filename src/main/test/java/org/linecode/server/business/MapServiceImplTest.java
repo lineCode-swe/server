@@ -2,6 +2,7 @@ package org.linecode.server.business;
 
 import com.github.msteinbeck.sig4j.signal.Signal1;
 import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
 import org.linecode.server.Position;
 import org.linecode.server.persistence.*;
@@ -27,23 +28,26 @@ public class MapServiceImplTest extends TestCase {
 
     MapServiceImpl test = new MapServiceImpl(map,unitRepo,obsRepo,mapRepo,unitRepository,mapSignal,obstaclesSignal);
 
+
+
+
     @Test
     public void testNewMap() {
-        String mappa = new String(">_^<BP\nxx>_^+");
-        List<Cell> lista= new ArrayList<Cell>();
-        lista.add(new Cell(new Position(0,0),false,false, Direction.RIGHT));
-        lista.add(new Cell(new Position(1,0),false,false, Direction.DOWN));
-        lista.add(new Cell(new Position(2,0),false,false, Direction.UP));
-        lista.add(new Cell(new Position(3,0),false,false, Direction.LEFT));
-        lista.add(new Cell(new Position(4,0),false,true, Direction.ALL));
-        lista.add(new Cell(new Position(5,0),false,false, Direction.ALL).createPoi(true));
+        List<Cell> lista = new ArrayList<Cell>();
+        lista.add(new Cell(new Position(0, 0), false, false, Direction.RIGHT));
+        lista.add(new Cell(new Position(1, 0), false, false, Direction.DOWN));
+        lista.add(new Cell(new Position(2, 0), false, false, Direction.UP));
+        lista.add(new Cell(new Position(3, 0), false, false, Direction.LEFT));
+        lista.add(new Cell(new Position(4, 0), false, true, Direction.ALL));
+        lista.add(new Cell(new Position(5, 0), false, false, Direction.ALL).createPoi(true));
 
-        lista.add(new Cell(new Position(0,1),true,false, Direction.NONE));
-        lista.add(new Cell(new Position(1,1),true,false, Direction.NONE));
-        lista.add(new Cell(new Position(2,1),false,false, Direction.RIGHT));
-        lista.add(new Cell(new Position(3,1),false,false, Direction.DOWN));
-        lista.add(new Cell(new Position(4,1),false,false, Direction.UP));
-        lista.add(new Cell(new Position(5,1),false,false, Direction.ALL));
+        lista.add(new Cell(new Position(0, 1), true, false, Direction.NONE));
+        lista.add(new Cell(new Position(1, 1), true, false, Direction.NONE));
+        lista.add(new Cell(new Position(2, 1), false, false, Direction.RIGHT));
+        lista.add(new Cell(new Position(3, 1), false, false, Direction.DOWN));
+        lista.add(new Cell(new Position(4, 1), false, false, Direction.UP));
+        lista.add(new Cell(new Position(5, 1), false, false, Direction.ALL));
+        String mappa = new String(">_^<BP\nxx>_^+");
         test.newMap(mappa);
         assertEquals(new Grid(lista,lista.get(lista.size()-1).getPosition().getX(),
                 lista.get(lista.size()-1).getPosition().getY()).getGrid(),test.getMap().getGrid());
@@ -75,14 +79,100 @@ public class MapServiceImplTest extends TestCase {
 
     @Test
     public void testAddNeighborsAll(){
+
+        Cell cellina = Mockito.mock(Cell.class);
         when(map.getLength()).thenReturn(10);
         when(map.getHeight()).thenReturn(10);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.getDirection()).thenReturn(Direction.ALL);
         List<Position> input = new ArrayList<Position>();
         List<Position> expected = new ArrayList<Position>();
         expected.add(new Position(4,5));
         expected.add(new Position(6,5));
         expected.add(new Position(5,4));
         expected.add(new Position(5,6));
+        test.addNeighbors(new Position(5,5),input);
+        assertEquals(expected,input);
+    }
+
+    @Test
+    public void testAddNeighborsRight(){
+
+        Cell cellina = Mockito.mock(Cell.class);
+        when(map.getLength()).thenReturn(10);
+        when(map.getHeight()).thenReturn(10);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.getDirection()).thenReturn(Direction.RIGHT);
+        List<Position> input = new ArrayList<Position>();
+        List<Position> expected = new ArrayList<Position>();
+        expected.add(new Position(6,5));
+        expected.add(new Position(5,4));
+        expected.add(new Position(5,6));
+        test.addNeighbors(new Position(5,5),input);
+        assertEquals(expected,input);
+    }
+
+    @Test
+    public void testAddNeighborsLeft(){
+
+        Cell cellina = Mockito.mock(Cell.class);
+        when(map.getLength()).thenReturn(10);
+        when(map.getHeight()).thenReturn(10);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.getDirection()).thenReturn(Direction.LEFT);
+        List<Position> input = new ArrayList<Position>();
+        List<Position> expected = new ArrayList<Position>();
+        expected.add(new Position(4,5));
+        expected.add(new Position(5,4));
+        expected.add(new Position(5,6));
+        test.addNeighbors(new Position(5,5),input);
+        assertEquals(expected,input);
+    }
+
+    @Test
+    public void testAddNeighborsUP(){
+
+        Cell cellina = Mockito.mock(Cell.class);
+        when(map.getLength()).thenReturn(10);
+        when(map.getHeight()).thenReturn(10);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.getDirection()).thenReturn(Direction.UP);
+        List<Position> input = new ArrayList<Position>();
+        List<Position> expected = new ArrayList<Position>();
+        expected.add(new Position(4,5));
+        expected.add(new Position(6,5));
+        expected.add(new Position(5,6));
+        test.addNeighbors(new Position(5,5),input);
+        assertEquals(expected,input);
+    }
+
+    @Test
+    public void testAddNeighborsDown(){
+
+        Cell cellina = Mockito.mock(Cell.class);
+        when(map.getLength()).thenReturn(10);
+        when(map.getHeight()).thenReturn(10);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.getDirection()).thenReturn(Direction.DOWN);
+        List<Position> input = new ArrayList<Position>();
+        List<Position> expected = new ArrayList<Position>();
+        expected.add(new Position(4,5));
+        expected.add(new Position(6,5));
+        expected.add(new Position(5,4));
+        test.addNeighbors(new Position(5,5),input);
+        assertEquals(expected,input);
+    }
+
+    @Test
+    public void testAddNeighborsNone(){
+
+        Cell cellina = Mockito.mock(Cell.class);
+        when(map.getLength()).thenReturn(10);
+        when(map.getHeight()).thenReturn(10);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.getDirection()).thenReturn(Direction.NONE);
+        List<Position> input = new ArrayList<Position>();
+        List<Position> expected = new ArrayList<Position>();
         test.addNeighbors(new Position(5,5),input);
         assertEquals(expected,input);
     }

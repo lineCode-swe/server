@@ -168,7 +168,30 @@ public class MapServiceImpl implements MapService{
     }
 
     protected void addNeighbors(Position pos, List<Position> list) {
-        int[][] ds = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        int[][] ds;
+        switch (map.getCell(pos).getDirection()) {
+                case UP:
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, 1}};
+                    break;
+                case DOWN:
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}};
+                    break;
+                case LEFT:
+                    ds = new int[][]{{-1, 0}, {0, -1}, {0, 1}};
+                    break;
+                case RIGHT:
+                    ds = new int[][]{{1, 0}, {0, -1}, {0, 1}};
+                    break;
+                case NONE:
+                    ds = new int[][]{};
+                    break;
+                default:
+                case ALL:
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+                    break;
+        }
+
         for (int[] d : ds) {
             int row = pos.getX() + d[0];
             int col = pos.getY() + d[1];
