@@ -200,6 +200,20 @@ public class MapServiceImplTest extends TestCase {
         assertEquals(null,test.getNeighbor(cell,distance,distances));
     }
 
+    @Test
+    public void testGetPath(){
+        test.newMap("+++++\n+++++\n+++++");
+        Cell cellina = Mockito.mock(Cell.class);
+        when(obsRepo.checkObstacle(any(Position.class))).thenReturn(false);
+        when(unitRepo.checkUnit(any(Position.class))).thenReturn(false);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.isLocked()).thenReturn(false);
+        Position cell = new Position(0,0);
+        List<Position> path = new ArrayList<Position>();
+        assertEquals(6,test.getPath(cell,new Position(4,2),path));
+
+
+    }
 
 
 }

@@ -104,8 +104,8 @@ public class MapServiceImpl implements MapService{
                     break;
             }
         }
-        map = new Grid(lista,lista.get(lista.size()-1).getPosition().getX(),
-                lista.get(lista.size()-1).getPosition().getY());
+        map = new Grid(lista,lista.get(lista.size()-1).getPosition().getX()+1,
+                lista.get(lista.size()-1).getPosition().getY()+1);
         //mapRepo.setNewMap(mapSchema);
 
     }
@@ -116,12 +116,12 @@ public class MapServiceImpl implements MapService{
         List<Position> path = new ArrayList<Position>();
         List<Position> pois = unitRepo.getPoiList(id);
 
-        int distance= getPath(map,unitRepo.getPosition(id),pois.get(0),path);
+        int distance= getPath(unitRepo.getPosition(id),pois.get(0),path);
         return path;
 
     }
 
-     private int getPath(Grid map, Position start, Position end, List<Position> path) {
+     protected int getPath(Position start, Position end, List<Position> path) {
         int[][] distances = new int[map.getLength()][map.getHeight()];
         for (int i = 0; i < map.getLength(); ++i) {
             for (int j = 0; j < map.getHeight(); ++j){

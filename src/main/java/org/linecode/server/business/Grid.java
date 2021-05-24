@@ -50,6 +50,14 @@ public class Grid {
        return cells;
     }
 
+    public String toString(){
+        String toReturn="";
+        for(Cell cella : cells){
+            toReturn += cells.toString();
+        }
+        return toReturn;
+    }
+
     @Override
     public boolean equals(Object x){
 
