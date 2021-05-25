@@ -156,6 +156,8 @@ public class MapServiceImpl implements MapService{
             for (int d = distances[end.getX()][end.getY()]-1; d >= 0; d--) {
                 cell = getNeighbor(cell, d, distances);
                 path.add(0,cell);
+
+                System.out.println(cell);
             }
         }
 

@@ -201,7 +201,7 @@ public class MapServiceImplTest extends TestCase {
     }
 
     @Test
-    public void testGetPath(){
+    public void testGetPathAllFree(){
         test.newMap("+++++\n+++++\n+++++");
         Cell cellina = Mockito.mock(Cell.class);
         when(obsRepo.checkObstacle(any(Position.class))).thenReturn(false);
@@ -214,6 +214,38 @@ public class MapServiceImplTest extends TestCase {
 
 
     }
+
+    @Test
+    public void testGetPathSomeObstacle(){
+        test.newMap("+xxxx\n+++xx\n+++++\nxxxx+");
+        Cell cellina = Mockito.mock(Cell.class);
+        when(obsRepo.checkObstacle(any(Position.class))).thenReturn(false);
+        when(unitRepo.checkUnit(any(Position.class))).thenReturn(false);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.isLocked()).thenReturn(false);
+        Position cell = new Position(0,0);
+        List<Position> path = new ArrayList<Position>();
+        assertEquals(7,test.getPath(cell,new Position(4,3),path));
+
+    }
+
+
+    @Test
+    public void testGetPathSomeWeirdDirection(){
+        test.newMap("x+++>>xxx+\n++^>x>xxx<\n^^<+x>+xx>\n<xxx+^+_+>");
+        Cell cellina = Mockito.mock(Cell.class);
+        when(obsRepo.checkObstacle(any(Position.class))).thenReturn(false);
+        when(obsRepo.checkObstacle(new Position(6,1))).thenReturn(true);
+        when(unitRepo.checkUnit(any(Position.class))).thenReturn(false);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.isLocked()).thenReturn(false);
+        Position cell = new Position(0,0);
+        List<Position> path = new ArrayList<Position>();
+        assertEquals(1,test.getPath(cell,new Position(9,3),path));
+
+    }
+
+
 
 
 }
