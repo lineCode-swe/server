@@ -1,31 +1,39 @@
 package org.linecode.server.persistence;
 
 import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import redis.clients.jedis.Jedis;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
+
+import java.util.HashMap;
 import java.util.Map;
-
-
-import static org.mockito.Mockito.when;
+import java.util.Objects;
 
 public class UserRepositoryRedisTest extends TestCase {
-    Jedis db = Mockito.mock(Jedis.class);
-    UserRepositoryRedis test = new UserRepositoryRedis(db);
+    private Jedis db= Mockito.mock(Jedis.class);
+    private UserRepositoryRedis test= new UserRepositoryRedis(db);
+
+    @Before
+    public void setup() {
+//         db = Mockito.mock(Jedis.class);
+//         test = new UserRepositoryRedis(db);
+    }
 
     @Test
     public void testNewUser() {
-        String user= "valton";
-        String password= "password";
-        Boolean admin=true;
+        String user = "valton";
+        String password = "password";
+        Boolean admin = true;
+        System.out.println(Objects.isNull(test));
+        System.out.println(Objects.isNull(db));
+        test.newUser(user, password, admin);
 
-        when(db.sadd("user",user)).thenReturn(1L);
-        when(db.hmset("valton",Mockito.mock(Map.class))).thenReturn("");
-        when(db.bgsave()).thenReturn("");
-
-        test.newUser(user,password,admin);
-
+        verify(db,times(1)).sadd("user", user);
+        verify(db,times(1)).hmset(user,anyMapOf(String.class, String.class));
+        verify(db,times(1)).bgsave();
     }
 
     @Test
