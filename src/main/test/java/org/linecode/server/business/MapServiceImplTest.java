@@ -232,16 +232,15 @@ public class MapServiceImplTest extends TestCase {
 
     @Test
     public void testGetPathSomeWeirdDirection(){
-        test.newMap("x+++>>xxx+\n++^>x>xxx<\n^^<+x>+xx>\n<xxx+^+_+>");
+        test.newMap("^>xx++++\nx_<++^x+\nxx+xx+<+\n+++++<x+");
         Cell cellina = Mockito.mock(Cell.class);
         when(obsRepo.checkObstacle(any(Position.class))).thenReturn(false);
-        when(obsRepo.checkObstacle(new Position(6,1))).thenReturn(true);
         when(unitRepo.checkUnit(any(Position.class))).thenReturn(false);
         when(map.getCell(any(Position.class))).thenReturn(cellina);
         when(cellina.isLocked()).thenReturn(false);
         Position cell = new Position(0,0);
         List<Position> path = new ArrayList<Position>();
-        assertEquals(1,test.getPath(cell,new Position(9,3),path));
+        assertEquals(15,test.getPath(cell,new Position(7,0),path));
 
     }
 
