@@ -61,6 +61,8 @@ public class MapServiceImpl implements MapService{
     @Override
     public void newMap(String mapSchema) {
         char[] characters = mapSchema.toCharArray();
+        //int count = mapSchema.length() - mapSchema.replace("\n", "").length();
+       // System.out.println(count);
         List<Cell> lista= new ArrayList<Cell>();
         int x=0,y=0;
         for (int j=0; j<mapSchema.length();++j){

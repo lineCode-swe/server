@@ -32,7 +32,7 @@ public class MapServiceImplTest extends TestCase {
 
 
     @Test
-    public void testNewMap() {
+    public void newMap_StringWithAllTypeOfCells_Calculated() {
         List<Cell> lista = new ArrayList<Cell>();
         lista.add(new Cell(new Position(0, 0), false, false, Direction.RIGHT));
         lista.add(new Cell(new Position(1, 0), false, false, Direction.DOWN));
@@ -56,7 +56,7 @@ public class MapServiceImplTest extends TestCase {
     }
 
     @Test
-    public void testIsValidBetweenRange() {
+    public void isValid_BetweenRangeXAndY_ReturnTrue() {
         when(map.getLength()).thenReturn(5);
         when(map.getHeight()).thenReturn(5);
         assertEquals(true,test.isValid(3,3));
@@ -64,13 +64,13 @@ public class MapServiceImplTest extends TestCase {
     }
 
     @Test
-    public void testIsValidOutsideRangeX(){
+    public void isValid_ValueOutsideRangeX_ReturnFalse(){
         when(map.getLength()).thenReturn(5);
         when(map.getHeight()).thenReturn(5);
         assertEquals(false,test.isValid(6,4));
     }
     @Test
-    public void testIsValidOutsideRangeY(){
+    public void isValid_ValueOutsideRangeY_ReturnFalse(){
         when(map.getLength()).thenReturn(5);
         when(map.getHeight()).thenReturn(5);
         assertEquals(false,test.isValid(4,6));
@@ -78,7 +78,7 @@ public class MapServiceImplTest extends TestCase {
 
 
     @Test
-    public void testAddNeighborsAll(){
+    public void addNeighbors_CellDirectionAll_ReturnAll(){
 
         Cell cellina = Mockito.mock(Cell.class);
         when(map.getLength()).thenReturn(10);
@@ -96,7 +96,7 @@ public class MapServiceImplTest extends TestCase {
     }
 
     @Test
-    public void testAddNeighborsRight(){
+    public void addNeighbors_CellDirectionRight_ReturnAllExceptLeft(){
 
         Cell cellina = Mockito.mock(Cell.class);
         when(map.getLength()).thenReturn(10);
@@ -113,7 +113,7 @@ public class MapServiceImplTest extends TestCase {
     }
 
     @Test
-    public void testAddNeighborsLeft(){
+    public void addNeighbors_CellDirectionLeft_ReturnAllExceptRight(){
 
         Cell cellina = Mockito.mock(Cell.class);
         when(map.getLength()).thenReturn(10);
@@ -130,7 +130,7 @@ public class MapServiceImplTest extends TestCase {
     }
 
     @Test
-    public void testAddNeighborsUP(){
+    public void addNeighbors_CellDirectionUP_ReturnAllExceptDown(){
 
         Cell cellina = Mockito.mock(Cell.class);
         when(map.getLength()).thenReturn(10);
@@ -147,7 +147,7 @@ public class MapServiceImplTest extends TestCase {
     }
 
     @Test
-    public void testAddNeighborsDown(){
+    public void addNeighbors_CellDirectionDown_ReturnAllExceptUp(){
 
         Cell cellina = Mockito.mock(Cell.class);
         when(map.getLength()).thenReturn(10);
@@ -164,7 +164,7 @@ public class MapServiceImplTest extends TestCase {
     }
 
     @Test
-    public void testAddNeighborsNone(){
+    public void addNeighbors_CellDirectionNone_ReturnNone(){
 
         Cell cellina = Mockito.mock(Cell.class);
         when(map.getLength()).thenReturn(10);
@@ -180,7 +180,7 @@ public class MapServiceImplTest extends TestCase {
 
     // TODO: Checkare questo test
     @Test
-    public void testGetNeighborReturnPosition(){
+    public void getNeighbor_AllNeighbors_ReturnNeighbors(){
         when(map.getLength()).thenReturn(10);
         when(map.getHeight()).thenReturn(10);
         Position cell = new Position(2,2);
@@ -191,7 +191,7 @@ public class MapServiceImplTest extends TestCase {
 
 
     @Test
-    public void testGetNeighborReturnNull(){
+    public void getNeighbor_NoNeighbor_ReturnNull(){
         when(map.getLength()).thenReturn(10);
         when(map.getHeight()).thenReturn(10);
         Position cell = new Position(2,2);
@@ -201,7 +201,7 @@ public class MapServiceImplTest extends TestCase {
     }
 
     @Test
-    public void testGetPathAllFree(){
+    public void getPath_OnlyFreeCells_Calculated(){
         test.newMap("+++++\n+++++\n+++++");
         Cell cellina = Mockito.mock(Cell.class);
         when(obsRepo.checkObstacle(any(Position.class))).thenReturn(false);
@@ -216,7 +216,7 @@ public class MapServiceImplTest extends TestCase {
     }
 
     @Test
-    public void testGetPathSomeObstacle(){
+    public void getPath_OnlyLockedAndFreeCells_Calculated(){
         test.newMap("+xxxx\n+++xx\n+++++\nxxxx+");
         Cell cellina = Mockito.mock(Cell.class);
         when(obsRepo.checkObstacle(any(Position.class))).thenReturn(false);
@@ -231,8 +231,9 @@ public class MapServiceImplTest extends TestCase {
 
 
     @Test
-    public void testGetPathSomeWeirdDirection(){
+    public void getPath_MapWithAllTypesOfCells_Calculated(){
         test.newMap("^>xx++++\nx_<++^x+\nxx+xx+<+\n+++++<x+");
+       //test.newMap("+++++<x+\nxx+xx+<+\nx_<++^x+\n^>xx++++");
         Cell cellina = Mockito.mock(Cell.class);
         when(obsRepo.checkObstacle(any(Position.class))).thenReturn(false);
         when(unitRepo.checkUnit(any(Position.class))).thenReturn(false);
