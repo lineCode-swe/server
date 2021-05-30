@@ -12,14 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class UserRepositoryRedisTest extends TestCase {
-    private Jedis db= Mockito.mock(Jedis.class);
-    private UserRepositoryRedis test= new UserRepositoryRedis(db);
+public class UserRepositoryRedisTest {
+    private Jedis db;
+    private UserRepositoryRedis test;
 
     @Before
     public void setup() {
-//         db = Mockito.mock(Jedis.class);
-//         test = new UserRepositoryRedis(db);
+         db = Mockito.mock(Jedis.class);
+         test = new UserRepositoryRedis(db);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class UserRepositoryRedisTest extends TestCase {
         test.newUser(user, password, admin);
 
         verify(db,times(1)).sadd("user", user);
-        verify(db,times(1)).hmset(user,anyMapOf(String.class, String.class));
+        verify(db,times(1)).hmset(eq(user), anyMap());
         verify(db,times(1)).bgsave();
     }
 
