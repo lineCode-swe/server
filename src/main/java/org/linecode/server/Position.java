@@ -20,6 +20,7 @@ public class Position {
         this.x=x;
         this.y=y;
     }
+
     public Position(String position) { //non so se va bene questa cosa
         int virgola=position.indexOf(",");
         this.x=Integer.parseInt(position.substring(1,virgola-1));

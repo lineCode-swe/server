@@ -1,7 +1,7 @@
 package org.linecode.server.business;
 
 import com.github.msteinbeck.sig4j.signal.Signal1;
-import junit.framework.TestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.linecode.server.Position;
@@ -11,22 +11,33 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
+
 import static org.mockito.Mockito.when;
 
 
-public class MapServiceImplTest extends TestCase {
+public class MapServiceImplTest{
 
-    Grid map = Mockito.mock(Grid.class);
-    UnitRepository unitRepo = Mockito.mock(UnitRepository.class);
-    ObstacleRepository obsRepo= Mockito.mock(ObstacleRepository.class);
-    MapRepository mapRepo= Mockito.mock(MapRepository.class);
-    UnitRepository unitRepository= Mockito.mock(UnitRepository.class);
-    Signal1<Grid> mapSignal= Mockito.mock(Signal1.class);
-    Signal1<List<Position>> obstaclesSignal= Mockito.mock(Signal1.class);
+    Grid map;
+    UnitRepository unitRepo;
+    ObstacleRepository obsRepo;
+    MapRepository mapRepo;
+    Signal1<Grid> mapSignal;
+    Signal1<List<Position>> obstaclesSignal;
+    MapServiceImpl test;
 
-    MapServiceImpl test = new MapServiceImpl(map,unitRepo,obsRepo,mapRepo,unitRepository,mapSignal,obstaclesSignal);
+    @Before
+    public void setUp(){
+         map = Mockito.mock(Grid.class);
+         unitRepo = Mockito.mock(UnitRepository.class);
+         obsRepo= Mockito.mock(ObstacleRepository.class);
+         mapRepo= Mockito.mock(MapRepository.class);
+         mapSignal= (Signal1<Grid>)Mockito.mock(Signal1.class);
+         obstaclesSignal= (Signal1<List<Position>>)Mockito.mock(Signal1.class);
+         test =new MapServiceImpl(unitRepo,obsRepo,mapRepo,mapSignal,obstaclesSignal);
+         test.map=map;
+    }
 
 
 
@@ -141,7 +152,7 @@ public class MapServiceImplTest extends TestCase {
         List<Position> expected = new ArrayList<Position>();
         expected.add(new Position(4,5));
         expected.add(new Position(6,5));
-        expected.add(new Position(5,6));
+        expected.add(new Position(5,4));
         test.addNeighbors(new Position(5,5),input);
         assertEquals(expected,input);
     }
@@ -158,7 +169,7 @@ public class MapServiceImplTest extends TestCase {
         List<Position> expected = new ArrayList<Position>();
         expected.add(new Position(4,5));
         expected.add(new Position(6,5));
-        expected.add(new Position(5,4));
+        expected.add(new Position(5,6));
         test.addNeighbors(new Position(5,5),input);
         assertEquals(expected,input);
     }
@@ -192,8 +203,8 @@ public class MapServiceImplTest extends TestCase {
 
     @Test
     public void getNeighbor_NoNeighbor_ReturnNull(){
-        when(map.getLength()).thenReturn(10);
-        when(map.getHeight()).thenReturn(10);
+        when(test.map.getLength()).thenReturn(10);
+        when(test.map.getHeight()).thenReturn(10);
         Position cell = new Position(2,2);
         int distance = 5;
         int[][] distances = {{1,1,1,1},{1,1,1,1},{1,1,1,1},{1,1,1,1}};
@@ -232,8 +243,9 @@ public class MapServiceImplTest extends TestCase {
 
     @Test
     public void getPath_MapWithAllTypesOfCells_Calculated(){
-        test.newMap("^>xx++++\nx_<++^x+\nxx+xx+<+\n+++++<x+");
-       //test.newMap("+++++<x+\nxx+xx+<+\nx_<++^x+\n^>xx++++");
+        //test.newMap("^>xx++++\nx_<++^x+\nxx+xx+<+\n+++++<x+");
+        //test.newMap("+++++<x+\nxx+xx+<+\nx_<++^x+\n^>xx++++");
+        test.newMap("_xxxx\n+xxxx\n+xxxx\n^+xxx");
         Cell cellina = Mockito.mock(Cell.class);
         when(obsRepo.checkObstacle(any(Position.class))).thenReturn(false);
         when(unitRepo.checkUnit(any(Position.class))).thenReturn(false);
@@ -241,7 +253,7 @@ public class MapServiceImplTest extends TestCase {
         when(cellina.isLocked()).thenReturn(false);
         Position cell = new Position(0,0);
         List<Position> path = new ArrayList<Position>();
-        assertEquals(15,test.getPath(cell,new Position(7,0),path));
+        assertEquals(4,test.getPath(cell,new Position(1,3),path));
 
     }
 

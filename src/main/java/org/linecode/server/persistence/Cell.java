@@ -18,7 +18,7 @@ public class Cell {
     private final boolean locked;
     private boolean poi = false;
     private final boolean base;
-    private final Direction direction ; // "UP,DOWN,LEFT,RIGHT" TODO: Chiedere a Achimetto se è final
+    private final Direction direction;
 
 
     public Cell(Position position, boolean locked, boolean base, Direction direction) {

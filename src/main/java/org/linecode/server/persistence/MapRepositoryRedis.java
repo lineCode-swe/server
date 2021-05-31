@@ -13,6 +13,7 @@ import org.linecode.server.Position;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,11 @@ public class MapRepositoryRedis implements MapRepository{
 //        db.bgsave();
 //    }
 
+    //TODO Da fare
+    @Override
+    public List<Cell> getCells(){
+        return new ArrayList<Cell>();
+    }
     @Override
     public int getLength() {
         return Integer.parseInt(db.get("length"));

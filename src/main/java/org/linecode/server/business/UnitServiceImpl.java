@@ -14,6 +14,7 @@ import com.github.msteinbeck.sig4j.slot.Slot2;
 import org.linecode.server.Position;
 import org.linecode.server.persistence.UnitRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -45,23 +46,29 @@ public class UnitServiceImpl implements UnitService{
         this.stopSignal = stopSignal;
         this.baseSignal = baseSignal;
         this.poiSignal = poiSignal;
+
     }
 
 
     @Override
     public void newUnit(String id, String name, Position base) {
+
         repo.newUnit(id,name,base);
+        positionSignal.emit(id,base);
+
     }
 
     @Override
     public void delUnit(String id) {
+
         repo.delUnit(id);
+        unitCloseSignal.emit(id);
     }
 
     @Override
     public List<Unit> getUnits() {
         Set<String> temporal = repo.getUnits();
-        List<Unit> units = null;
+        List<Unit> units = new ArrayList<Unit>();
         for (String id: temporal) {
             units.add(new Unit(id,repo.getName(id),repo.getBase(id)));
         }
@@ -76,27 +83,32 @@ public class UnitServiceImpl implements UnitService{
     @Override
     public void newPosition(String id, Position position) {
         repo.setPosition(id, position);
+        positionSignal.emit(id,position);
     }
 
     @Override
     public void newStatus(String id, UnitStatus status) {
-        repo.setStatus(id, status.getCode());
+        repo.setStatus(id, status.ordinal());
+        statusSignal.emit(id,status); // TODO deve essere anche emesso su start,stop methods?
     }
 
     @Override
     public void newError(String id, int error) {
         repo.setError(id, error);
+        errorSignal.emit(id,error);
     }
 
     @Override
     public void newSpeed(String id, int speed) {
         repo.setSpeed(id, speed);
+        speedSignal.emit(id,speed);
     }
 
     @Override
     public void start(String id, List<Position> poiList) {
         repo.setPoiList(id,poiList);
         startSignal.emit(id);
+        statusSignal.emit(id,UnitStatus.GOINGTO);
 
 
     }
@@ -104,12 +116,14 @@ public class UnitServiceImpl implements UnitService{
     @Override
     public void stop(String id) {
         stopSignal.emit(id);
+        statusSignal.emit(id,UnitStatus.STOP);
 
     }
 
     @Override
     public void base(String id) {
         baseSignal.emit(id);
+        statusSignal.emit(id,UnitStatus.BASE);
 
     }
 

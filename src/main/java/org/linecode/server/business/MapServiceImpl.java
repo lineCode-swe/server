@@ -22,24 +22,23 @@ import java.util.List;
 
 public class MapServiceImpl implements MapService{
 
-    private Grid map;
-    private final UnitRepository unitRepo;
-    private final ObstacleRepository obsRepo;
-    private final MapRepository mapRepo;
-    private final UnitRepository unitRepository;
-    private final Signal1<Grid> mapSignal;
-    private final Signal1<List<Position>> obstaclesSignal;
+    protected Grid map;
+    protected final UnitRepository unitRepo;
+    protected final ObstacleRepository obsRepo;
+    protected final MapRepository mapRepo;
+    protected final Signal1<Grid> mapSignal;
+    protected final Signal1<List<Position>> obstaclesSignal;
 
-    public MapServiceImpl(Grid map, UnitRepository unitRepo, ObstacleRepository obsRepo,
-                          MapRepository mapRepo, UnitRepository unitRepository,
+    public MapServiceImpl(UnitRepository unitRepo, ObstacleRepository obsRepo,
+                          MapRepository mapRepo,
                           Signal1<Grid> mapSignal, Signal1<List<Position>> obstaclesSignal) {
-        this.map = map;
+
         this.unitRepo = unitRepo;
         this.obsRepo = obsRepo;
         this.mapRepo = mapRepo;
-        this.unitRepository = unitRepository;
         this.mapSignal = mapSignal;
         this.obstaclesSignal = obstaclesSignal;
+        map = new Grid(mapRepo.getCells(),mapRepo.getLength(),mapRepo.getHeight());
     }
 
 
@@ -51,6 +50,8 @@ public class MapServiceImpl implements MapService{
             obsRepo.setObstacle(obstacle);
         }
 
+        obstaclesSignal.emit(obstacles);
+
     }
 
     @Override
@@ -61,8 +62,6 @@ public class MapServiceImpl implements MapService{
     @Override
     public void newMap(String mapSchema) {
         char[] characters = mapSchema.toCharArray();
-        //int count = mapSchema.length() - mapSchema.replace("\n", "").length();
-       // System.out.println(count);
         List<Cell> lista= new ArrayList<Cell>();
         int x=0,y=0;
         for (int j=0; j<mapSchema.length();++j){
@@ -106,18 +105,20 @@ public class MapServiceImpl implements MapService{
                     break;
             }
         }
-        map = new Grid(lista,lista.get(lista.size()-1).getPosition().getX()+1,
-                lista.get(lista.size()-1).getPosition().getY()+1);
-        //mapRepo.setNewMap(mapSchema);
+
+        System.out.println(x +" "+ y);
+        map = new Grid(lista,x,y+1);
+        mapRepo.setHeight(y+1);
+        mapRepo.setLength(x);
+        mapRepo.setCells(lista);
+        mapSignal.emit(map);
 
     }
 
     @Override
     public List<Position> getNextPath(String id) {
-        //TODO Estrapolare dal POC UnitEndpoint l'algoritmo di pathfinding
         List<Position> path = new ArrayList<Position>();
         List<Position> pois = unitRepo.getPoiList(id);
-
         int distance= getPath(unitRepo.getPosition(id),pois.get(0),path);
         return path;
 
@@ -173,13 +174,13 @@ public class MapServiceImpl implements MapService{
 
     protected void addNeighbors(Position pos, List<Position> list) {
 
-        int[][] ds;
+        int[][] ds = new int[0][0];
         switch (map.getCell(pos).getDirection()) {
                 case UP:
-                    ds = new int[][]{{-1, 0}, {1, 0}, {0, 1}};
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}};
                     break;
                 case DOWN:
-                    ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}};
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, 1}};
                     break;
                 case LEFT:
                     ds = new int[][]{{-1, 0}, {0, -1}, {0, 1}};
@@ -206,8 +207,8 @@ public class MapServiceImpl implements MapService{
     }
 
     protected Position getNeighbor(Position cell, int distance, int[][] distances) {
-        int[][] ds = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
+        int[][] ds = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
         for (int[] d : ds) {
             int row = cell.getX()+ d[0];
             int col = cell.getY() + d[1];
