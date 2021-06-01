@@ -143,6 +143,7 @@ public class MapServiceImpl implements MapService{
                 if (distances[cell.getX()][cell.getY()] == Integer.MAX_VALUE
                         && !obsRepo.checkObstacle(cell)
                         && (!unitRepo.checkUnit(cell) || cell.equals(start))
+                        && map.getCell(cell) != null
                         && !map.getCell(cell).isLocked()) {
                     distances[cell.getX()][cell.getY()] = distance;
                     addNeighbors(cell, nextCells);
@@ -175,7 +176,8 @@ public class MapServiceImpl implements MapService{
     protected void addNeighbors(Position pos, List<Position> list) {
 
         int[][] ds = new int[0][0];
-        switch (map.getCell(pos).getDirection()) {
+        if (map.getCell(pos) != null) {
+            switch (map.getCell(pos).getDirection()) {
                 case UP:
                     ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}};
                     break;
@@ -195,13 +197,14 @@ public class MapServiceImpl implements MapService{
                 case ALL:
                     ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
                     break;
-        }
+            }
 
-        for (int[] d : ds) {
-            int row = pos.getX() + d[0];
-            int col = pos.getY() + d[1];
-            if (isValid(row, col)) {
-                list.add(new Position(row, col));
+            for (int[] d : ds) {
+                int row = pos.getX() + d[0];
+                int col = pos.getY() + d[1];
+                if (isValid(row, col)) {
+                    list.add(new Position(row, col));
+                }
             }
         }
     }

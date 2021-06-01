@@ -61,8 +61,9 @@ public class UnitServiceImpl implements UnitService{
     @Override
     public void delUnit(String id) {
 
-        repo.delUnit(id);
         unitCloseSignal.emit(id);
+        repo.delUnit(id);
+
     }
 
     @Override
@@ -108,22 +109,18 @@ public class UnitServiceImpl implements UnitService{
     public void start(String id, List<Position> poiList) {
         repo.setPoiList(id,poiList);
         startSignal.emit(id);
-        statusSignal.emit(id,UnitStatus.GOINGTO);
-
 
     }
 
     @Override
     public void stop(String id) {
         stopSignal.emit(id);
-        statusSignal.emit(id,UnitStatus.STOP);
 
     }
 
     @Override
     public void base(String id) {
         baseSignal.emit(id);
-        statusSignal.emit(id,UnitStatus.BASE);
 
     }
 

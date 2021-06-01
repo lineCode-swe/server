@@ -36,9 +36,9 @@ public class Grid {
 
     public Cell getCell(Position p) {
         Cell toReturn = null;
-        for(int i=0; i< cells.size();++i){
-            if(cells.get(i).getPosition().equals(p)){
-                toReturn=cells.get(i);
+        for (Cell cell : cells) {
+            if (cell.getPosition().equals(p)) {
+                toReturn = cell;
             }
         }
        return toReturn;
