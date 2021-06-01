@@ -20,9 +20,7 @@ public class UserRepositoryRedis implements UserRepository {
     private final Jedis db;
 
     @Inject
-    public UserRepositoryRedis(Jedis db) {
-        this.db = db;
-    }
+    public UserRepositoryRedis(Jedis db) { this.db = db; }
 
     @Override
     public void newUser(String user, String password, Boolean admin) {

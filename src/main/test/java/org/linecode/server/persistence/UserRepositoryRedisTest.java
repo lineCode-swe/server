@@ -24,11 +24,9 @@ public class UserRepositoryRedisTest {
 
     @Test
     public void testNewUser() {
-        String user = "valton";
+        String user = "test";
         String password = "password";
         Boolean admin = true;
-        System.out.println(Objects.isNull(test));
-        System.out.println(Objects.isNull(db));
         test.newUser(user, password, admin);
 
         verify(db,times(1)).sadd("user", user);
@@ -38,17 +36,26 @@ public class UserRepositoryRedisTest {
 
     @Test
     public void testDelUser() {
+        test.delUser("test");
+        verify(db,times(1)).srem("user","test");
+        verify(db,times(1)).bgsave();
     }
 
     @Test
     public void testGetPassword() {
+        test.getPassword("test");
+        verify(db,times(1)).hget("test","password");
     }
 
     @Test
     public void testIsAdmin() {
+        test.isAdmin("test");
+        verify(db,times(1)).hget("test","admin");
     }
 
     @Test
     public void testGetUsers() {
+        test.getUsers();
+        verify(db,times(1)).smembers("user");
     }
 }

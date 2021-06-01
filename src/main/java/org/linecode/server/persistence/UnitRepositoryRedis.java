@@ -24,7 +24,7 @@ public class UnitRepositoryRedis implements UnitRepository {
 
     @Inject
     public UnitRepositoryRedis(Jedis db) {
-        this.db = new Jedis("localhost");
+        this.db = db;
     }
 
     @Override
@@ -61,9 +61,9 @@ public class UnitRepositoryRedis implements UnitRepository {
 
     @Override
     public Position getBase(String id) {
-        int x=Integer.parseInt(db.hget(id,"base_x"));
-        int y=Integer.parseInt(db.hget(id,"base_y"));
-        return new Position(x,y);
+        int x = Integer.parseInt(db.hget(id, "base_x"));
+        int y = Integer.parseInt(db.hget(id, "base_y"));
+        return new Position(x, y);
     }
 
     @Override
