@@ -6,14 +6,17 @@
  * Distributed under open-source licence (see accompanying file LICENCE).
  */
 
+
 package org.linecode.server.persistence;
+
+import org.linecode.server.Position;
 
 import java.util.Set;
 
-public interface UserRepository {
-    public void newUser(String user, String password, Boolean admin);
-    public void delUser(String user);
-    public String getPassword(String user);
-    public Boolean isAdmin(String user);
-    public Set<String> getUsers();
+public interface ObstacleRepository {
+    public Set<String> getObstaclesKey();
+    public void setObstacle(Position obstacle);
+    public Position getPosition(String id);
+
+
 }
