@@ -24,7 +24,7 @@ public class UnitRepositoryRedis implements UnitRepository {
 
     @Inject
     public UnitRepositoryRedis(Jedis db) {
-        this.db = new Jedis("localhost");
+        this.db = db;
     }
 
     @Override

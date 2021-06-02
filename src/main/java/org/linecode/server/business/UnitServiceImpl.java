@@ -14,6 +14,7 @@ import com.github.msteinbeck.sig4j.slot.Slot2;
 import org.linecode.server.Position;
 import org.linecode.server.persistence.UnitRepository;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ public class UnitServiceImpl implements UnitService{
     private final Signal1<String> baseSignal;
     private final Signal1<String> poiSignal;
 
+    @Inject
     public UnitServiceImpl(UnitRepository repo, Signal1<String> unitCloseSignal,
                            Signal2<String, Position> positionSignal, Signal2<String, UnitStatus> statusSignal,
                            Signal2<String, Integer> errorSignal,
@@ -154,7 +156,7 @@ public class UnitServiceImpl implements UnitService{
     }
 
     @Override
-    public void connectPoiList(Slot1<String> slot) {
+    public void connectPoiListSignal(Slot1<String> slot) {
         poiSignal.connect(slot);
     }
 }

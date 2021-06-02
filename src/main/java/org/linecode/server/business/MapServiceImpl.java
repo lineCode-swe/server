@@ -16,6 +16,7 @@ import org.linecode.server.persistence.ObstacleRepository;
 import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.Direction;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,10 +31,10 @@ public class MapServiceImpl implements MapService{
     private final Signal1<Grid> mapSignal;
     private final Signal1<List<Position>> obstaclesSignal;
 
-    public MapServiceImpl(Grid map, UnitRepository unitRepo, ObstacleRepository obsRepo,
+    @Inject
+    public MapServiceImpl(UnitRepository unitRepo, ObstacleRepository obsRepo,
                           MapRepository mapRepo, UnitRepository unitRepository,
                           Signal1<Grid> mapSignal, Signal1<List<Position>> obstaclesSignal) {
-        this.map = map;
         this.unitRepo = unitRepo;
         this.obsRepo = obsRepo;
         this.mapRepo = mapRepo;

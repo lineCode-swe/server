@@ -24,7 +24,7 @@ public class ObstacleRepositoryRedis implements ObstacleRepository{
 
     @Inject
     public ObstacleRepositoryRedis(Jedis db) {
-        this.db = new Jedis("localhost");
+        this.db = db;
     }
 
     @Override

@@ -10,6 +10,7 @@ package org.linecode.server.business;
 import org.linecode.server.Position;
 import org.linecode.server.persistence.Cell;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 

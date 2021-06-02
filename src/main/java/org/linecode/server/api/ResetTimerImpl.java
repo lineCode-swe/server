@@ -7,15 +7,26 @@
  */
 package org.linecode.server.api;
 
+import javax.inject.Inject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ResetTimerImpl {
+public class ResetTimerImpl implements ResetTimer {
     private TimerTask task;
     private final Timer timer;
 
-    public ResetTimerImpl(TimerTask task, Timer timer) {
-        this.task = task;
+    @Inject
+    public ResetTimerImpl(Timer timer) {
         this.timer = timer;
+    }
+
+    @Override
+    public void reset() {
+
+    }
+
+    @Override
+    public void schedule(TimerTask task, long period) {
+
     }
 }

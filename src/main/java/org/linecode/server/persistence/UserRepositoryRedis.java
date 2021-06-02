@@ -17,11 +17,11 @@ import java.util.Set;
 
 public class UserRepositoryRedis implements UserRepository {
 
-    private Jedis db;
+    private final Jedis db;
 
     @Inject
     public UserRepositoryRedis(Jedis db) {
-        this.db = new Jedis("localhost");
+        this.db = db;
     }
 
     @Override

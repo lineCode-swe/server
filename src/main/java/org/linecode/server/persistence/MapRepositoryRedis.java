@@ -23,7 +23,8 @@ public class MapRepositoryRedis implements MapRepository{
 
     @Inject
     public MapRepositoryRedis(Jedis db) {
-        this.db = new Jedis("localhost"); }
+        this.db = db;
+    }
 
 //    @Override
 //    public void setNewMap(String mapSchema) { // forse va eliminata o va modificata la struttura del db
