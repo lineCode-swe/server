@@ -20,10 +20,10 @@ public class Position {
         this.x=x;
         this.y=y;
     }
-    public Position(String position) { //non so se va bene questa cosa
+    public Position(String position) {
         int virgola=position.indexOf(",");
-        this.x=Integer.parseInt(position.substring(1,virgola-1));
-        this.y=Integer.parseInt(position.substring(virgola+1,position.length()-2));
+        this.x=Integer.parseInt(position.substring(1,virgola));
+        this.y=Integer.parseInt(position.substring(virgola+1,position.length()-1));
     }
 
     public int getX() {

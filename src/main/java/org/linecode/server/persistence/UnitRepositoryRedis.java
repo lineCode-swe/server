@@ -12,11 +12,7 @@ import org.linecode.server.Position;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.ArrayList;
+import java.util.*;
 
 public class UnitRepositoryRedis implements UnitRepository {
 
@@ -117,9 +113,13 @@ public class UnitRepositoryRedis implements UnitRepository {
         db.bgsave();
     }
 
-    public boolean checkUnit(Position p){
+    public boolean checkUnit(Position p) {
+        Set<String> units = getUnits();
+        for (String unitId:units) {
+            if (p == getPosition(unitId)) {
+                return true;
+            }
+        }
         return false;
-        //TODO: Data una posizione ritornare se vi è un unità in quella posizione
     }
 }
-

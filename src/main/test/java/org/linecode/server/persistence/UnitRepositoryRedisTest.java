@@ -5,9 +5,11 @@ import org.junit.Test;
 import org.linecode.server.Position;
 import org.mockito.Mockito;
 import redis.clients.jedis.Jedis;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
-
-
 import static org.junit.Assert.*;
 
 public class UnitRepositoryRedisTest {
@@ -46,7 +48,8 @@ public class UnitRepositoryRedisTest {
 
     @Test
     public void getName() {
-        test.getName(id);
+        when(db.hget(id,"name")).thenReturn("nome");
+        assertEquals("nome", test.getName(id));
         verify(db,times(1)).hget(id,"name");
     }
 
@@ -54,7 +57,7 @@ public class UnitRepositoryRedisTest {
     public void getBase() {
         when(db.hget(id,"base_x")).thenReturn("5");
         when(db.hget(id,"base_y")).thenReturn("5");
-        test.getBase(id);
+        assertEquals(new Position(5,5), test.getBase(id));
         verify(db,times(1)).hget(id,"base_x");
         verify(db,times(1)).hget(id,"base_y");
     }
@@ -63,13 +66,22 @@ public class UnitRepositoryRedisTest {
     public void getPosition() {
         when(db.hget(id,"position_x")).thenReturn("5");
         when(db.hget(id,"position_y")).thenReturn("5");
-        test.getPosition(id);
+        assertEquals(new Position(5,5), test.getPosition(id));
         verify(db,times(1)).hget(id,"position_x");
         verify(db,times(1)).hget(id,"position_y");
     }
 
     @Test
     public void getPoiList() {
+        when(db.llen(anyString())).thenReturn(3L);
+        when(db.lindex("poi:" + id,0L)).thenReturn("[0,1]");
+        when(db.lindex("poi:" + id,1L)).thenReturn("[2,3]");
+        when(db.lindex("poi:" + id,2L)).thenReturn("[4,5]");
+        List<Position> PoiList = test.getPoiList(id);
+        assertEquals(PoiList.get(0),new Position(0,1));
+        assertEquals(PoiList.get(1),new Position(2,3));
+        assertEquals(PoiList.get(2),new Position(4,5));
+        verify(db,times(3)).lindex(anyString(),anyLong());
     }
 
     @Test
@@ -95,8 +107,11 @@ public class UnitRepositoryRedisTest {
 
     @Test
     public void setPoiList() {
-        test.setPoiList(eq("id"), anyList());
-//        come faccio a contare il numero di volte passandogli anyList???
+        List<Position> poilist = new ArrayList<Position>();
+        poilist.add(new Position(0,0));
+        poilist.add(new Position(1,1));
+        test.setPoiList(id, poilist);
+        verify(db,times(2)).rpush(anyString(),anyString());
         verify(db,times(1)).bgsave();
     }
 
@@ -108,6 +123,5 @@ public class UnitRepositoryRedisTest {
     }
 
     @Test
-    public void checkUnit() {
-    }
+    public void checkUnit() { }
 }

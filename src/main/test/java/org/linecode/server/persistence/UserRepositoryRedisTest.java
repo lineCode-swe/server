@@ -1,16 +1,11 @@
 package org.linecode.server.persistence;
 
-import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import redis.clients.jedis.Jedis;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import static org.junit.Assert.*;
 
 public class UserRepositoryRedisTest {
     private Jedis db;
@@ -43,13 +38,15 @@ public class UserRepositoryRedisTest {
 
     @Test
     public void testGetPassword() {
-        test.getPassword("test");
+        when(db.hget("test", "password")).thenReturn("testpwd");
+        assertEquals("testpwd", test.getPassword("test"));
         verify(db,times(1)).hget("test","password");
     }
 
     @Test
     public void testIsAdmin() {
-        test.isAdmin("test");
+        when(db.hget("test","admin")).thenReturn("true");
+        assertTrue(test.isAdmin("test"));
         verify(db,times(1)).hget("test","admin");
     }
 
