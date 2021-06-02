@@ -90,7 +90,7 @@ public class UnitServiceImpl implements UnitService{
     @Override
     public void newStatus(String id, UnitStatus status) {
         repo.setStatus(id, status.ordinal());
-        statusSignal.emit(id,status); // 
+        statusSignal.emit(id,status);
     }
 
     @Override
