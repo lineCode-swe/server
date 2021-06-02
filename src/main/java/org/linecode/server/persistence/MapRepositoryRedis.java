@@ -13,9 +13,7 @@ import org.linecode.server.Position;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MapRepositoryRedis implements MapRepository{
 
@@ -48,10 +46,14 @@ public class MapRepositoryRedis implements MapRepository{
 
     @Override
     public Cell getCell(int length, int height) { // ho messo il poi al posto dell'obstacle
-        String cellName="cell:" + length + ":" + height;
-        return new Cell(new Position(length,height),Boolean.parseBoolean(db.hget(cellName,"locked"))
-                ,Boolean.parseBoolean(db.hget(cellName,"base")),
-                Direction.valueOf(db.hget(cellName,"direction")));
+        if ((length > getLength()) || (height > getHeight()))
+            return null;
+        else {
+            String cellName = "cell:" + length + ":" + height;
+            return new Cell(new Position(length, height), Boolean.parseBoolean(db.hget(cellName, "locked"))
+                    , Boolean.parseBoolean(db.hget(cellName, "base")),
+                    Direction.valueOf(db.hget(cellName, "direction")));
+        }
     }
 
     @Override
@@ -68,5 +70,19 @@ public class MapRepositoryRedis implements MapRepository{
             keyValue.clear();
         }
         db.bgsave();
+    }
+
+    @Override
+    public List<Cell> getCells() {
+        List<Cell> cellsList = new ArrayList<Cell>();
+        Set<String> cellsSet = db.smembers("cell");
+        String position;
+        int duePunti;
+        for (String cellsId:cellsSet) {
+            position = cellsId.substring(5);
+            duePunti = position.indexOf(":");
+            cellsList.add(getCell(Integer.parseInt(position.substring(0,duePunti)),Integer.parseInt(position.substring(duePunti+1))));
+        }
+        return cellsList;
     }
 }

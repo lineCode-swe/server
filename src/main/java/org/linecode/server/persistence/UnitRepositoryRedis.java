@@ -113,7 +113,7 @@ public class UnitRepositoryRedis implements UnitRepository {
         db.bgsave();
     }
 
-    public boolean checkUnit(Position p) {
+    public boolean checkUnit(Position p) { // da fare nel business???
         Set<String> units = getUnits();
         for (String unitId:units) {
             if (p == getPosition(unitId)) {

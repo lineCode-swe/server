@@ -20,4 +20,5 @@ public interface MapRepository {
     public void setHeight(int height);
     public Cell getCell(int length, int height);
     public void setCells(List<Cell> cellList);
+    public List<Cell> getCells();
 }
