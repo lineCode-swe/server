@@ -15,12 +15,12 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class UiEndpointTest {
-    UiEndpoint endpoint;
-    ResetTimer resetTimer;
-    UserService userService;
-    UnitService unitService;
-    MapService mapService;
-    Session session;
+    private UiEndpoint endpoint;
+    private ResetTimer resetTimer;
+    private UserService userService;
+    private UnitService unitService;
+    private MapService mapService;
+    private Session session;
 
     @Before
     public void setUp() throws Exception {
