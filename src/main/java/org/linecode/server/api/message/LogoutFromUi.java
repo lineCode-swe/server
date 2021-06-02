@@ -8,11 +8,15 @@
 
 package org.linecode.server.api.message;
 
-public class KeepAliveToUi extends Message {
-    public final String keepalive;
+public class LogoutFromUi extends Message {
+    private final String user;
 
-    public KeepAliveToUi(String keepalive) {
-        super("KeepAliveToUi");
-        this.keepalive = keepalive;
+    public LogoutFromUi(String user) {
+        super("LogoutFromUi");
+        this.user = user;
+    }
+
+    public String getUser() {
+        return user;
     }
 }
