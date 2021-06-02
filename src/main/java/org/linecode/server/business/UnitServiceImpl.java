@@ -15,6 +15,7 @@ import org.linecode.server.Position;
 import org.linecode.server.persistence.UnitRepository;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,6 +30,7 @@ public class UnitServiceImpl implements UnitService{
     private final Signal1<String> stopSignal;
     private final Signal1<String> baseSignal;
     private final Signal1<String> poiSignal;
+    private final Signal1<List<Unit>> unitSignal;
 
     @Inject
     public UnitServiceImpl(UnitRepository repo, Signal1<String> unitCloseSignal,
@@ -36,7 +38,7 @@ public class UnitServiceImpl implements UnitService{
                            Signal2<String, Integer> errorSignal,
                            Signal2<String, Integer> speedSignal,
                            Signal1<String> startSignal, Signal1<String> stopSignal,
-                           Signal1<String> baseSignal, Signal1<String> poiSignal) {
+                           Signal1<String> baseSignal, Signal1<String> poiSignal,Signal1<List<Unit>> unitSignal) {
         this.repo = repo;
         this.unitCloseSignal = unitCloseSignal;
         this.positionSignal = positionSignal;
@@ -47,23 +49,32 @@ public class UnitServiceImpl implements UnitService{
         this.stopSignal = stopSignal;
         this.baseSignal = baseSignal;
         this.poiSignal = poiSignal;
+        this.unitSignal=unitSignal;
+
     }
 
 
     @Override
     public void newUnit(String id, String name, Position base) {
+
         repo.newUnit(id,name,base);
+        unitSignal.emit(this.getUnits());
     }
 
     @Override
     public void delUnit(String id) {
+
+        unitCloseSignal.emit(id);
         repo.delUnit(id);
+        unitSignal.emit(this.getUnits());
+
     }
+
 
     @Override
     public List<Unit> getUnits() {
         Set<String> temporal = repo.getUnits();
-        List<Unit> units = null;
+        List<Unit> units = new ArrayList<Unit>();
         for (String id: temporal) {
             units.add(new Unit(id,repo.getName(id),repo.getBase(id)));
         }
@@ -78,28 +89,31 @@ public class UnitServiceImpl implements UnitService{
     @Override
     public void newPosition(String id, Position position) {
         repo.setPosition(id, position);
+        positionSignal.emit(id,position);
     }
 
     @Override
     public void newStatus(String id, UnitStatus status) {
-        repo.setStatus(id, status.getCode());
+        repo.setStatus(id, status.ordinal());
+        statusSignal.emit(id,status);
     }
 
     @Override
     public void newError(String id, int error) {
         repo.setError(id, error);
+        errorSignal.emit(id,error);
     }
 
     @Override
     public void newSpeed(String id, int speed) {
         repo.setSpeed(id, speed);
+        speedSignal.emit(id,speed);
     }
 
     @Override
     public void start(String id, List<Position> poiList) {
         repo.setPoiList(id,poiList);
         startSignal.emit(id);
-
 
     }
 
@@ -158,5 +172,10 @@ public class UnitServiceImpl implements UnitService{
     @Override
     public void connectPoiListSignal(Slot1<String> slot) {
         poiSignal.connect(slot);
+    }
+
+    @Override
+    public void connectUnitSignal(Slot1<List<Unit>> slot) {
+        unitSignal.connect(slot);
     }
 }

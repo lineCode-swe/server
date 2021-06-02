@@ -117,9 +117,6 @@ public class UnitRepositoryRedis implements UnitRepository {
         db.bgsave();
     }
 
-    public boolean checkUnit(Position p){
-        return false;
-        //TODO: Data una posizione ritornare se vi è un unità in quella posizione
-    }
+
 }
 

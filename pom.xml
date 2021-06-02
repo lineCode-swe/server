@@ -6,7 +6,7 @@
 
   <groupId>org.linecode</groupId>
   <artifactId>server</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <packaging>war</packaging>
 
   <name>Server - PORTACS</name>
@@ -80,6 +80,7 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <build>

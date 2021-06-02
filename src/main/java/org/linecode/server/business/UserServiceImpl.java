@@ -12,8 +12,10 @@ import com.github.msteinbeck.sig4j.signal.Signal1;
 import com.github.msteinbeck.sig4j.slot.Slot1;
 import org.linecode.server.persistence.UserRepository;
 
+import java.util.ArrayList;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Set;
 
 public class UserServiceImpl implements  UserService{
 
@@ -29,12 +31,21 @@ public class UserServiceImpl implements  UserService{
 
     @Override
     public void newUser(String user, String password, Boolean admin) {
-            repo.newUser(user, password, admin);
+        repo.newUser(user, password, admin);
+        userSignal.emit(getEmit(repo.getUsers()));
     }
 
     @Override
     public void delUser(String user) {
-            repo.delUser(user);
+        repo.delUser(user);
+        userSignal.emit(getEmit(repo.getUsers()));
+    }
+    private List<User> getEmit(Set<String> input){
+        List<User> users = new ArrayList<User>();
+        for (String id: input) {
+            users.add(new User(id,repo.isAdmin(id)));
+        }
+        return users;
     }
 
     @Override
@@ -43,9 +54,11 @@ public class UserServiceImpl implements  UserService{
             if(repo.isAdmin(user)){
                 return AuthStatus.ADMIN;
             } else {
-                return AuthStatus.AUTH;}
+                return AuthStatus.AUTH;
+            }
         } else {
-            return AuthStatus.NO_AUTH;}
+            return AuthStatus.NO_AUTH;
+        }
     }
 
     @Override

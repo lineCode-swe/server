@@ -8,13 +8,7 @@
 package org.linecode.server.business;
 
 public enum UnitStatus {
-    GOINGTO(0),STOP(1),BASE(2),ERROR(3),DISCONNECTED(4);
+    GOINGTO,STOP,BASE,ERROR,DISCONNECTED;
 
-    private Integer code;
-    UnitStatus(final Integer code) {
-        this.code=code;
-    }
-    public Integer getCode(){
-        return code;
-    }
+
 }

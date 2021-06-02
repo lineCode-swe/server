@@ -55,8 +55,5 @@ public class ObstacleRepositoryRedis implements ObstacleRepository{
         return new Position(x,y);
     }
 
-    public boolean checkObstacle(Position p){
-        return false;
-        //TODO: Data una posizione ritornare se vi è un ostacolo in quella posizione
-    }
+
 }

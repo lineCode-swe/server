@@ -13,6 +13,7 @@ import org.linecode.server.Position;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,11 @@ public class MapRepositoryRedis implements MapRepository{
 //        db.bgsave();
 //    }
 
+    //TODO Da fare
+    @Override
+    public List<Cell> getCells(){
+        return new ArrayList<Cell>();
+    }
     @Override
     public int getLength() {
         return Integer.parseInt(db.get("length"));
@@ -59,7 +65,8 @@ public class MapRepositoryRedis implements MapRepository{
         String cellName="cell:" + length + ":" + height;
         return new Cell(new Position(length,height),Boolean.parseBoolean(db.hget(cellName,"locked"))
                 ,Boolean.parseBoolean(db.hget(cellName,"base")),
-                Direction.valueOf(db.hget(cellName,"direction")));
+                Direction.valueOf(db.hget(cellName,"direction")),Boolean.parseBoolean(db.hget(cellName,"poi")));
+
     }
 
     @Override
@@ -69,9 +76,9 @@ public class MapRepositoryRedis implements MapRepository{
             String cellName="cell:" + cell.getPosition().getX() + ":" + cell.getPosition().getY();
             db.sadd("cell",cellName);
             keyValue.put("locked",Boolean.toString(cell.isLocked()));
-            keyValue.put("poi",Boolean.toString(cell.isPoi()));
             keyValue.put("base",Boolean.toString(cell.isBase()));
             keyValue.put("direction",cell.getDirection().toString());
+            keyValue.put("poi",Boolean.toString(cell.isPoi()));
             db.hmset(cellName,keyValue);
             keyValue.clear();
         }

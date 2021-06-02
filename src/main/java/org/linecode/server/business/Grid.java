@@ -34,16 +34,15 @@ public class Grid {
         return height;
     }
 
-    //public Cell getCell(int x, int y) { return g[x][y]; }
 
     public Cell getCell(Position p) {
-        Cell toReturn=null;
-        for(int i=0; i< cells.size();++i){
-            if(cells.get(i).getPosition().equals(p)){
-                toReturn=cells.get(i);
+        Cell toReturn = null;
+        for (Cell cell : cells) {
+            if (cell.getPosition().equals(p)) {
+                toReturn = cell;
             }
         }
-        return toReturn; //TODO: Possibile nullpointer
+       return toReturn;
     }
 
 
@@ -52,10 +51,11 @@ public class Grid {
     }
 
     public String toString(){
-        String toReturn="";
+        String toReturn="[";
         for(Cell cella : cells){
-            toReturn += cells.toString();
+            toReturn += cella.toString();
         }
+        toReturn+="]";
         return toReturn;
     }
 
@@ -70,7 +70,8 @@ public class Grid {
         }
 
         final Grid cmp = (Grid) x;
-        return this.cells.equals(cmp.getGrid());
+        return this.cells.equals(cmp.getGrid()) && this.length==cmp.getLength() && this.height==cmp.getHeight();
     }
+
 
 }
