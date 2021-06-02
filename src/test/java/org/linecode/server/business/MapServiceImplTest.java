@@ -28,6 +28,7 @@ public class MapServiceImplTest{
     Signal1<List<Position>> obstaclesSignal;
     MapServiceImpl test;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp(){
          map = Mockito.mock(Grid.class);

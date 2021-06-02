@@ -173,5 +173,7 @@ public class UnitServiceImpl implements UnitService{
     }
 
     @Override
-    public void connectUnitSignal(Slot1<List<Unit>> slot) { unitSignal.connect(slot);}
+    public void connectUnitSignal(Slot1<List<Unit>> slot) {
+        unitSignal.connect(slot);
+    }
 }
