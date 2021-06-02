@@ -50,10 +50,11 @@ public class Grid {
     }
 
     public String toString(){
-        String toReturn="";
+        String toReturn="[";
         for(Cell cella : cells){
             toReturn += cella.toString();
         }
+        toReturn+="]";
         return toReturn;
     }
 
@@ -68,7 +69,7 @@ public class Grid {
         }
 
         final Grid cmp = (Grid) x;
-        return this.cells.equals(cmp.getGrid());
+        return this.cells.equals(cmp.getGrid()) && this.length==cmp.getLength() && this.height==cmp.getHeight();
     }
 
 

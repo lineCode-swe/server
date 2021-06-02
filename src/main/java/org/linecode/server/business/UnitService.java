@@ -34,6 +34,7 @@ public interface UnitService {
     public void connectStopSignal(Slot1<String> slot);
     public void connectBaseSignal(Slot1<String> slot);
     public void connectPoiList(Slot1<String> slot);
+    public void connectUnitSignal(Slot1<List<Unit>> slot);
 
 
 }

@@ -64,7 +64,8 @@ public class MapRepositoryRedis implements MapRepository{
         String cellName="cell:" + length + ":" + height;
         return new Cell(new Position(length,height),Boolean.parseBoolean(db.hget(cellName,"locked"))
                 ,Boolean.parseBoolean(db.hget(cellName,"base")),
-                Direction.valueOf(db.hget(cellName,"direction")));
+                Direction.valueOf(db.hget(cellName,"direction")),Boolean.parseBoolean(db.hget(cellName,"poi")));
+
     }
 
     @Override
@@ -74,9 +75,9 @@ public class MapRepositoryRedis implements MapRepository{
             String cellName="cell:" + cell.getPosition().getX() + ":" + cell.getPosition().getY();
             db.sadd("cell",cellName);
             keyValue.put("locked",Boolean.toString(cell.isLocked()));
-            keyValue.put("poi",Boolean.toString(cell.isPoi()));
             keyValue.put("base",Boolean.toString(cell.isBase()));
             keyValue.put("direction",cell.getDirection().toString());
+            keyValue.put("poi",Boolean.toString(cell.isPoi()));
             db.hmset(cellName,keyValue);
             keyValue.clear();
         }

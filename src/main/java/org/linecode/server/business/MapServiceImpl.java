@@ -16,9 +16,7 @@ import org.linecode.server.persistence.ObstacleRepository;
 import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.Direction;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MapServiceImpl implements MapService{
 
@@ -64,34 +62,35 @@ public class MapServiceImpl implements MapService{
         char[] characters = mapSchema.toCharArray();
         List<Cell> lista= new ArrayList<Cell>();
         int x=0,y=0;
+
         for (int j=0; j<mapSchema.length();++j){
             switch(characters[j]) {
                 case 'x':
-                    lista.add(new Cell(new Position(x, y), true, false, Direction.NONE));
+                    lista.add(new Cell(new Position(x, y), true, false, Direction.NONE,false));
                     ++x;
                     break;
                 case '^':
-                    lista.add(new Cell(new Position(x, y), false, false, Direction.UP));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.UP,false));
                     ++x;
                     break;
                 case '_':
-                    lista.add(new Cell(new Position(x, y), false, false, Direction.DOWN));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.DOWN,false));
                     ++x;
                     break;
                 case '>':
-                    lista.add(new Cell(new Position(x, y), false, false, Direction.RIGHT));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.RIGHT,false));
                     ++x;
                     break;
                 case '<':
-                    lista.add(new Cell(new Position(x, y), false, false, Direction.LEFT));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.LEFT,false));
                     ++x;
                     break;
                 case 'B':
-                    lista.add(new Cell(new Position(x, y), false, true, Direction.ALL));
+                    lista.add(new Cell(new Position(x, y), false, true, Direction.ALL,false));
                     ++x;
                     break;
                 case 'P':
-                    lista.add(new Cell(new Position(x, y), false, false, Direction.ALL).createPoi(true));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.ALL,true));
                     ++x;
                     break;
                 case '\n':
@@ -100,13 +99,12 @@ public class MapServiceImpl implements MapService{
                     break;
                 default:
                 case '+':
-                    lista.add(new Cell(new Position(x, y), false, false, Direction.ALL));
+                    lista.add(new Cell(new Position(x, y), false, false, Direction.ALL,false));
                     ++x;
                     break;
             }
         }
 
-        System.out.println(x +" "+ y);
         map = new Grid(lista,x,y+1);
         mapRepo.setHeight(y+1);
         mapRepo.setLength(x);
@@ -141,8 +139,8 @@ public class MapServiceImpl implements MapService{
 
             for (Position cell : currentCells) {
                 if (distances[cell.getX()][cell.getY()] == Integer.MAX_VALUE
-                        && !obsRepo.checkObstacle(cell)
-                        && (!unitRepo.checkUnit(cell) || cell.equals(start))
+                        && !checkObstacle(cell)
+                        && (!checkUnit(cell) || cell.equals(start))
                         && map.getCell(cell) != null
                         && !map.getCell(cell).isLocked()) {
                     distances[cell.getX()][cell.getY()] = distance;
@@ -161,7 +159,6 @@ public class MapServiceImpl implements MapService{
                 cell = getNeighbor(cell, d, distances);
                 path.add(0,cell);
 
-                System.out.println(cell);
             }
         }
 
@@ -224,7 +221,28 @@ public class MapServiceImpl implements MapService{
         return null;
     }
 
+    protected boolean checkUnit(Position cell){
 
+        boolean unitPlaced = false;
+        Set<String> temporalListUnit = unitRepo.getUnits();
+        Iterator<String> iterate = temporalListUnit.iterator();
+        while(iterate.hasNext() && !unitPlaced){
+            unitPlaced= unitRepo.getPosition(iterate.next()).equals(cell);
+        }
+        return unitPlaced;
+
+    }
+    protected boolean checkObstacle(Position cell){
+
+        boolean obstaclePlaced = false;
+        Set<String> temporalListObstacle = obsRepo.getObstaclesKey();
+        Iterator<String> iterate = temporalListObstacle.iterator();
+        while(iterate.hasNext() && !obstaclePlaced){
+            obstaclePlaced= obsRepo.getPosition(iterate.next()).equals(cell);
+        }
+        return obstaclePlaced;
+
+    }
 
     @Override
     public void connectMapSignal(Slot1<Grid> slot) {

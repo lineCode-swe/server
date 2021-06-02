@@ -16,16 +16,17 @@ import org.linecode.server.Position;
 public class Cell {
     private final Position position;
     private final boolean locked;
-    private boolean poi = false;
     private final boolean base;
     private final Direction direction;
+    private final boolean poi;
 
 
-    public Cell(Position position, boolean locked, boolean base, Direction direction) {
+    public Cell(Position position, boolean locked, boolean base, Direction direction, boolean poi) {
         this.position = position;
         this.locked = locked;
         this.base = base;
         this.direction = direction;
+        this.poi=poi;
     }
 
     public boolean isBase() {
@@ -49,14 +50,6 @@ public class Cell {
     }
 
 
-    public Cell createPoi(boolean poi) {
-        this.poi = poi;
-        return this;
-    }
-    public void setPoi(boolean poi) {
-        this.poi = poi;
-    }
-
     @Override
     public String toString() {
         return position.toString() + " , Locked: " + locked + " , Poi " + poi +
@@ -73,6 +66,7 @@ public class Cell {
         }
 
         final Cell cmp = (Cell) x;
+
         return this.position.equals(cmp.getPosition()) && this.poi==cmp.isPoi() && this.base==cmp.isBase()
                 && this.direction == cmp.getDirection() && this.locked==cmp.isLocked();
     }
