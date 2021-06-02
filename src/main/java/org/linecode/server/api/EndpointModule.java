@@ -10,6 +10,7 @@ package org.linecode.server.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
+import org.linecode.server.api.message.AuthToUiEncoder;
 import org.linecode.server.api.message.KeepAliveToUiEncoder;
 import org.linecode.server.api.message.MessageDecoder;
 import org.linecode.server.business.MapService;
@@ -43,5 +44,7 @@ public class EndpointModule extends AbstractModule {
 
         requestStaticInjection(MessageDecoder.class);
         requestStaticInjection(KeepAliveToUiEncoder.class);
+        requestStaticInjection(AuthToUiEncoder.class);
+
     }
 }

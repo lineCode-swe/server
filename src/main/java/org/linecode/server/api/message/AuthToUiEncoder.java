@@ -16,17 +16,17 @@ import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
-public class KeepAliveToUiEncoder implements Encoder.Text<KeepAliveToUi> {
+public class AuthToUiEncoder implements Encoder.Text<AuthToUi> {
     @Inject
     private static ObjectMapper mapper;
 
     @Override
-    public String encode(KeepAliveToUi keepAliveToUi) throws EncodeException {
+    public String encode(AuthToUi authToUi) throws EncodeException {
         String message;
         try {
-            message = mapper.writeValueAsString(keepAliveToUi);
+            message = mapper.writeValueAsString(authToUi);
         } catch (JsonProcessingException e) {
-            throw new EncodeException(keepAliveToUi, "ObjectMapper thrown an error while processing KeepAliveToUi", e);
+            throw new EncodeException(authToUi, "ObjectMapper thrown an error while processing AuthToUi", e);
         }
         return message;
     }

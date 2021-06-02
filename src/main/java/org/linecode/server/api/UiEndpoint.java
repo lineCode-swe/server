@@ -9,6 +9,8 @@
 package org.linecode.server.api;
 
 import org.linecode.server.Position;
+import org.linecode.server.api.message.AuthToUi;
+import org.linecode.server.api.message.AuthToUiEncoder;
 import org.linecode.server.api.message.KeepAliveToUi;
 import org.linecode.server.api.message.KeepAliveToUiEncoder;
 import org.linecode.server.api.message.LoginFromUi;
@@ -43,7 +45,8 @@ import java.util.TimerTask;
                 MessageDecoder.class
         },
         encoders = {
-                KeepAliveToUiEncoder.class
+                KeepAliveToUiEncoder.class,
+                AuthToUiEncoder.class
         }
 )
 public class UiEndpoint {
@@ -69,13 +72,14 @@ public class UiEndpoint {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
-        this.mapService.connectMapSignal(this::sendMap);
-        this.mapService.connectObstaclesSignal(this::sendObstacle);
-        this.unitService.connectPositionSignal(this::sendUnitPosition);
-        this.unitService.connectStatusSignal(this::sendUnitStatus);
-        this.unitService.connectErrorSignal(this::sendUnitError);
-        this.unitService.connectSpeedSignal(this::sendUnitSpeed);
-        this.userService.connectUsersSignal(this::sendUsers);
+        mapService.connectMapSignal(this::sendMap);
+        mapService.connectObstaclesSignal(this::sendObstacle);
+        unitService.connectPositionSignal(this::sendUnitPosition);
+        unitService.connectStatusSignal(this::sendUnitStatus);
+        unitService.connectErrorSignal(this::sendUnitError);
+        unitService.connectSpeedSignal(this::sendUnitSpeed);
+        unitService.connectUnitSignal(this::sendUnits);
+        userService.connectUsersSignal(this::sendUsers);
 
         timer.schedule(new TimerTask() {
             @Override
@@ -114,16 +118,20 @@ public class UiEndpoint {
         System.out.println(Arrays.toString(throwable.getStackTrace()));
     }
 
-    public void keepAlive() {
+    private void send(Object message) {
         try {
-            session.getBasicRemote().sendObject(new KeepAliveToUi("keepalive"));
+            session.getBasicRemote().sendObject(message);
         } catch (Throwable e) {
             onError(session, e);
         }
     }
 
+    public void keepAlive() {
+        send(new KeepAliveToUi("keepalive"));
+    }
+
     public void sendAuth(AuthStatus logged) {
-        //session.getBasicRemote().sendObject();
+        send(new AuthToUi(logged));
     }
 
     public void sendMap(Grid map) { }
