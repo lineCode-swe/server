@@ -20,7 +20,7 @@ public class Position {
         this.x=x;
         this.y=y;
     }
-    public Position(String position) {
+    public Position(String position) { //accetta una stringa del tipo "(12:32)"
         int duepunti=position.indexOf(":");
         this.x=Integer.parseInt(position.substring(1,duepunti));
         this.y=Integer.parseInt(position.substring(duepunti+1,position.length()-1));

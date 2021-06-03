@@ -46,14 +46,10 @@ public class MapRepositoryRedis implements MapRepository{
 
     @Override
     public Cell getCell(int length, int height) { // ho messo il poi al posto dell'obstacle
-        if ((length > getLength()) || (height > getHeight()))
-            return null;
-        else {
-            String cellName = "cell:" + length + ":" + height;
-            return new Cell(new Position(length, height), Boolean.parseBoolean(db.hget(cellName, "locked"))
+        String cellName = "cell:" + length + ":" + height;
+        return new Cell(new Position(length, height), Boolean.parseBoolean(db.hget(cellName, "locked"))
                     , Boolean.parseBoolean(db.hget(cellName, "base")),
                     Direction.valueOf(db.hget(cellName, "direction")));
-        }
     }
 
     @Override
