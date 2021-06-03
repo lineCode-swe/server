@@ -17,11 +17,11 @@ import java.util.Set;
 
 public class UserRepositoryRedis implements UserRepository {
 
-    private Jedis db;
+    private final Jedis db;
 
     @Inject
     public UserRepositoryRedis(Jedis db) {
-        this.db = new Jedis("localhost");
+        this.db = db;
     }
 
     @Override
@@ -29,9 +29,9 @@ public class UserRepositoryRedis implements UserRepository {
         Map<String, String> keyValue= new HashMap<>();
         keyValue.put("password",password);
         keyValue.put("admin",Boolean.toString(admin));
-        Long c1 = db.sadd("user",user);
-        String ret = db.hmset(user,keyValue);
-        String ret1 =db.bgsave();
+        db.sadd("user",user);
+        db.hmset(user,keyValue);
+        db.bgsave();
     }
 
     @Override
