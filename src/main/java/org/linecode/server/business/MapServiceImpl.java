@@ -238,13 +238,7 @@ public class MapServiceImpl implements MapService{
     }
     protected boolean checkObstacle(Position cell){
 
-        boolean obstaclePlaced = false;
-        Set<String> temporalListObstacle = obsRepo.getObstaclesKey();
-        Iterator<String> iterate = temporalListObstacle.iterator();
-        while(iterate.hasNext() && !obstaclePlaced){
-            obstaclePlaced= obsRepo.getPosition(iterate.next()).equals(cell);
-        }
-        return obstaclePlaced;
+        return obsRepo.getObstaclesList().contains(cell);
 
     }
 
