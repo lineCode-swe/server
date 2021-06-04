@@ -59,6 +59,7 @@ public class MapRepositoryRedis implements MapRepository{
 
     @Override
     public void setCells(List<Cell> cellList) {
+        db.del("cell");
         Map<String, String> keyValue= new HashMap<>();
         for(Cell cell:cellList) {
             String cellName="cell:" + cell.getPosition().getX() + ":" + cell.getPosition().getY();

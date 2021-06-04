@@ -69,6 +69,7 @@ public class MapRepositoryRedisTest {
         cellList.add(new Cell(new Position(1,2), false, false, Direction.RIGHT, false));
         cellList.add(new Cell(new Position(2,3), false, true, Direction.ALL, false));
         test.setCells(cellList);
+        verify(db, times(1)).del(anyString());
         verify(db, times(3)).sadd(anyString(), anyString());
         verify(db, times(3)).hmset(anyString(), anyMap());
         verify(db, times(1)).bgsave();
