@@ -29,7 +29,8 @@ public class UnitServiceImpl implements UnitService {
     private final Signal1<String> startSignal;
     private final Signal1<String> stopSignal;
     private final Signal1<String> baseSignal;
-    private final Signal1<String> poiSignal;
+    private final Signal1<String> shutdownSignal;
+    private final Signal1<List<Position>> poiSignal;
     private final Signal1<List<Unit>> unitSignal;
 
     @Inject
@@ -38,7 +39,8 @@ public class UnitServiceImpl implements UnitService {
                            Signal2<String, Integer> errorSignal,
                            Signal2<String, Integer> speedSignal,
                            Signal1<String> startSignal, Signal1<String> stopSignal,
-                           Signal1<String> baseSignal, Signal1<String> poiSignal,Signal1<List<Unit>> unitSignal) {
+                           Signal1<String> baseSignal,Signal1<String> shutdownSignal, Signal1<List<Position>> poiSignal,
+                           Signal1<List<Unit>> unitSignal) {
         this.repo = repo;
         this.unitCloseSignal = unitCloseSignal;
         this.positionSignal = positionSignal;
@@ -48,6 +50,7 @@ public class UnitServiceImpl implements UnitService {
         this.startSignal = startSignal;
         this.stopSignal = stopSignal;
         this.baseSignal = baseSignal;
+        this.shutdownSignal = shutdownSignal;
         this.poiSignal = poiSignal;
         this.unitSignal=unitSignal;
 
@@ -84,6 +87,7 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public List<Position> getPoiList(String id) {
         return repo.getPoiList(id);
+
     }
 
     @Override
@@ -113,6 +117,7 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public void start(String id, List<Position> poiList) {
         repo.setPoiList(id,poiList);
+        poiSignal.emit(poiList);
         startSignal.emit(id);
 
     }
@@ -127,6 +132,11 @@ public class UnitServiceImpl implements UnitService {
     public void base(String id) {
         baseSignal.emit(id);
 
+    }
+
+    @Override
+    public void shutdown(String id){
+        shutdownSignal.emit(id);
     }
 
     @Override
@@ -170,12 +180,17 @@ public class UnitServiceImpl implements UnitService {
     }
 
     @Override
-    public void connectPoiListSignal(Slot1<String> slot) {
+    public void connectPoiListSignal(Slot1<List<Position>> slot) {
         poiSignal.connect(slot);
     }
 
     @Override
     public void connectUnitSignal(Slot1<List<Unit>> slot) {
         unitSignal.connect(slot);
+    }
+
+    @Override
+    public void connectShutdownSignal(Slot1<String> slot){
+        shutdownSignal.connect(slot);
     }
 }
