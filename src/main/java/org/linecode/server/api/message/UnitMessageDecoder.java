@@ -77,8 +77,7 @@ public class UnitMessageDecoder implements Decoder.Text<Message> {
 
                 return new StatusFromUnit(
                         node.path("id").asText(),
-                        //TODO CONVERTIRE DA AUTHSTATUS E STATUSFROMUNIT
-                        UnitStatus.GOINGTO
+                        UnitStatus.valueOf(node.path("status").asText())
                 );
 
             case "":
