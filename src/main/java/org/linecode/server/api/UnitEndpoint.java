@@ -11,8 +11,8 @@ import org.linecode.server.Position;
 import org.linecode.server.api.message.CommandToUnit;
 import org.linecode.server.api.message.CommandToUnitEncoder;
 import org.linecode.server.api.message.ErrorFromUnit;
-import org.linecode.server.api.message.KeepAliveToUiEncoder;
 import org.linecode.server.api.message.KeepAliveToUnit;
+import org.linecode.server.api.message.KeepAliveToUnitEncoder;
 import org.linecode.server.api.message.Message;
 import org.linecode.server.api.message.ObstacleListFromUnit;
 import org.linecode.server.api.message.PositionFromUnit;
@@ -45,7 +45,7 @@ import java.util.TimerTask;
                 UnitMessageDecoder.class
         },
         encoders = {
-                KeepAliveToUiEncoder.class,
+                KeepAliveToUnitEncoder.class,
                 StartToUnitEncoder.class,
                 CommandToUnitEncoder.class
         }
