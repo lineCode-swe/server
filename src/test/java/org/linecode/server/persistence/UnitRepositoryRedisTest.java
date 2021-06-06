@@ -15,14 +15,17 @@ import static org.junit.Assert.*;
 public class UnitRepositoryRedisTest {
     private Jedis db;
     private UnitRepositoryRedis test;
-    private String id = "Unit:1";
-    private String name = "Unità";
-    private Position position = new Position(0,0);
+    private String id;
+    private String name;
+    private Position position;
 
     @Before
     public void setUp() throws Exception {
         db = Mockito.mock(Jedis.class);
         test = new UnitRepositoryRedis(db);
+        id = "Unit:1";
+        name = "Unità";
+        position = new Position(0,0);
     }
 
     @Test

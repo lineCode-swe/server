@@ -60,6 +60,7 @@ public class MapRepositoryRedisTest {
         assertFalse(cell.isLocked());
         assertFalse(cell.isBase());
         assertEquals(Direction.RIGHT,cell.getDirection());
+        // da completare con le verifiche delle chiamate
     }
 
     @Test
@@ -73,5 +74,11 @@ public class MapRepositoryRedisTest {
         verify(db, times(3)).sadd(anyString(), anyString());
         verify(db, times(3)).hmset(anyString(), anyMap());
         verify(db, times(1)).bgsave();
+    }
+
+    @Test
+    public void TestGetCells() {
+        List<Cell> cellList = test.getCells();
+        verify(db,times(1)).smembers(anyString());
     }
 }
