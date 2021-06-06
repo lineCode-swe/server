@@ -113,7 +113,6 @@ public class UnitEndpoint {
                 break;
 
             case "PathRequestFromUnit":
-                PathRequestFromUnit pathRequestFromUnit = (PathRequestFromUnit) message;
                 List<Position> path = mapService.getNextPath(id);
                 send(new StartToUnit(path));
                 break;
@@ -157,26 +156,36 @@ public class UnitEndpoint {
 
 
     private void sendStart(String id) {
-        send(new StartToUnit(unitService.getPoiList(id)));
+        if (this.id.equals(id)){
+            send(new StartToUnit(mapService.getNextPath(id)));
+        }
     }
 
     private void sendStop(String id) {
-        send(new CommandToUnit(UnitStopCommand.STOP));
+        if (this.id.equals(id)){
+            send(new CommandToUnit(UnitStopCommand.STOP));
+        }
     }
 
     private void sendBase(String id){
-        send(new CommandToUnit(UnitStopCommand.BASE));
+        if (this.id.equals(id)) {
+            send(new CommandToUnit(UnitStopCommand.BASE));
+        }
     }
 
     private void sendShutdown(String id) {
-        send(new CommandToUnit(UnitStopCommand.SHUTDOWN));
+        if (this.id.equals(id)) {
+            send(new CommandToUnit(UnitStopCommand.SHUTDOWN));
+        }
     }
 
     private void closeConnection(String id) {
-        try {
-            this.session.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (this.id.equals(id)) {
+            try {
+                this.session.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
