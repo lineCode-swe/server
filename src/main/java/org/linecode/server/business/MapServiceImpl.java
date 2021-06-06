@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class MapServiceImpl implements MapService{
+public class MapServiceImpl implements MapService {
 
     protected Grid map;
     protected final UnitRepository unitRepo;
@@ -32,6 +32,7 @@ public class MapServiceImpl implements MapService{
     protected final Signal1<Grid> mapSignal;
     protected final Signal1<List<Position>> obstaclesSignal;
 
+    @Inject
     public MapServiceImpl(UnitRepository unitRepo, ObstacleRepository obsRepo,
                           MapRepository mapRepo,
                           Signal1<Grid> mapSignal, Signal1<List<Position>> obstaclesSignal) {
@@ -41,7 +42,7 @@ public class MapServiceImpl implements MapService{
         this.mapRepo = mapRepo;
         this.mapSignal = mapSignal;
         this.obstaclesSignal = obstaclesSignal;
-        map = new Grid(mapRepo.getCells(),mapRepo.getLength(),mapRepo.getHeight());
+        map = new Grid(mapRepo.getCells(), mapRepo.getLength(), mapRepo.getHeight());
     }
 
 

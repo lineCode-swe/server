@@ -8,8 +8,17 @@
 
 package org.linecode.server.api.message;
 
-public class LogoutFromUi extends Message {
-    public LogoutFromUi() {
-        super("LogoutFromUi");
+import org.linecode.server.business.Grid;
+
+public class MapToUi extends Message {
+    private final Grid map;
+
+    public MapToUi(Grid map) {
+        super("MapToUi");
+        this.map = map;
+    }
+
+    public Grid getMap() {
+        return map;
     }
 }

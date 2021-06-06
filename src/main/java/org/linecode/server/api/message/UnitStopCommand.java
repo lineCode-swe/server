@@ -8,8 +8,8 @@
 
 package org.linecode.server.api.message;
 
-public class LogoutFromUi extends Message {
-    public LogoutFromUi() {
-        super("LogoutFromUi");
-    }
+public enum UnitStopCommand {
+    STOP,
+    BASE,
+    SHUTDOWN
 }

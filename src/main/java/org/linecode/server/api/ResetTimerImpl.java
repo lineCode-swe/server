@@ -16,6 +16,7 @@ public class ResetTimerImpl implements ResetTimer {
     private long period;
     private final Timer timer;
 
+    @Inject
     public ResetTimerImpl(Timer timer) {
         this.task = null;
         this.period = 0;

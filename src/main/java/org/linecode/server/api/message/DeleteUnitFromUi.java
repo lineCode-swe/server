@@ -8,8 +8,15 @@
 
 package org.linecode.server.api.message;
 
-public class LogoutFromUi extends Message {
-    public LogoutFromUi() {
-        super("LogoutFromUi");
+public class DeleteUnitFromUi extends Message {
+    private final String id;
+
+    public DeleteUnitFromUi(String id) {
+        super("DeleteUnitFromUi");
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 }

@@ -8,8 +8,15 @@
 
 package org.linecode.server.api.message;
 
-public class LogoutFromUi extends Message {
-    public LogoutFromUi() {
-        super("LogoutFromUi");
+public class MapFromUi extends Message {
+    private final String mapConfig;
+
+    public MapFromUi(String mapConfig) {
+        super("MapFromUi");
+        this.mapConfig = mapConfig;
+    }
+
+    public String getMapConfig() {
+        return mapConfig;
     }
 }
