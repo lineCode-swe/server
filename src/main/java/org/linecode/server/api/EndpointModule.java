@@ -11,6 +11,7 @@ package org.linecode.server.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
 import org.linecode.server.api.message.AuthToUiEncoder;
+import org.linecode.server.api.message.CommandToUnitEncoder;
 import org.linecode.server.api.message.KeepAliveToUiEncoder;
 import org.linecode.server.api.message.MapToUiEncoder;
 import org.linecode.server.api.message.ObstaclesToUiEncoder;
@@ -22,6 +23,9 @@ import org.linecode.server.api.message.UnitSpeedToUiEncoder;
 import org.linecode.server.api.message.UnitStatusToUiEncoder;
 import org.linecode.server.api.message.UnitsToUiEncoder;
 import org.linecode.server.api.message.UsersToUiEncoder;
+import org.linecode.server.api.message.KeepAliveToUnitEncoder;
+import org.linecode.server.api.message.UnitMessageDecoder;
+import org.linecode.server.api.message.StartToUnitEncoder;
 import org.linecode.server.business.MapService;
 import org.linecode.server.business.MapServiceImpl;
 import org.linecode.server.business.UnitService;
@@ -53,6 +57,7 @@ public class EndpointModule extends AbstractModule {
         bind(ResetTimer.class).to(ResetTimerImpl.class);
         bind(ObjectMapper.class).asEagerSingleton();
 
+        requestStaticInjection(UnitMessageDecoder.class);
         requestStaticInjection(UiMessageDecoder.class);
         requestStaticInjection(KeepAliveToUiEncoder.class);
         requestStaticInjection(UnitsToUiEncoder.class);
@@ -65,5 +70,8 @@ public class EndpointModule extends AbstractModule {
         requestStaticInjection(MapToUiEncoder.class);
         requestStaticInjection(ObstaclesToUiEncoder.class);
         requestStaticInjection(AuthToUiEncoder.class);
+        requestStaticInjection(KeepAliveToUnitEncoder.class);
+        requestStaticInjection(StartToUnitEncoder.class);
+        requestStaticInjection(CommandToUnitEncoder.class);
     }
 }

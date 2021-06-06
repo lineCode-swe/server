@@ -29,6 +29,7 @@ public class UnitServiceImpl implements UnitService {
     private final Signal1<String> startSignal;
     private final Signal1<String> stopSignal;
     private final Signal1<String> baseSignal;
+    private final Signal1<String> shutdownSignal;
     private final Signal2<String, List<Position>> poiSignal;
     private final Signal1<List<Unit>> unitSignal;
 
@@ -38,8 +39,8 @@ public class UnitServiceImpl implements UnitService {
                            Signal2<String, Integer> errorSignal,
                            Signal2<String, Integer> speedSignal,
                            Signal1<String> startSignal, Signal1<String> stopSignal,
-                           Signal1<String> baseSignal, Signal2<String, List<Position>> poiSignal,
-                           Signal1<List<Unit>> unitSignal) {
+                           Signal1<String> baseSignal,Signal1<String> shutdownSignal,
+                           Signal2<String, List<Position>> poiSignal, Signal1<List<Unit>> unitSignal) {
         this.repo = repo;
         this.unitCloseSignal = unitCloseSignal;
         this.positionSignal = positionSignal;
@@ -49,6 +50,7 @@ public class UnitServiceImpl implements UnitService {
         this.startSignal = startSignal;
         this.stopSignal = stopSignal;
         this.baseSignal = baseSignal;
+        this.shutdownSignal = shutdownSignal;
         this.poiSignal = poiSignal;
         this.unitSignal=unitSignal;
 
@@ -85,6 +87,7 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public List<Position> getPoiList(String id) {
         return repo.getPoiList(id);
+
     }
 
     @Override
@@ -129,8 +132,8 @@ public class UnitServiceImpl implements UnitService {
     }
 
     @Override
-    public void shutdown(String id) {
-        // FIXME: già implementato da Valton sul ramo di _UnitEndpoint_
+    public void shutdown(String id){
+        shutdownSignal.emit(id);
     }
 
     @Override
@@ -181,5 +184,10 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public void connectUnitSignal(Slot1<List<Unit>> slot) {
         unitSignal.connect(slot);
+    }
+
+    @Override
+    public void connectShutdownSignal(Slot1<String> slot){
+        shutdownSignal.connect(slot);
     }
 }
