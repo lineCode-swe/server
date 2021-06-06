@@ -16,13 +16,14 @@ import org.linecode.server.persistence.ObstacleRepository;
 import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.Direction;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class MapServiceImpl implements MapService{
+public class MapServiceImpl implements MapService {
 
     protected Grid map;
     protected final UnitRepository unitRepo;
@@ -31,6 +32,7 @@ public class MapServiceImpl implements MapService{
     protected final Signal1<Grid> mapSignal;
     protected final Signal1<List<Position>> obstaclesSignal;
 
+    @Inject
     public MapServiceImpl(UnitRepository unitRepo, ObstacleRepository obsRepo,
                           MapRepository mapRepo,
                           Signal1<Grid> mapSignal, Signal1<List<Position>> obstaclesSignal) {
@@ -40,7 +42,7 @@ public class MapServiceImpl implements MapService{
         this.mapRepo = mapRepo;
         this.mapSignal = mapSignal;
         this.obstaclesSignal = obstaclesSignal;
-        map = new Grid(mapRepo.getCells(),mapRepo.getLength(),mapRepo.getHeight());
+        map = new Grid(mapRepo.getCells(), mapRepo.getLength(), mapRepo.getHeight());
     }
 
 
@@ -225,7 +227,7 @@ public class MapServiceImpl implements MapService{
         return null;
     }
 
-    protected boolean checkUnit(Position cell){
+    private boolean checkUnit(Position cell){
 
         boolean unitPlaced = false;
         Set<String> temporalListUnit = unitRepo.getUnits();
@@ -236,7 +238,8 @@ public class MapServiceImpl implements MapService{
         return unitPlaced;
 
     }
-    protected boolean checkObstacle(Position cell){
+    
+    private boolean checkObstacle(Position cell){
 
         return obsRepo.getObstaclesList().contains(cell);
 

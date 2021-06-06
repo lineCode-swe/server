@@ -246,7 +246,7 @@ public class MapServiceImplTest{
         when(cellina.isLocked()).thenReturn(false);
         Position cell = new Position(0,0);
         List<Position> path = new ArrayList<Position>();
-        assertEquals(4,test.getPath(cell,new Position(1,3),path));
+        assertEquals(4, test.getPath(cell, new Position(1, 3), path));
     }
 
     @Test
@@ -255,8 +255,4 @@ public class MapServiceImplTest{
         test.newObstacleList(mockObstacles);
         verify(obstaclesSignal,times(1)).emit(any(ArrayList.class));
     }
-
-
-
-
 }

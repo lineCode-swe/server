@@ -8,11 +8,17 @@
 
 package org.linecode.server.api.message;
 
-public class KeepAliveToUi extends Message {
-    public final String keepalive;
+import org.linecode.server.business.Grid;
 
-    public KeepAliveToUi(String keepalive) {
-        super("KeepAliveToUi");
-        this.keepalive = keepalive;
+public class MapToUi extends Message {
+    private final Grid map;
+
+    public MapToUi(Grid map) {
+        super("MapToUi");
+        this.map = map;
+    }
+
+    public Grid getMap() {
+        return map;
     }
 }

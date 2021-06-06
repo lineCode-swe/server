@@ -8,11 +8,8 @@
 
 package org.linecode.server.api.message;
 
-public class KeepAliveToUi extends Message {
-    public final String keepalive;
-
-    public KeepAliveToUi(String keepalive) {
-        super("KeepAliveToUi");
-        this.keepalive = keepalive;
-    }
+public enum UnitStopCommand {
+    STOP,
+    BASE,
+    SHUTDOWN
 }

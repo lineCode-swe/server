@@ -1,0 +1,69 @@
+/*
+ * PORTACS
+ * piattaforma di controllo mobilità autonoma
+ *
+ * Copyright lineCode group <linecode.swe@gmail.com> 2020 - 2021
+ * Distributed under open-source licence (see accompanying file LICENCE).
+ */
+
+package org.linecode.server.api;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.AbstractModule;
+import org.linecode.server.api.message.AuthToUiEncoder;
+import org.linecode.server.api.message.KeepAliveToUiEncoder;
+import org.linecode.server.api.message.MapToUiEncoder;
+import org.linecode.server.api.message.ObstaclesToUiEncoder;
+import org.linecode.server.api.message.UiMessageDecoder;
+import org.linecode.server.api.message.UnitErrorToUiEncoder;
+import org.linecode.server.api.message.UnitPoiToUiEncoder;
+import org.linecode.server.api.message.UnitPositionToUiEncoder;
+import org.linecode.server.api.message.UnitSpeedToUiEncoder;
+import org.linecode.server.api.message.UnitStatusToUiEncoder;
+import org.linecode.server.api.message.UnitsToUiEncoder;
+import org.linecode.server.api.message.UsersToUiEncoder;
+import org.linecode.server.business.MapService;
+import org.linecode.server.business.MapServiceImpl;
+import org.linecode.server.business.UnitService;
+import org.linecode.server.business.UnitServiceImpl;
+import org.linecode.server.business.UserService;
+import org.linecode.server.business.UserServiceImpl;
+import org.linecode.server.persistence.MapRepository;
+import org.linecode.server.persistence.MapRepositoryRedis;
+import org.linecode.server.persistence.ObstacleRepository;
+import org.linecode.server.persistence.ObstacleRepositoryRedis;
+import org.linecode.server.persistence.UnitRepository;
+import org.linecode.server.persistence.UnitRepositoryRedis;
+import org.linecode.server.persistence.UserRepository;
+import org.linecode.server.persistence.UserRepositoryRedis;
+
+import static org.mockito.Mockito.mock;
+
+public class EndpointModule extends AbstractModule {
+    protected void configure() {
+        bind(UserRepository.class).to(UserRepositoryRedis.class).asEagerSingleton();
+        bind(UnitRepository.class).to(UnitRepositoryRedis.class).asEagerSingleton();
+        bind(ObstacleRepository.class).to(ObstacleRepositoryRedis.class).asEagerSingleton();
+        bind(MapRepository.class).to(MapRepositoryRedis.class).asEagerSingleton();
+
+        bind(UserService.class).to(UserServiceImpl.class).asEagerSingleton();
+        bind(UnitService.class).to(UnitServiceImpl.class).asEagerSingleton();
+        bind(MapService.class).to(MapServiceImpl.class).asEagerSingleton();
+
+        bind(ResetTimer.class).to(ResetTimerImpl.class);
+        bind(ObjectMapper.class).asEagerSingleton();
+
+        requestStaticInjection(UiMessageDecoder.class);
+        requestStaticInjection(KeepAliveToUiEncoder.class);
+        requestStaticInjection(UnitsToUiEncoder.class);
+        requestStaticInjection(UnitStatusToUiEncoder.class);
+        requestStaticInjection(UnitPoiToUiEncoder.class);
+        requestStaticInjection(UnitSpeedToUiEncoder.class);
+        requestStaticInjection(UnitErrorToUiEncoder.class);
+        requestStaticInjection(UnitPositionToUiEncoder.class);
+        requestStaticInjection(UsersToUiEncoder.class);
+        requestStaticInjection(MapToUiEncoder.class);
+        requestStaticInjection(ObstaclesToUiEncoder.class);
+        requestStaticInjection(AuthToUiEncoder.class);
+    }
+}

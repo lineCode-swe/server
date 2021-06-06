@@ -25,6 +25,7 @@ public interface UnitService {
     public void start(String id,List<Position> poiList);
     public void stop(String id);
     public void base(String id);
+    public void shutdown(String id);
     public void connectUnitCloseSignal(Slot1<String> slot);
     public void connectPositionSignal(Slot2<String,Position> slot);
     public void connectStatusSignal(Slot2<String,UnitStatus> slot);
@@ -33,8 +34,6 @@ public interface UnitService {
     public void connectStartSignal(Slot1<String> slot);
     public void connectStopSignal(Slot1<String> slot);
     public void connectBaseSignal(Slot1<String> slot);
-    public void connectPoiList(Slot1<String> slot);
+    public void connectPoiListSignal(Slot2<String, List<Position>> slot);
     public void connectUnitSignal(Slot1<List<Unit>> slot);
-
-
 }

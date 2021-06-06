@@ -14,11 +14,12 @@ import com.github.msteinbeck.sig4j.slot.Slot2;
 import org.linecode.server.Position;
 import org.linecode.server.persistence.UnitRepository;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class UnitServiceImpl implements UnitService{
+public class UnitServiceImpl implements UnitService {
     private final UnitRepository repo;
     private final Signal1<String> unitCloseSignal;
     private final Signal2<String, Position> positionSignal;
@@ -28,15 +29,17 @@ public class UnitServiceImpl implements UnitService{
     private final Signal1<String> startSignal;
     private final Signal1<String> stopSignal;
     private final Signal1<String> baseSignal;
-    private final Signal1<String> poiSignal;
+    private final Signal2<String, List<Position>> poiSignal;
     private final Signal1<List<Unit>> unitSignal;
 
+    @Inject
     public UnitServiceImpl(UnitRepository repo, Signal1<String> unitCloseSignal,
                            Signal2<String, Position> positionSignal, Signal2<String, UnitStatus> statusSignal,
                            Signal2<String, Integer> errorSignal,
                            Signal2<String, Integer> speedSignal,
                            Signal1<String> startSignal, Signal1<String> stopSignal,
-                           Signal1<String> baseSignal, Signal1<String> poiSignal,Signal1<List<Unit>> unitSignal) {
+                           Signal1<String> baseSignal, Signal2<String, List<Position>> poiSignal,
+                           Signal1<List<Unit>> unitSignal) {
         this.repo = repo;
         this.unitCloseSignal = unitCloseSignal;
         this.positionSignal = positionSignal;
@@ -110,21 +113,24 @@ public class UnitServiceImpl implements UnitService{
 
     @Override
     public void start(String id, List<Position> poiList) {
-        repo.setPoiList(id,poiList);
+        repo.setPoiList(id, poiList);
         startSignal.emit(id);
-
+        poiSignal.emit(id, poiList);
     }
 
     @Override
     public void stop(String id) {
         stopSignal.emit(id);
-
     }
 
     @Override
     public void base(String id) {
         baseSignal.emit(id);
+    }
 
+    @Override
+    public void shutdown(String id) {
+        // FIXME: già implementato da Valton sul ramo di _UnitEndpoint_
     }
 
     @Override
@@ -168,7 +174,7 @@ public class UnitServiceImpl implements UnitService{
     }
 
     @Override
-    public void connectPoiList(Slot1<String> slot) {
+    public void connectPoiListSignal(Slot2<String, List<Position>> slot) {
         poiSignal.connect(slot);
     }
 

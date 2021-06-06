@@ -8,11 +8,15 @@
 
 package org.linecode.server.api.message;
 
-public class KeepAliveToUi extends Message {
-    public final String keepalive;
+public class MapFromUi extends Message {
+    private final String mapConfig;
 
-    public KeepAliveToUi(String keepalive) {
-        super("KeepAliveToUi");
-        this.keepalive = keepalive;
+    public MapFromUi(String mapConfig) {
+        super("MapFromUi");
+        this.mapConfig = mapConfig;
+    }
+
+    public String getMapConfig() {
+        return mapConfig;
     }
 }
