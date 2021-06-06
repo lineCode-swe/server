@@ -14,14 +14,13 @@ import org.linecode.server.api.message.ErrorFromUnit;
 import org.linecode.server.api.message.KeepAliveToUiEncoder;
 import org.linecode.server.api.message.KeepAliveToUnit;
 import org.linecode.server.api.message.Message;
-import org.linecode.server.api.message.MessageDecoder;
 import org.linecode.server.api.message.ObstacleListFromUnit;
-import org.linecode.server.api.message.PathRequestFromUnit;
 import org.linecode.server.api.message.PositionFromUnit;
 import org.linecode.server.api.message.SpeedFromUnit;
 import org.linecode.server.api.message.StartToUnit;
 import org.linecode.server.api.message.StartToUnitEncoder;
 import org.linecode.server.api.message.StatusFromUnit;
+import org.linecode.server.api.message.UnitMessageDecoder;
 import org.linecode.server.api.message.UnitStopCommand;
 import org.linecode.server.business.MapService;
 import org.linecode.server.business.UnitService;
@@ -43,7 +42,7 @@ import java.util.TimerTask;
         value = "/unit/{id}",
         configurator = EndpointConfigurator.class,
         decoders = {
-                MessageDecoder.class
+                UnitMessageDecoder.class
         },
         encoders = {
                 KeepAliveToUiEncoder.class,
