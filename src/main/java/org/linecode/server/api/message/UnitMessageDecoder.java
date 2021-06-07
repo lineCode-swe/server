@@ -62,8 +62,8 @@ public class UnitMessageDecoder implements Decoder.Text<Message> {
             case "PathRequestToServer":
 
                 return new PathRequestFromUnit(
-                        node.path("id").asText(),
-                        node.path("pathRequest").asBoolean()
+                        node.path("id").asText()
+                        //TODO RIMOSSO Boolean
                 );
 
             case "SpeedToServer":
