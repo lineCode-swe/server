@@ -115,6 +115,10 @@ public class UiEndpoint {
         unitService.connectPoiListSignal(this::sendUnitPoi);
         userService.connectUsersSignal(this::sendUsers);
 
+        sendMap(mapService.getMap());
+        sendUnits(unitService.getUnits());
+        // TODO: inviare anche ostacoli e utenti
+
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
