@@ -15,6 +15,7 @@ import org.linecode.server.api.message.KeepAliveToUnit;
 import org.linecode.server.api.message.KeepAliveToUnitEncoder;
 import org.linecode.server.api.message.Message;
 import org.linecode.server.api.message.ObstacleListFromUnit;
+import org.linecode.server.api.message.PathRequestFromUnit;
 import org.linecode.server.api.message.PositionFromUnit;
 import org.linecode.server.api.message.SpeedFromUnit;
 import org.linecode.server.api.message.StartToUnit;
@@ -112,7 +113,8 @@ public class UnitEndpoint {
                 break;
 
             case "PathRequestFromUnit":
-                List<Position> path = mapService.getNextPath(id);
+                PathRequestFromUnit pathRequestFromUnit = (PathRequestFromUnit) message;
+                List<Position> path = mapService.getNextPath(pathRequestFromUnit.getId());
                 send(new StartToUnit(path));
                 break;
 
@@ -144,7 +146,7 @@ public class UnitEndpoint {
         send(new KeepAliveToUnit("keepalive"));
     }
 
-    private void send(Object message) {
+    public void send(Object message) {
         try {
             session.getBasicRemote().sendObject(message);
         } catch (Throwable e) {

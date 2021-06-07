@@ -9,19 +9,14 @@ package org.linecode.server.api.message;
 
 public class PathRequestFromUnit extends Message{
     private final String id;
-    private final boolean pathRequest;
 
-    public PathRequestFromUnit(String id, boolean pathRequest) {
+    public PathRequestFromUnit(String id) {
         super("PathRequestFromUnit");
         this.id = id;
-        this.pathRequest = pathRequest;
     }
 
     public String getId() {
         return id;
     }
 
-    public boolean isPathRequest() {
-        return pathRequest;
-    }
 }
