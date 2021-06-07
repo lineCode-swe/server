@@ -63,7 +63,7 @@ public class MapServiceImplTest{
         String mappa = new String(">_^<BP\nxx>_^+");
         test.newMap(mappa);
         verify(mapSignal,times(1)).emit(any(Grid.class));
-        assertEquals((new Grid(lista,6,2).getGrid()),(test.getMap().getGrid()));
+        assertEquals((new Grid(lista,6,2).getCells()),(test.getMap().getCells()));
 
 
     }

@@ -25,7 +25,6 @@ public class Grid {
         this.height = height;
     }
 
-
     public int getLength() {
         return length;
     }
@@ -33,7 +32,6 @@ public class Grid {
     public int getHeight() {
         return height;
     }
-
 
     public Cell getCell(Position p) {
         Cell toReturn = null;
@@ -45,8 +43,7 @@ public class Grid {
        return toReturn;
     }
 
-
-    public List<Cell> getGrid() {
+    public List<Cell> getCells() {
        return cells;
     }
 
@@ -70,7 +67,7 @@ public class Grid {
         }
 
         final Grid cmp = (Grid) x;
-        return this.cells.equals(cmp.getGrid()) && this.length==cmp.getLength() && this.height==cmp.getHeight();
+        return this.cells.equals(cmp.getCells()) && this.length==cmp.getLength() && this.height==cmp.getHeight();
     }
 
 
