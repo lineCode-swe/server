@@ -131,7 +131,7 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
 
     private boolean isLoginToServer(JsonNode node) {
         return !(node.path("user").isMissingNode() ||
-                    node.path("password").isMissingNode());
+                node.path("password").isMissingNode());
     }
 
     private boolean isDeleteToServer(JsonNode node) {
@@ -161,8 +161,7 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
     private boolean isUnitToServer(JsonNode node) {
         return !(node.path("id").isMissingNode() ||
                 node.path("name").isMissingNode() ||
-                node.path("base").path("x").isMissingNode() ||
-                node.path("base").path("y").isMissingNode());
+                node.path("base").isMissingNode());
     }
 
     private boolean isDeleteUnitToServer(JsonNode node) {
