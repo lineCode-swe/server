@@ -42,7 +42,7 @@ public class MapServiceImpl implements MapService {
         this.mapRepo = mapRepo;
         this.mapSignal = mapSignal;
         this.obstaclesSignal = obstaclesSignal;
-        map = new Grid(mapRepo.getCells(), mapRepo.getLength(), mapRepo.getHeight());
+        this.map = new Grid(mapRepo.getCells(), mapRepo.getLength(), mapRepo.getHeight());
     }
 
 
