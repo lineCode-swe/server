@@ -13,12 +13,9 @@ package org.linecode.server.persistence;
 import java.util.List;
 
 public interface MapRepository {
-//    public void setNewMap(String mapSchema);
     public int getLength();
     public int getHeight();
-    public void setLength(int length);
-    public void setHeight(int height);
     public Cell getCell(int length, int height);
-    public void setCells(List<Cell> cellList);
+    public void setCells(List<Cell> cellList, int length, int height);
     public List<Cell> getCells();
 }

@@ -8,6 +8,8 @@
 
 package org.linecode.server.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.linecode.server.Position;
 import org.linecode.server.api.message.AuthToUi;
 import org.linecode.server.api.message.AuthToUiEncoder;

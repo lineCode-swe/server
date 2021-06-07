@@ -112,9 +112,7 @@ public class MapServiceImpl implements MapService {
         }
 
         map = new Grid(lista,x,y+1);
-        mapRepo.setHeight(y+1);
-        mapRepo.setLength(x);
-        mapRepo.setCells(lista);
+        mapRepo.setCells(lista, x, y + 1);
         mapSignal.emit(map);
 
     }
