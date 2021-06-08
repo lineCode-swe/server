@@ -46,6 +46,7 @@ public class UnitRepositoryRedis implements UnitRepository {
     @Override
     public void delUnit(String id) {
         db.srem("unit", id);
+        db.del(id);
         db.bgsave();
     }
 

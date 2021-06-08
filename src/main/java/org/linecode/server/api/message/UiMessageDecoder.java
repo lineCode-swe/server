@@ -78,7 +78,7 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
                 );
 
             case "DeleteUnitToServer":
-                return new DeleteUserFromUi(node.path("id").asText());
+                return new DeleteUnitFromUi(node.path("id").asText());
 
             case "":
             default:

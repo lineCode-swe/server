@@ -37,6 +37,7 @@ public class UnitRepositoryRedisTest {
     public void delUnit() {
         test.delUnit(id);
         verify(db,times(1)).srem("unit",id);
+        // TODO: aggiungere test di db.del()
         verify(db,times(1)).bgsave();
     }
 
