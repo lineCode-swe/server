@@ -16,6 +16,7 @@ import org.linecode.server.persistence.ObstacleRepository;
 import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.Direction;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -225,7 +226,7 @@ public class MapServiceImpl implements MapService{
         return null;
     }
 
-    protected boolean checkUnit(Position cell){
+    private boolean checkUnit(Position cell){
 
         boolean unitPlaced = false;
         Set<String> temporalListUnit = unitRepo.getUnits();
@@ -236,7 +237,8 @@ public class MapServiceImpl implements MapService{
         return unitPlaced;
 
     }
-    protected boolean checkObstacle(Position cell){
+    
+    private boolean checkObstacle(Position cell){
 
         return obsRepo.getObstaclesList().contains(cell);
 

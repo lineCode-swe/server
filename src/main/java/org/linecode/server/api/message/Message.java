@@ -8,11 +8,14 @@
 
 package org.linecode.server.api.message;
 
-public class KeepAliveToUi extends Message {
-    public final String keepalive;
+public abstract class Message {
+    private final String type;
 
-    public KeepAliveToUi(String keepalive) {
-        super("KeepAliveToUi");
-        this.keepalive = keepalive;
+    protected Message(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 }
