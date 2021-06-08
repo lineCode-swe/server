@@ -17,6 +17,7 @@ import java.util.Set;
 public interface UnitRepository {
     public void newUnit(String id, String name, Position base);
     public void delUnit(String id);
+    public boolean isUnit(String id);
     public Set<String> getUnits();
     public String getName(String id);
     public Position getBase(String id);

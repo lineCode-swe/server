@@ -73,20 +73,29 @@ public class UnitEndpoint {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("id") String id) {
-        this.session=session;
-        this.id=id;
-        unitService.connectStartSignal(this::sendStart);
-        unitService.connectStopSignal(this::sendStop);
-        unitService.connectUnitCloseSignal(this::closeConnection);
-        unitService.connectBaseSignal(this::sendBase);
-        unitService.connectShutdownSignal(this::sendShutdown);
+        if(unitService.isUnit(id)) {
+            this.session = session;
+            this.id = id;
+            unitService.connectStartSignal(this::sendStart);
+            unitService.connectStopSignal(this::sendStop);
+            unitService.connectUnitCloseSignal(this::closeConnection);
+            unitService.connectBaseSignal(this::sendBase);
+            unitService.connectShutdownSignal(this::sendShutdown);
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                keepAlive();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    keepAlive();
+                }
+            }, 25000);
+        } else{
+            try {
+                session.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }, 25000);
+
+        }
 
     }
 
@@ -156,31 +165,31 @@ public class UnitEndpoint {
 
 
 
-    private void sendStart(String id) {
+    public void sendStart(String id) {
         if (this.id.equals(id)){
             send(new StartToUnit(mapService.getNextPath(id)));
         }
     }
 
-    private void sendStop(String id) {
+    public void sendStop(String id) {
         if (this.id.equals(id)){
             send(new CommandToUnit(UnitStopCommand.STOP));
         }
     }
 
-    private void sendBase(String id){
+    public void sendBase(String id){
         if (this.id.equals(id)) {
             send(new CommandToUnit(UnitStopCommand.BASE));
         }
     }
 
-    private void sendShutdown(String id) {
+    public void sendShutdown(String id) {
         if (this.id.equals(id)) {
             send(new CommandToUnit(UnitStopCommand.SHUTDOWN));
         }
     }
 
-    private void closeConnection(String id) {
+    public void closeConnection(String id) {
         if (this.id.equals(id)) {
             try {
                 this.session.close();

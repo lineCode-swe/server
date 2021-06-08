@@ -61,6 +61,11 @@ public class UnitRepositoryRedis implements UnitRepository {
     }
 
     @Override
+    public boolean isUnit(String id){
+        return db.sismember("unit", id);
+    }
+
+    @Override
     public Position getBase(String id) {
         int x = Integer.parseInt(db.hget(id, "base_x"));
         int y = Integer.parseInt(db.hget(id, "base_y"));
