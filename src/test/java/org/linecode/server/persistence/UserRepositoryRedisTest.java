@@ -35,6 +35,7 @@ public class UserRepositoryRedisTest {
     public void testDelUser() {
         test.delUser(user);
         verify(db,times(1)).srem("user",user);
+        verify(db,times(1)).del(user);
         verify(db,times(1)).bgsave();
     }
 

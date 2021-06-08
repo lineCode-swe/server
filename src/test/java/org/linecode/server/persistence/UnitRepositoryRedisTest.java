@@ -40,6 +40,7 @@ public class UnitRepositoryRedisTest {
     public void delUnit() {
         test.delUnit(id);
         verify(db,times(1)).srem("unit",id);
+        verify(db,times(1)).del(id);
         verify(db,times(1)).bgsave();
     }
 
