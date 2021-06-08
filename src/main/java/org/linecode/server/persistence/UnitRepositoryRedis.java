@@ -12,11 +12,11 @@ import org.linecode.server.Position;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.ArrayList;
 
 public class UnitRepositoryRedis implements UnitRepository {
 
@@ -66,9 +66,9 @@ public class UnitRepositoryRedis implements UnitRepository {
 
     @Override
     public Position getBase(String id) {
-        int x=Integer.parseInt(db.hget(id,"base_x"));
-        int y=Integer.parseInt(db.hget(id,"base_y"));
-        return new Position(x,y);
+        int x = Integer.parseInt(db.hget(id, "base_x"));
+        int y = Integer.parseInt(db.hget(id, "base_y"));
+        return new Position(x, y);
     }
 
     @Override
@@ -121,7 +121,4 @@ public class UnitRepositoryRedis implements UnitRepository {
         db.hset(id,"speed",String.valueOf(speed));
         db.bgsave();
     }
-
-
 }
-

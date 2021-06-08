@@ -11,12 +11,12 @@ package org.linecode.server.persistence;
 
 import org.linecode.server.Position;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ObstacleRepository {
-    public Set<String> getObstaclesKey();
-    public void setObstacle(Position obstacle);
-    public Position getPosition(String id);
-
-
+    public List<Position> getObstaclesList();
+    public void setObstacle(Position position);
+    public void delObstacle(Position position);
+    public boolean checkObstacle(Position position);
 }

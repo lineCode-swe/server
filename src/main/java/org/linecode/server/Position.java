@@ -20,11 +20,10 @@ public class Position {
         this.x=x;
         this.y=y;
     }
-
-    public Position(String position) { //non so se va bene questa cosa
-        int virgola=position.indexOf(",");
-        this.x=Integer.parseInt(position.substring(1,virgola-1));
-        this.y=Integer.parseInt(position.substring(virgola+1,position.length()-2));
+    public Position(String position) {
+        int duepunti=position.indexOf(":");
+        this.x=Integer.parseInt(position.substring(1,duepunti));
+        this.y=Integer.parseInt(position.substring(duepunti+1,position.length()-1));
     }
 
     public int getX() {
@@ -37,7 +36,7 @@ public class Position {
 
     @Override
     public String toString(){
-        return "(" + x + "," + y + ")";
+        return "(" + x + ":" + y + ")";
     }
 
     @Override
