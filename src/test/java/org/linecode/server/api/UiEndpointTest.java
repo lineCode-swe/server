@@ -43,35 +43,35 @@ public class UiEndpointTest {
         endpoint = new UiEndpoint(resetTimer, userService, unitService, mapService);
     }
 
-    @Test
-    public void onOpen_mockSessionAsParameter_resetTimerScheduleCalledCorrectly() {
-        endpoint.onOpen(session);
-        verify(resetTimer, times(1)).schedule(any(TimerTask.class), eq(25000L));
-    }
-
-    @Test
-    public void logout_mockSession_NoAuthSent() throws EncodeException, IOException {
-        endpoint.onOpen(session);
-        endpoint.logout();
-
-        ArgumentCaptor<AuthToUi> captor = forClass(AuthToUi.class);
-        verify(remote, times(1)).sendObject(captor.capture());
-        assertEquals(AuthStatus.NO_AUTH, captor.getValue().getSession());
-    }
-
-
-    @Test
-    public void newUser_requestByAdmin_registersNewUser() {
-        when(userService.login(any(String.class), any(String.class))).thenReturn(AuthStatus.ADMIN);
-        endpoint.login(new LoginFromUi("test", "test"));
-
-        String user = "Valton";
-        String password = "Tahiraj";
-        boolean admin = true;
-        endpoint.newUser(new UserFromUi(user, password, admin));
-
-        verify(userService, times(1)).newUser(user, password, admin);
-    }
+//    @Test
+//    public void onOpen_mockSessionAsParameter_resetTimerScheduleCalledCorrectly() {
+//        endpoint.onOpen(session);
+//        verify(resetTimer, times(1)).schedule(any(TimerTask.class), eq(25000L));
+//    }
+//
+//    @Test
+//    public void logout_mockSession_NoAuthSent() throws EncodeException, IOException {
+//        endpoint.onOpen(session);
+//        endpoint.logout();
+//
+//        ArgumentCaptor<AuthToUi> captor = forClass(AuthToUi.class);
+//        verify(remote, times(1)).sendObject(captor.capture());
+//        assertEquals(AuthStatus.NO_AUTH, captor.getValue().getSession());
+//    }
+//
+//
+//    @Test
+//    public void newUser_requestByAdmin_registersNewUser() {
+//        when(userService.login(any(String.class), any(String.class))).thenReturn(AuthStatus.ADMIN);
+//        endpoint.login(new LoginFromUi("test", "test"));
+//
+//        String user = "Valton";
+//        String password = "Tahiraj";
+//        boolean admin = true;
+//        endpoint.newUser(new UserFromUi(user, password, admin));
+//
+//        verify(userService, times(1)).newUser(user, password, admin);
+//    }
 
     @Test
     public void deleteUser() {

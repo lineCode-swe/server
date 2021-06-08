@@ -37,6 +37,7 @@ public class UserRepositoryRedis implements UserRepository {
     @Override
     public void delUser(String user) {
         db.srem("user", user);
+        db.del(user);
         db.bgsave();
     }
 
