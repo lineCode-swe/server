@@ -73,6 +73,10 @@ public class UnitServiceImpl implements UnitService {
 
     }
 
+    @Override
+    public boolean isUnit (String id){
+        return repo.isUnit(id);
+    }
 
     @Override
     public List<Unit> getUnits() {

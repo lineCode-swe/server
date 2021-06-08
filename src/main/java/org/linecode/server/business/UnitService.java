@@ -16,6 +16,7 @@ import java.util.List;
 public interface UnitService {
     public void newUnit(String id, String name, Position base);
     public void delUnit(String id);
+    public boolean isUnit(String id);
     public List<Unit> getUnits();
     public List<Position> getPoiList(String id);
     public void newPosition(String id,Position position);
