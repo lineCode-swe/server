@@ -26,7 +26,7 @@ public class StartToUnitEncoder implements Encoder.Text<StartToUnit> {
         try {
             message = mapper.writeValueAsString(startToUnit);
         } catch (JsonProcessingException e) {
-            throw new EncodeException(startToUnit, "ObjectMapper thrown an error while processing KeepAliveToUnit", e);
+            throw new EncodeException(startToUnit, "ObjectMapper thrown an error while processing StartToUnit", e);
         }
         return message;
     }
