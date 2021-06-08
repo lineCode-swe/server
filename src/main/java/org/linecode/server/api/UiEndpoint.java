@@ -84,7 +84,7 @@ import java.util.TimerTask;
                 ObstaclesToUiEncoder.class
         }
 )
-public class UiEndpoint {
+public class UiEndpoint { // TODO: Una volta implementato il login su UI, decommentare i check su login utente
     private Session session;
     private AuthStatus logged;
     private final ResetTimer timer;
@@ -187,6 +187,7 @@ public class UiEndpoint {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
+        System.out.println(throwable.getMessage() + "Stack trace:");
         System.out.println(Arrays.toString(throwable.getStackTrace()));
     }
 
@@ -201,31 +202,31 @@ public class UiEndpoint {
     }
 
     public void newUser(UserFromUi userFromUi) {
-        if (logged == AuthStatus.ADMIN) {
+//        if (logged == AuthStatus.ADMIN) {
             userService.newUser(userFromUi.getUser(), userFromUi.getPassword(), userFromUi.isAdmin());
-        } else {
-            onError(session, new Exception("Requested new user registration while not logged in as admin"));
-        }
+//        } else {
+//            onError(session, new Exception("Requested new user registration while not logged in as admin"));
+//        }
     }
 
     public void deleteUser(DeleteUserFromUi deleteUserFromUi) {
-        if (logged == AuthStatus.ADMIN) {
+//        if (logged == AuthStatus.ADMIN) {
             userService.delUser(deleteUserFromUi.getUser());
-        } else {
-            onError(session, new Exception("Requested user deletion while not logged in as admin"));
-        }
+//        } else {
+//            onError(session, new Exception("Requested user deletion while not logged in as admin"));
+//        }
     }
 
     public void newMap(MapFromUi mapFromUi) {
-        if (logged == AuthStatus.ADMIN) {
+//        if (logged == AuthStatus.ADMIN) {
             mapService.newMap(mapFromUi.getMapConfig());
-        } else {
-            onError(session, new Exception("Requested new map configuration while not logged in as admin"));
-        }
+//        } else {
+//            onError(session, new Exception("Requested new map configuration while not logged in as admin"));
+//        }
     }
 
     public void unitStop(UnitStopFromUi unitStopFromUi) {
-        if (logged == AuthStatus.AUTH || logged == AuthStatus.ADMIN) {
+//        if (logged == AuthStatus.AUTH || logged == AuthStatus.ADMIN) {
             switch (unitStopFromUi.getCommand()) {
                 case STOP:
                     unitService.stop(unitStopFromUi.getId());
@@ -243,33 +244,33 @@ public class UiEndpoint {
                     onError(session, new Exception("Unrecognized UnitStopCommand sent by UI"));
                     break;
             }
-        } else {
-            onError(session, new Exception("Requested stop command while not logged"));
-        }
+//        } else {
+//            onError(session, new Exception("Requested stop command while not logged"));
+//        }
     }
 
     public void unitStart(UnitStartFromUi unitStartFromUi) {
-        if (logged == AuthStatus.AUTH || logged == AuthStatus.ADMIN) {
+//        if (logged == AuthStatus.AUTH || logged == AuthStatus.ADMIN) {
             unitService.start(unitStartFromUi.getId(), unitStartFromUi.getPoiList());
-        } else {
-            onError(session, new Exception("Requested start command while not logged"));
-        }
+//        } else {
+//            onError(session, new Exception("Requested start command while not logged"));
+//        }
     }
 
     public void newUnit(UnitFromUi unitFromUi) {
-        if (logged == AuthStatus.ADMIN) {
+//        if (logged == AuthStatus.ADMIN) {
             unitService.newUnit(unitFromUi.getId(), unitFromUi.getName(), unitFromUi.getBase());
-        } else {
-            onError(session, new Exception("Requested new unit while not logged as admin"));
-        }
+//        } else {
+//            onError(session, new Exception("Requested new unit while not logged as admin"));
+//        }
     }
 
     public void deleteUnit(DeleteUnitFromUi deleteUnitFromUi) {
-        if (logged == AuthStatus.ADMIN) {
+//        if (logged == AuthStatus.ADMIN) {
             unitService.delUnit(deleteUnitFromUi.getId());
-        } else {
-            onError(session, new Exception("Requested unit deletion while not logged as admin"));
-        }
+//        } else {
+//            onError(session, new Exception("Requested unit deletion while not logged as admin"));
+//        }
     }
 
     private void send(Object message) {
