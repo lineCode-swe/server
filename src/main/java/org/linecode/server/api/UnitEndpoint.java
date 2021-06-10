@@ -51,8 +51,6 @@ import java.util.TimerTask;
                 CommandToUnitEncoder.class
         }
 )
-
-
 public class UnitEndpoint {
     private Session session;
     private String id;

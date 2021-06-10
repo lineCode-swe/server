@@ -23,14 +23,21 @@ public class ResetTimerImpl implements ResetTimer {
         this.timer = timer;
     }
 
+    @Override
     public void reset() {
         timer.cancel();
         timer.schedule(task, period, period);
     }
 
+    @Override
     public void schedule(TimerTask task, long period) {
         this.period = period;
         this.task = task;
         timer.schedule(task, period, period);
+    }
+
+    @Override
+    public void cancel() {
+        timer.cancel();
     }
 }
