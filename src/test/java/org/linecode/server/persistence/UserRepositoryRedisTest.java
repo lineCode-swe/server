@@ -24,38 +24,38 @@ public class UserRepositoryRedisTest {
     }
 
     @Test
-    public void testNewUser() { // newUser_inputExampleUser_dbColdWithExampleUser
+    public void newUser_NewUserToRegister_UserSuccessfullyAddedToDB() {
         test.newUser(user, password, admin);
-        verify(db,times(1)).sadd("user", user);
-        verify(db,times(1)).hmset(eq(user), anyMap());
-        verify(db,times(1)).bgsave();
+        verify(db, times(1)).sadd("user", user);
+        verify(db, times(1)).hmset(eq(user), anyMap());
+        verify(db, times(1)).bgsave();
     }
 
     @Test
-    public void testDelUser() {
+    public void delUser_UserNameToDelete_UserSuccessfullyDeletedToDB() {
         test.delUser(user);
-        verify(db,times(1)).srem("user",user);
-        verify(db,times(1)).del(user);
-        verify(db,times(1)).bgsave();
+        verify(db, times(1)).srem("user", user);
+        verify(db, times(1)).del(user);
+        verify(db, times(1)).bgsave();
     }
 
     @Test
-    public void testGetPassword() {
+    public void getPassword_UserNameToGetPassword_ReturnPasswordCorrectlyFromDB() {
         when(db.hget(user, "password")).thenReturn("userPassword");
         assertEquals("userPassword", test.getPassword(user));
-        verify(db,times(1)).hget(user,"password");
+        verify(db, times(1)).hget(user, "password");
     }
 
     @Test
-    public void testIsAdmin() {
-        when(db.hget(user,"admin")).thenReturn("true");
+    public void isAdmin_UserName_ReturnTrue() {
+        when(db.hget(user, "admin")).thenReturn("true");
         assertTrue(test.isAdmin(user));
-        verify(db,times(1)).hget(user,"admin");
+        verify(db, times(1)).hget(user, "admin");
     }
 
     @Test
-    public void testGetUsers() {
+    public void getUsers_requestToGetUsers_UsersCorrectlyReturned() {
         test.getUsers();
-        verify(db,times(1)).smembers("user");
+        verify(db, times(1)).smembers("user");
     }
 }
