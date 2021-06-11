@@ -15,7 +15,7 @@ public class ObstacleRepositoryRedisTest {
     private Jedis db;
     private ObstacleRepositoryRedis test;
     private String id = "obs:1";
-    private Position position = new Position(0,0);
+    private Position position = new Position(0, 0);
 
 
     @Before
@@ -25,38 +25,38 @@ public class ObstacleRepositoryRedisTest {
     }
 
     @Test
-    public void getObstaclesList() {
+    public void getObstaclesList_requestToGetObstaclesList_ObstaclesListCorrectlyReturned() {
         when(db.llen(anyString())).thenReturn(3L);
-        when(db.lindex("obs",0L)).thenReturn("(0:1)");
-        when(db.lindex("obs",1L)).thenReturn("(2:3)");
-        when(db.lindex("obs",2L)).thenReturn("(4:5)");
+        when(db.lindex("obs", 0L)).thenReturn("(0:1)");
+        when(db.lindex("obs", 1L)).thenReturn("(2:3)");
+        when(db.lindex("obs", 2L)).thenReturn("(4:5)");
         List<Position> obstaclesList = test.getObstaclesList();
-        assertEquals(obstaclesList.get(0),new Position(0,1));
-        assertEquals(obstaclesList.get(1),new Position(2,3));
-        assertEquals(obstaclesList.get(2),new Position(4,5));
-        verify(db,times(3)).lindex(anyString(),anyLong());
+        assertEquals(obstaclesList.get(0), new Position(0, 1));
+        assertEquals(obstaclesList.get(1), new Position(2, 3));
+        assertEquals(obstaclesList.get(2), new Position(4, 5));
+        verify(db, times(3)).lindex(anyString(), anyLong());
     }
 
     @Test
-    public void setObstacle() {
+    public void setObstacle_ObstaclePosition_ObstacleSuccessfullyAddedToDB() {
         test.setObstacle(position);
-        verify(db,times(1)).rpush(anyString(),anyString());
-        verify(db,times(1)).bgsave();
+        verify(db, times(1)).rpush(anyString(), anyString());
+        verify(db, times(1)).bgsave();
     }
 
     @Test
-    public void delObstacle() {
+    public void delObstacle_ObstaclePosition_ObstacleSuccessfullyDeletedToDB() {
         test.delObstacle(position);
-        verify(db,times(1)).lrem(anyString(),eq(0L), anyString());
-        verify(db,times(1)).bgsave();
+        verify(db, times(1)).lrem(anyString(), eq(0L), anyString());
+        verify(db, times(1)).bgsave();
     }
 
     @Test
-    public void checkObstacle() {
-        when(db.lpos(anyString(),anyString())).thenReturn(null);
+    public void checkObstacle_ObstaclePosition_ReturnTrueOrFalse() {
+        when(db.lpos(anyString(), anyString())).thenReturn(null);
         assertFalse(test.checkObstacle(position));
-        when(db.lpos(anyString(),anyString())).thenReturn(0L);
+        when(db.lpos(anyString(), anyString())).thenReturn(0L);
         assertTrue(test.checkObstacle(position));
-        verify(db,times(2)).lpos(anyString(),anyString());
+        verify(db, times(2)).lpos(anyString(), anyString());
     }
 }
