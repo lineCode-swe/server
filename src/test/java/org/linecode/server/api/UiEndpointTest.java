@@ -16,6 +16,7 @@ import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 
 import java.io.IOException;
+import java.util.Timer;
 import java.util.TimerTask;
 
 import static org.mockito.ArgumentCaptor.forClass;
@@ -31,17 +32,17 @@ public class UiEndpointTest {
     private Session session;
     private RemoteEndpoint.Basic remote;
 
-    @Before
-    public void setUp() throws Exception {
-        resetTimer = mock(ResetTimer.class);
-        userService = mock(UserService.class);
-        unitService = mock(UnitService.class);
-        mapService = mock(MapService.class);
-        session = mock(Session.class);
-        remote = mock(RemoteEndpoint.Basic.class);
-        when(session.getBasicRemote()).thenReturn(remote);
-        endpoint = new UiEndpoint(resetTimer, userService, unitService, mapService);
-    }
+//    @Before
+//    public void setUp() throws Exception {
+//        resetTimer = mock(ResetTimer.class);
+//        userService = mock(UserService.class);
+//        unitService = mock(UnitService.class);
+//        mapService = mock(MapService.class);
+//        session = mock(Session.class);
+//        remote = mock(RemoteEndpoint.Basic.class);
+//        when(session.getBasicRemote()).thenReturn(remote);
+//        endpoint = new UiEndpoint(resetTimer, userService, unitService, mapService);
+//    }
 
 //    @Test
 //    public void onOpen_mockSessionAsParameter_resetTimerScheduleCalledCorrectly() {

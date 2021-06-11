@@ -8,8 +8,6 @@
 
 package org.linecode.server.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.linecode.server.Position;
 import org.linecode.server.api.message.AuthToUi;
 import org.linecode.server.api.message.AuthToUiEncoder;
@@ -59,9 +57,9 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
 import java.util.TimerTask;
 
 @ServerEndpoint(
@@ -88,13 +86,13 @@ import java.util.TimerTask;
 public class UiEndpoint {
     private Session session;
     private AuthStatus logged;
-    private final ResetTimer timer;
+    private final Timer timer;
     private final UserService userService;
     private final UnitService unitService;
     private final MapService mapService;
 
     @Inject
-    public UiEndpoint(ResetTimer timer, UserService userService,
+    public UiEndpoint(Timer timer, UserService userService,
                       UnitService unitService, MapService mapService) {
         this.timer = timer;
         this.userService = userService;
@@ -108,6 +106,14 @@ public class UiEndpoint {
     @OnOpen
     public void onOpen(Session session) {
         this.session = session;
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                keepAlive();
+            }
+        }, 25000L, 25000L);
+
         mapService.connectMapSignal(this::sendMap);
         mapService.connectObstaclesSignal(this::sendObstacle);
         unitService.connectPositionSignal(this::sendUnitPosition);
@@ -122,19 +128,11 @@ public class UiEndpoint {
         sendUnits(unitService.getUnits());
         // TODO: inviare anche ostacoli e utenti
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                keepAlive();
-            }
-        }, 25000);
-
         System.out.println("Opened connection: " + session.getId());
     }
 
     @OnClose
     public void onClose(Session session) {
-        timer.cancel();
         System.out.println("Closed connection: " + session.getId());
     }
 
@@ -193,7 +191,8 @@ public class UiEndpoint {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        System.out.println(throwable.getMessage() + "Stack trace:");
+        System.out.println("Exception " + throwable.getClass().getName() +
+                " has been thrown: " + throwable.getMessage() + "\nStack trace:");
         System.out.println(Arrays.toString(throwable.getStackTrace()));
     }
 
@@ -279,10 +278,10 @@ public class UiEndpoint {
         }
     }
 
-    private void send(Object message) {
+    private void send(Message message) {
+        System.out.println("Sending " + message.getType() + " to " + session.getId());
         try {
             session.getBasicRemote().sendObject(message);
-            timer.reset();
         } catch (Throwable e) {
             onError(session, e);
         }

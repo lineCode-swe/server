@@ -37,6 +37,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
 import java.util.TimerTask;
 
 @ServerEndpoint(
@@ -54,12 +55,12 @@ import java.util.TimerTask;
 public class UnitEndpoint {
     private Session session;
     private String id;
-    private final ResetTimer timer;
+    private final Timer timer;
     private final UnitService unitService;
     private final MapService mapService;
 
     @Inject
-    public UnitEndpoint(ResetTimer timer, UnitService unitService,
+    public UnitEndpoint(Timer timer, UnitService unitService,
                         MapService mapService) {
 
         this.timer = timer;
@@ -85,12 +86,13 @@ public class UnitEndpoint {
                 public void run() {
                     keepAlive();
                 }
-            }, 25000);
+            }, 25000L, 25000L);
         } else{
             try {
                 session.close();
             } catch (IOException e) {
                 e.printStackTrace();
+                //timer.cancel();
             }
 
         }
@@ -104,6 +106,7 @@ public class UnitEndpoint {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //timer.cancel();
     }
 
     @OnMessage
