@@ -48,7 +48,7 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
                         node.path("admin").asBoolean()
                 );
 
-            case "DeleteToServer":
+            case "DeleteUserToServer":
                 return new DeleteUserFromUi(node.path("user").asText());
 
             case "MapToServer":
@@ -79,9 +79,6 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
 
             case "DeleteUnitToServer":
                 return new DeleteUnitFromUi(node.path("id").asText());
-
-            case "DeleteUserToServer":
-                return new DeleteUserFromUi(node.path("user").asText());
 
             case "":
             default:
