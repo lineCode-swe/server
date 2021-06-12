@@ -8,17 +8,11 @@
 package org.linecode.server.api.message;
 
 public class ErrorFromUnit extends Message{
-    private final String id;
     private final int error;
 
-    public ErrorFromUnit(String id, int error) {
+    public ErrorFromUnit(int error) {
         super("ErrorFromUnit");
-        this.id = id;
         this.error = error;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public int getError() {

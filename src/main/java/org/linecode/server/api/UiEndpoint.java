@@ -128,12 +128,13 @@ public class UiEndpoint {
         sendUnits(unitService.getUnits());
         // TODO: inviare anche ostacoli e utenti
 
-        System.out.println("Opened connection: " + session.getId());
+        System.out.println("UIEndpoint: Opened connection: " + session.getId());
     }
 
     @OnClose
     public void onClose(Session session) {
-        System.out.println("Closed connection: " + session.getId());
+        timer.cancel();
+        System.out.println("UIEndpoint: Closed connection: " + session.getId());
     }
 
     @OnMessage
@@ -191,9 +192,9 @@ public class UiEndpoint {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        System.out.println("Exception " + throwable.getClass().getName() +
-                " has been thrown: " + throwable.getMessage() + "\nStack trace:");
-        System.out.println(Arrays.toString(throwable.getStackTrace()));
+        System.out.println("UIEndpoint (" + session.getId() + "): Exception " + throwable.getClass().getName() +
+                " has been thrown: " + throwable.getMessage() +
+                "\nStack trace:" + Arrays.toString(throwable.getStackTrace()));
     }
 
     public void login(LoginFromUi loginFromUi) {

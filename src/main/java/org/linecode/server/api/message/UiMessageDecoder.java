@@ -61,7 +61,7 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
                 );
 
             case "UnitStartToServer":
-                List<Position> poiList = new ArrayList<>();
+                List<Position> poiList = new ArrayList<Position>();
                 node.path("poiList").forEach(poi -> {
                     poiList.add(new Position(poi.path("x").asInt(), poi.path("y").asInt()));
                 });

@@ -8,15 +8,7 @@
 package org.linecode.server.api.message;
 
 public class PathRequestFromUnit extends Message{
-    private final String id;
-
-    public PathRequestFromUnit(String id) {
+    public PathRequestFromUnit() {
         super("PathRequestFromUnit");
-        this.id = id;
     }
-
-    public String getId() {
-        return id;
-    }
-
 }

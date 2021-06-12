@@ -10,17 +10,11 @@ package org.linecode.server.api.message;
 import org.linecode.server.business.UnitStatus;
 
 public class StatusFromUnit extends Message{
-    private final String id;
     private final UnitStatus status;
 
-    public StatusFromUnit(String id, UnitStatus status) {
+    public StatusFromUnit(UnitStatus status) {
         super("StatusFromUnit");
-        this.id = id;
         this.status = status;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public UnitStatus getStatus() {

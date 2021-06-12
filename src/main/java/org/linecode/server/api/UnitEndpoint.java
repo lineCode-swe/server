@@ -66,8 +66,8 @@ public class UnitEndpoint {
         this.timer = timer;
         this.unitService = unitService;
         this.mapService = mapService;
-        this.session=null;
-        this.id=null;
+        this.session = null;
+        this.id = null;
     }
 
     @OnOpen
@@ -87,26 +87,21 @@ public class UnitEndpoint {
                     keepAlive();
                 }
             }, 25000L, 25000L);
-        } else{
+
+            System.out.println("UnitEndpoint: Opened connection: " + id);
+        } else {
             try {
                 session.close();
             } catch (IOException e) {
-                e.printStackTrace();
-                //timer.cancel();
+                onError(session, e);
             }
-
         }
-
     }
 
     @OnClose
     public void onClose(Session session) {
-        try {
-            this.session.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //timer.cancel();
+        timer.cancel();
+        System.out.println("UnitEndpoint: Closed connection: " + id);
     }
 
     @OnMessage
@@ -114,7 +109,7 @@ public class UnitEndpoint {
         switch (message.getType()) {
             case "ErrorFromUnit":
                 ErrorFromUnit errorFromUnit = (ErrorFromUnit) message;
-                unitService.newError(errorFromUnit.getId(),errorFromUnit.getError());
+                unitService.newError(id, errorFromUnit.getError());
                 break;
 
             case "ObstacleListFromUnit":
@@ -123,48 +118,50 @@ public class UnitEndpoint {
                 break;
 
             case "PathRequestFromUnit":
-                PathRequestFromUnit pathRequestFromUnit = (PathRequestFromUnit) message;
-                List<Position> path = mapService.getNextPath(pathRequestFromUnit.getId());
+                List<Position> path = mapService.getNextPath(id);
                 send(new StartToUnit(path));
                 break;
 
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
-                unitService.newPosition(positionFromUnit.getId(),positionFromUnit.getPosition());
+                unitService.newPosition(id, positionFromUnit.getPosition());
                 break;
 
             case "SpeedFromUnit":
                 SpeedFromUnit speedFromUnit = (SpeedFromUnit) message;
-                unitService.newSpeed(speedFromUnit.getId(),speedFromUnit.getSpeed());
+                unitService.newSpeed(id, speedFromUnit.getSpeed());
                 break;
 
             case "StatusFromUnit":
                 StatusFromUnit statusFromUnit = (StatusFromUnit) message;
-                unitService.newStatus(statusFromUnit.getId(),statusFromUnit.getStatus());
+                unitService.newStatus(id, statusFromUnit.getStatus());
                 break;
 
+            case "":
+            default:
+                onError(session, new Exception("UnitEndpoint: unrecognized type of message"));
         }
-
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        System.out.println(Arrays.toString(throwable.getStackTrace()));
+        System.out.println("UnitEndpoint (" + id + "): Exception " + throwable.getClass().getName() +
+                " has been thrown: " + throwable.getMessage() +
+                "\nStack trace:" + Arrays.toString(throwable.getStackTrace()));
     }
 
     private void keepAlive() {
         send(new KeepAliveToUnit("keepalive"));
     }
 
-    public void send(Object message) {
+    public void send(Message message) {
+        System.out.println("Sending " + message.getType() + " to " + id);
         try {
             session.getBasicRemote().sendObject(message);
         } catch (Throwable e) {
             onError(session, e);
         }
     }
-
-
 
     public void sendStart(String id) {
         if (this.id.equals(id)){
