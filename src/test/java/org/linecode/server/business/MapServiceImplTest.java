@@ -19,14 +19,13 @@ import static org.mockito.Mockito.*;
 
 
 public class MapServiceImplTest{
-
-    Grid map;
-    UnitRepository unitRepo;
-    ObstacleRepository obsRepo;
-    MapRepository mapRepo;
-    Signal1<Grid> mapSignal;
-    Signal1<List<Position>> obstaclesSignal;
-    MapServiceImpl test;
+    private Grid map;
+    private UnitRepository unitRepo;
+    private ObstacleRepository obsRepo;
+    private MapRepository mapRepo;
+    private Signal1<Grid> mapSignal;
+    private Signal1<List<Position>> obstaclesSignal;
+    private MapServiceImpl test;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -37,12 +36,9 @@ public class MapServiceImplTest{
          mapRepo= Mockito.mock(MapRepository.class);
          mapSignal= (Signal1<Grid>)Mockito.mock(Signal1.class);
          obstaclesSignal= (Signal1<List<Position>>)Mockito.mock(Signal1.class);
-         test =new MapServiceImpl(unitRepo,obsRepo,mapRepo,mapSignal,obstaclesSignal);
+         test =new MapServiceImpl(unitRepo, obsRepo, mapRepo, mapSignal, obstaclesSignal);
          test.map=map;
     }
-
-
-
 
     @Test
     public void newMap_StringWithAllTypeOfCells_Calculated() {

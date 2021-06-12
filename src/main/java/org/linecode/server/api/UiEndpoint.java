@@ -126,7 +126,8 @@ public class UiEndpoint {
 
         sendMap(mapService.getMap());
         sendUnits(unitService.getUnits());
-        // TODO: inviare anche ostacoli e utenti
+        sendUsers(userService.getUsers());
+        // TODO: inviare anche ostacoli
 
         System.out.println("UIEndpoint: Opened connection: " + session.getId());
     }

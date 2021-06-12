@@ -17,9 +17,8 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Set;
 
-public class UserServiceImpl implements  UserService{
-
-    protected final UserRepository repo;
+public class UserServiceImpl implements UserService {
+    private final UserRepository repo;
     private final Signal1<List<User>> userSignal;
 
     @Inject
@@ -27,7 +26,6 @@ public class UserServiceImpl implements  UserService{
         this.repo = repo;
         this.userSignal = userSignal;
     }
-
 
     @Override
     public void newUser(String user, String password, Boolean admin) {
@@ -40,12 +38,17 @@ public class UserServiceImpl implements  UserService{
         repo.delUser(user);
         userSignal.emit(getEmit(repo.getUsers()));
     }
-    private List<User> getEmit(Set<String> input){
-        List<User> users = new ArrayList<User>();
-        for (String id: input) {
-            users.add(new User(id,repo.isAdmin(id)));
+
+    @Override
+    public List<User> getUsers() {
+        Set<String> keys = repo.getUsers();
+        List<User> result = new ArrayList<User>(keys.size());
+
+        for (String username : keys) {
+            result.add(new User(username, repo.isAdmin(username)));
         }
-        return users;
+
+        return result;
     }
 
     @Override
@@ -64,5 +67,13 @@ public class UserServiceImpl implements  UserService{
     @Override
     public void connectUsersSignal(Slot1<List<User>> slot) {
         userSignal.connect(slot);
+    }
+
+    private List<User> getEmit(Set<String> input){
+        List<User> users = new ArrayList<User>();
+        for (String id: input) {
+            users.add(new User(id,repo.isAdmin(id)));
+        }
+        return users;
     }
 }
