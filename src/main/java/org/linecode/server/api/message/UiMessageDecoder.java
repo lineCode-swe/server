@@ -80,6 +80,9 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
             case "DeleteUnitToServer":
                 return new DeleteUnitFromUi(node.path("id").asText());
 
+            case "DeleteUserToServer":
+                return new DeleteUserFromUi(node.path("user").asText());
+
             case "":
             default:
                 throw new DecodeException(s, "Unrecognized type of message");
@@ -122,6 +125,9 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
 
             case "DeleteUnitToServer":
                 return isDeleteUnitToServer(node);
+
+            case "DeleteUserToServer":
+                return isDeleteUserToServer(node);
 
             case "":
             default:
@@ -166,6 +172,10 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
 
     private boolean isDeleteUnitToServer(JsonNode node) {
         return !(node.path("id").isMissingNode());
+    }
+
+    private boolean isDeleteUserToServer(JsonNode node) {
+        return !(node.path("user").isMissingNode());
     }
 
     @Override
