@@ -1,5 +1,8 @@
 flushdb
 
+sadd user valton
+hmset valton password tahiraj admin true
+
 set length 6
 set height 4
 hmset cell:0:0 locked false poi false base true direction ALL
