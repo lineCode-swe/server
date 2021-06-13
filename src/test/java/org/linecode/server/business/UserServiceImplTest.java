@@ -36,9 +36,8 @@ public class UserServiceImplTest {
     @Test
     public void login_NoAuth_ReturnNoAuth() {
         when(userRepo.getPassword(Mockito.anyString())).thenReturn("password");
-        when(userRepo.isAdmin(Mockito.anyString())).thenReturn(true);
 
-        assertEquals(AuthStatus.NO_AUTH, test.login("ciao","password"));
+        assertEquals(AuthStatus.NO_AUTH, test.login("ciao","wrong_passwd"));
     }
 
     @Test
