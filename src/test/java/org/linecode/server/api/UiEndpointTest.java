@@ -43,7 +43,7 @@ public class UiEndpointTest {
 //        when(session.getBasicRemote()).thenReturn(remote);
 //        endpoint = new UiEndpoint(resetTimer, userService, unitService, mapService);
 //    }
-
+//
 //    @Test
 //    public void onOpen_mockSessionAsParameter_resetTimerScheduleCalledCorrectly() {
 //        endpoint.onOpen(session);

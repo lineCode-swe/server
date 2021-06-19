@@ -82,7 +82,7 @@ public class UnitRepositoryRedis implements UnitRepository {
     @Override
     public List<Position> getPoiList(String id) {
         List<Position> POIlist= new ArrayList<Position>();
-        for(int i=0 ; i<db.llen("poi"+id) ; i++) {
+        for(int i=0 ; i<db.llen("poi:"+id) ; i++) {
             POIlist.add(new Position(db.lindex("poi:"+id,i)));
         }
         return POIlist;

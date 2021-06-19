@@ -121,7 +121,7 @@ public class MapServiceImpl implements MapService {
     public List<Position> getNextPath(String id) {
         List<Position> path = new ArrayList<Position>();
         List<Position> pois = unitRepo.getPoiList(id);
-        int distance= getPath(unitRepo.getPosition(id),pois.get(0),path);
+        int distance= getPath(unitRepo.getPosition(id), pois.get(0), path);
         return path;
 
     }
