@@ -46,9 +46,9 @@ public class MapRepositoryRedis implements MapRepository{
 
     @Override
     public void setCells(List<Cell> cellList, int length, int height) {
-        for (int i = 0; i < getLength(); ++i) {
-            for (int j = 0; j < getHeight(); ++j) {
-                db.del("cell:" + i + ":" + j);
+        for (int i = 0; i < getHeight(); ++i) {
+            for (int j = 0; j < getLength(); ++j) {
+                db.del("cell:" + j + ":" + i);
             }
         }
 
@@ -73,9 +73,9 @@ public class MapRepositoryRedis implements MapRepository{
         List<Cell> cellsList = new ArrayList<Cell>();
         for (int i = 0; i < getHeight(); ++i) {
             for (int j = 0; j < getLength(); ++j) {
-                String cellKey = "cell:" + i + ":" + j;
+                String cellKey = "cell:" + j + ":" + i;
                 cellsList.add(new Cell(
-                        new Position(i, j),
+                        new Position(j, i),
                         Boolean.parseBoolean(db.hget(cellKey, "locked")),
                         Boolean.parseBoolean(db.hget(cellKey, "base")),
                         Direction.valueOf(db.hget(cellKey, "direction")),
