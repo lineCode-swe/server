@@ -123,8 +123,14 @@ public class MapServiceImpl implements MapService {
         List<Position> pois = unitRepo.getPoiList(id);
         if(pois.size()>0){
             int distance= getPath(unitRepo.getPosition(id),pois.get(0),path);
-            pois.remove(0);
-            unitRepo.setPoiList(id,pois);
+            if(distance != Integer.MAX_VALUE) {
+                pois.remove(0);
+                unitRepo.setPoiList(id, pois);
+            } else {
+                unitRepo.setError(id,404);
+                // TODO Mandare errore a unità
+            }
+
         } else {
             int distance= getPath(unitRepo.getPosition(id), unitRepo.getBase(id),path);
         }
