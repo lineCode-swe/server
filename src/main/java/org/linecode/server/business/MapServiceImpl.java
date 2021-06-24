@@ -128,11 +128,18 @@ public class MapServiceImpl implements MapService {
                 unitRepo.setPoiList(id, pois);
             } else {
                 unitRepo.setError(id,404);
+                System.out.println("Impossibile calcolare il percorso");
                 // TODO Mandare errore a unità
             }
 
         } else {
             int distance= getPath(unitRepo.getPosition(id), unitRepo.getBase(id),path);
+                if(distance == Integer.MAX_VALUE) {
+                    unitRepo.setError(id,404);
+                    System.out.println("Impossibile calcolare il percorso");
+                    // TODO Mandare errore a unità
+                }
+
         }
         return path;
 
