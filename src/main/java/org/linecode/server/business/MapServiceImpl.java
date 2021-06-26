@@ -17,6 +17,7 @@ import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.Direction;
 
 import javax.inject.Inject;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -121,31 +122,22 @@ public class MapServiceImpl implements MapService {
     public List<Position> getNextPath(String id) {
         List<Position> path = new ArrayList<Position>();
         List<Position> pois = unitRepo.getPoiList(id);
+        int distance = Integer.MAX_VALUE;
         if(pois.size()>0){
-            int distance= getPath(unitRepo.getPosition(id),pois.get(0),path);
-            if(distance != Integer.MAX_VALUE) {
-                pois.remove(0);
-                unitRepo.setPosition(id,path.get(path.size()-1));
-                unitRepo.setPoiList(id, pois);
-
-            } else {
-                unitRepo.setError(id,404);
-                System.out.println("Impossibile calcolare il percorso");
-                // TODO Mandare errore a unità
-            }
-
+            distance= getPath(unitRepo.getPosition(id),pois.get(0),path);
+            pois.remove(0);
+            unitRepo.setPoiList(id, pois);
         } else {
-            int distance= getPath(unitRepo.getPosition(id), unitRepo.getBase(id),path);
-                if(distance == Integer.MAX_VALUE) {
-                    unitRepo.setError(id,404);
-                    System.out.println("Impossibile calcolare il percorso");
-                    // TODO Mandare errore a unità
-                } else {
-                    unitRepo.setPosition(id,path.get(path.size()-1));
-                }
-
+            distance= getPath(unitRepo.getPosition(id), unitRepo.getBase(id),path);
         }
-        return path;
+
+        if(distance != Integer.MAX_VALUE) {
+            return path;
+        } else {
+            return new ArrayList<Position>();
+        }
+
+
 
     }
 

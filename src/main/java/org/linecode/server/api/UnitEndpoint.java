@@ -119,7 +119,12 @@ public class UnitEndpoint {
 
             case "PathRequestFromUnit":
                 List<Position> path = mapService.getNextPath(id);
-                send(new StartToUnit(path));
+                if (!path.isEmpty()) {
+                    send(new StartToUnit(path));
+                } else {
+                    send(new ErrorFromUnit(404));
+                    unitService.newError(id,404);
+                }
                 break;
 
             case "PositionFromUnit":
@@ -165,7 +170,13 @@ public class UnitEndpoint {
 
     public void sendStart(String id) {
         if (this.id.equals(id)){
-            send(new StartToUnit(mapService.getNextPath(id)));
+            List<Position> path = mapService.getNextPath(id);
+            if (!path.isEmpty()) {
+                send(new StartToUnit(path));
+            } else {
+                send(new ErrorFromUnit(404));
+                unitService.newError(id,404);
+            }
         }
     }
 
