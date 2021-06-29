@@ -123,15 +123,17 @@ public class MapServiceImpl implements MapService {
         List<Position> path = new ArrayList<Position>();
         List<Position> pois = unitRepo.getPoiList(id);
         int distance = Integer.MAX_VALUE;
-        if(pois.size()>0){
+        boolean sizeOfPois= pois.size()>0;
+        if(sizeOfPois){
             distance= getPath(unitRepo.getPosition(id),pois.get(0),path);
-            pois.remove(0);
-            unitRepo.setPoiList(id, pois);
         } else {
             distance= getPath(unitRepo.getPosition(id), unitRepo.getBase(id),path);
         }
-
         if(distance != Integer.MAX_VALUE) {
+            if(sizeOfPois){
+                pois.remove(0);
+                unitRepo.setPoiList(id,pois);
+            }
             return path;
         } else {
             return new ArrayList<Position>();

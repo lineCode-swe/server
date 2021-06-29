@@ -245,6 +245,39 @@ public class MapServiceImplTest{
         assertEquals(4, test.getPath(cell, new Position(1, 3), path));
     }
 
+
+   /* @Test
+    public void getPath_Map(){
+        test.newMap("+++>P+\n+++>+x\n+++>P+\n++>>+P");
+        Cell cellina = Mockito.mock(Cell.class);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.isLocked()).thenReturn(false);
+        List<Position> poi = new ArrayList<Position>();
+        poi.add(new Position(4,0));
+        poi.add(new Position(4,2));
+        when(unitRepo.getPoiList("123")).thenReturn(poi);
+        when(unitRepo.getPosition("123")).thenReturn(new Position(0,0));
+        when(unitRepo.getBase("123")).thenReturn(new Position(0,0));
+        Position cell = new Position(0,0);
+        List<Position> path1 = new ArrayList<Position>();
+        List<Position> path2 = new ArrayList<Position>();
+        path2.add(new Position(0,0));
+        path2.add(new Position(1,0));
+        path2.add(new Position(2,0));
+        path2.add(new Position(3,0));
+        path2.add(new Position(4,0));
+        List<Position> path3 = new ArrayList<Position>();
+        path3.add(new Position(4,0));
+        path3.add(new Position(4,1));
+        path3.add(new Position(4,2));
+        List<Position> path4 = new ArrayList<Position>();
+        path4.add(new Position(4,2));
+        path4.add(new Position(4,2));
+
+        assertEquals(path4,test.getNextPath("123"));
+    }*/
+
+
     @Test
     public void newObstacleList_ListOfObstacles_EmitSignal(){
         List<Position> mockObstacles = new ArrayList<Position>();
