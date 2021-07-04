@@ -45,7 +45,7 @@ public class MapRepositoryRedis implements MapRepository{
     }
 
     @Override
-    public void setCells(List<Cell> cellList, int length, int height) {
+    public void setCells(List<Cell> cellList, int length, int height ) {
         for (int i = 0; i < getHeight(); ++i) {
             for (int j = 0; j < getLength(); ++j) {
                 db.del("cell:" + j + ":" + i);
