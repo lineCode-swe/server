@@ -229,16 +229,40 @@ public class MapServiceImpl implements MapService {
 
     protected Position getNeighbor(Position cell, int distance, int[][] distances) {
 
-        int[][] ds = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        for (int[] d : ds) {
-            int row = cell.getX()+ d[0];
-            int col = cell.getY() + d[1];
-            if (isValid(row, col)
-                    && distances[row][col] == distance) {
-                return new Position(row, col);
+        int ds[][] = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        if(isValid(cell.getX()-1,cell.getY())) {
+            if (map.getCell(new Position(cell.getX() - 1, cell.getY())).getDirection().equals(Direction.LEFT)) {
+                ds[0][0] = 0;
+                ds[0][1] = 0;
             }
         }
-
+        if(isValid(cell.getX()+1,cell.getY())) {
+            if (map.getCell(new Position(cell.getX() + 1, cell.getY())).getDirection().equals(Direction.RIGHT)) {
+                ds[1][0] = 0;
+                ds[1][1] = 0;
+            }
+        }
+        if(isValid(cell.getX(),cell.getY()+1)) {
+            if (map.getCell(new Position(cell.getX(), cell.getY() + 1)).getDirection().equals(Direction.DOWN)) {
+                ds[2][0] = 0;
+                ds[2][1] = 0;
+            }
+        }
+        if(isValid(cell.getX(),cell.getY()-1)) {
+            if (map.getCell(new Position(cell.getX(), cell.getY() - 1)).getDirection().equals(Direction.UP)) {
+                ds[3][0] = 0;
+                ds[3][1] = 0;
+            }
+        }
+        for (int[] d : ds) {
+            int row = cell.getX() + d[0];
+            int col = cell.getY() + d[1];
+            if (isValid(row, col)
+                    && distances[row][col] == distance && !cell.equals(new Position(row,col))) {
+                return new Position(row, col);
+                }
+            }
         return null;
     }
 
