@@ -245,14 +245,14 @@ public class MapServiceImpl implements MapService {
         }
         if(isValid(cell.getX(),cell.getY()+1)) {
             if (map.getCell(new Position(cell.getX(), cell.getY() + 1)).getDirection().equals(Direction.DOWN)) {
-                ds[2][0] = 0;
-                ds[2][1] = 0;
+                ds[3][0] = 0;
+                ds[3][1] = 0;
             }
         }
         if(isValid(cell.getX(),cell.getY()-1)) {
             if (map.getCell(new Position(cell.getX(), cell.getY() - 1)).getDirection().equals(Direction.UP)) {
-                ds[3][0] = 0;
-                ds[3][1] = 0;
+                ds[2][0] = 0;
+                ds[2][1] = 0;
             }
         }
         for (int[] d : ds) {
