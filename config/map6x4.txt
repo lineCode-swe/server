@@ -33,4 +33,4 @@ hmset cell:3:3 locked false poi false base false direction ALL
 hmset cell:4:3 locked false poi false base false direction ALL
 hmset cell:5:3 locked false poi true base false direction ALL
 
-bgsave
+save

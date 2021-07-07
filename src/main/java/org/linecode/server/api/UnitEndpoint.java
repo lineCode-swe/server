@@ -25,6 +25,8 @@ import org.linecode.server.api.message.UnitMessageDecoder;
 import org.linecode.server.api.message.UnitStopCommand;
 import org.linecode.server.business.MapService;
 import org.linecode.server.business.UnitService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.websocket.Session;
 import javax.inject.Inject;
@@ -53,6 +55,8 @@ import java.util.TimerTask;
         }
 )
 public class UnitEndpoint {
+    private final Logger logger = LoggerFactory.getLogger(UnitEndpoint.class);
+
     private Session session;
     private String id;
     private final Timer timer;
@@ -88,7 +92,7 @@ public class UnitEndpoint {
                 }
             }, 25000L, 25000L);
 
-            System.out.println("UnitEndpoint: Opened connection: " + id);
+            logger.info("UnitEndpoint: Opened connection: " + id);
         } else {
             try {
                 session.close();
@@ -101,7 +105,7 @@ public class UnitEndpoint {
     @OnClose
     public void onClose(Session session) {
         timer.cancel();
-        System.out.println("UnitEndpoint: Closed connection: " + id);
+        logger.info("UnitEndpoint: Closed connection: " + id);
     }
 
     @OnMessage
@@ -150,7 +154,7 @@ public class UnitEndpoint {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        System.out.println("UnitEndpoint (" + id + "): Exception " + throwable.getClass().getName() +
+        logger.error("UnitEndpoint (" + id + "): Exception " + throwable.getClass().getName() +
                 " has been thrown: " + throwable.getMessage() +
                 "\nStack trace:" + Arrays.toString(throwable.getStackTrace()));
     }
@@ -160,7 +164,7 @@ public class UnitEndpoint {
     }
 
     public void send(Message message) {
-        System.out.println("Sending " + message.getType() + " to " + id);
+        logger.info("Sending " + message.getType() + " to " + id);
         try {
             session.getBasicRemote().sendObject(message);
         } catch (Throwable e) {

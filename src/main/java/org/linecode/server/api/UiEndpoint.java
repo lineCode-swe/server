@@ -49,6 +49,8 @@ import org.linecode.server.business.Grid;
 import org.linecode.server.business.User;
 import org.linecode.server.business.Unit;
 import org.linecode.server.business.UnitStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.websocket.OnClose;
@@ -84,6 +86,8 @@ import java.util.TimerTask;
         }
 )
 public class UiEndpoint {
+    private final Logger logger = LoggerFactory.getLogger(UiEndpoint.class);
+
     private Session session;
     private AuthStatus logged;
     private final Timer timer;
@@ -129,13 +133,13 @@ public class UiEndpoint {
         sendUsers(userService.getUsers());
         // TODO: inviare anche ostacoli
 
-        System.out.println("UIEndpoint: Opened connection: " + session.getId());
+        logger.info("UIEndpoint: Opened connection: " + session.getId());
     }
 
     @OnClose
     public void onClose(Session session) {
         timer.cancel();
-        System.out.println("UIEndpoint: Closed connection: " + session.getId());
+        logger.info("UIEndpoint: Closed connection: " + session.getId());
     }
 
     @OnMessage
@@ -193,7 +197,7 @@ public class UiEndpoint {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        System.out.println("UIEndpoint (" + session.getId() + "): Exception " + throwable.getClass().getName() +
+        logger.error("UIEndpoint (" + session.getId() + "): Exception " + throwable.getClass().getName() +
                 " has been thrown: " + throwable.getMessage() +
                 "\nStack trace:" + Arrays.toString(throwable.getStackTrace()));
     }
@@ -281,7 +285,7 @@ public class UiEndpoint {
     }
 
     private void send(Message message) {
-        System.out.println("Sending " + message.getType() + " to " + session.getId());
+        logger.info("Sending " + message.getType() + " to " + session.getId());
         try {
             session.getBasicRemote().sendObject(message);
         } catch (Throwable e) {
