@@ -189,6 +189,7 @@ public class UiEndpoint {
             default:
                 onError(session, new Exception("UIEndpoint: unrecognized type of message"));
         }
+
     }
 
     @OnError
