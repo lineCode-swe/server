@@ -191,6 +191,8 @@ public class MapServiceImplTest{
     public void getNeighbor_AllNeighbors_ReturnNeighbors(){
         when(map.getLength()).thenReturn(10);
         when(map.getHeight()).thenReturn(10);
+        Cell cellina = new Cell(new Position(2,2),false,false,Direction.ALL,false);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
         Position cell = new Position(2,2);
         int distance = 5;
         int[][] distances = {{1,1,1,1},{1,1,5,1},{1,1,1,1},{1,1,1,1}};
@@ -202,6 +204,8 @@ public class MapServiceImplTest{
     public void getNeighbor_NoNeighbor_ReturnNull(){
         when(map.getLength()).thenReturn(10);
         when(map.getHeight()).thenReturn(10);
+        Cell cellina = new Cell(new Position(2,2),false,false,Direction.ALL,false);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
         Position cell = new Position(2,2);
         int distance = 5;
         int[][] distances = {{1,1,1,1},{1,1,1,1},{1,1,1,1},{1,1,1,1}};
@@ -248,12 +252,12 @@ public class MapServiceImplTest{
 
    /* @Test
     public void getPath_Map(){
-        test.newMap("+++>P+\n+++>+x\n+++>P+\n++>>+P");
+        test.newMap("+++_P+\n+++++x\n+++<P+\n++>++P");
         Cell cellina = Mockito.mock(Cell.class);
         when(map.getCell(any(Position.class))).thenReturn(cellina);
         when(cellina.isLocked()).thenReturn(false);
         List<Position> poi = new ArrayList<Position>();
-        poi.add(new Position(4,0));
+       // poi.add(new Position(4,0));
         poi.add(new Position(4,2));
         when(unitRepo.getPoiList("123")).thenReturn(poi);
         when(unitRepo.getPosition("123")).thenReturn(new Position(0,0));
@@ -266,6 +270,8 @@ public class MapServiceImplTest{
         path2.add(new Position(2,0));
         path2.add(new Position(3,0));
         path2.add(new Position(4,0));
+        path2.add(new Position(4,1));
+        path2.add(new Position(4,2));
         List<Position> path3 = new ArrayList<Position>();
         path3.add(new Position(4,0));
         path3.add(new Position(4,1));
@@ -274,7 +280,7 @@ public class MapServiceImplTest{
         path4.add(new Position(4,2));
         path4.add(new Position(4,2));
 
-        assertEquals(path4,test.getNextPath("123"));
+        assertEquals(path2,test.getNextPath("123"));
     }*/
 
 
