@@ -61,6 +61,7 @@ public class Main {
 
         db.flushDB();
         db.sadd("user", "valton");
+        db.hmset("valton", Map.of("password", "tahiraj", "admin", "true"));
 
         db.set("length", "6");
         db.set("height", "4");
