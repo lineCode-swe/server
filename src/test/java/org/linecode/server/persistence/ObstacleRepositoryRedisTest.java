@@ -41,14 +41,14 @@ public class ObstacleRepositoryRedisTest {
     public void setObstacle_ObstaclePosition_ObstacleSuccessfullyAddedToDB() {
         test.setObstacle(position);
         verify(db, times(1)).rpush(anyString(), anyString());
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test
     public void delObstacle_ObstaclePosition_ObstacleSuccessfullyDeletedToDB() {
         test.delObstacle(position);
         verify(db, times(1)).lrem(anyString(), eq(0L), anyString());
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test

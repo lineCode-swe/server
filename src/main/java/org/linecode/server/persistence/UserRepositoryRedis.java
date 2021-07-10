@@ -31,14 +31,14 @@ public class UserRepositoryRedis implements UserRepository {
         keyValue.put("admin",Boolean.toString(admin));
         db.sadd("user",user);
         db.hmset(user,keyValue);
-        db.bgsave();
+        db.save();
     }
 
     @Override
     public void delUser(String user) {
         db.srem("user", user);
         db.del(user);
-        db.bgsave();
+        db.save();
     }
 
     @Override

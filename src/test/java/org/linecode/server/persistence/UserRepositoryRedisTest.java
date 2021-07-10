@@ -28,7 +28,7 @@ public class UserRepositoryRedisTest {
         test.newUser(user, password, admin);
         verify(db, times(1)).sadd("user", user);
         verify(db, times(1)).hmset(eq(user), anyMap());
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test
@@ -36,7 +36,7 @@ public class UserRepositoryRedisTest {
         test.delUser(user);
         verify(db, times(1)).srem("user", user);
         verify(db, times(1)).del(user);
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test

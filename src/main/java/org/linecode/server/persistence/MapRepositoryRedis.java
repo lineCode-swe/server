@@ -65,7 +65,7 @@ public class MapRepositoryRedis implements MapRepository{
             db.hmset(cellName, keyValue);
         }
 
-        db.bgsave();
+        db.save();
     }
 
     @Override

@@ -32,7 +32,7 @@ public class UnitRepositoryRedisTest {
         test.newUnit(id, name, position);
         verify(db, times(1)).sadd("unit", id);
         verify(db, times(1)).hmset(eq(id), anyMap());
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test
@@ -40,7 +40,7 @@ public class UnitRepositoryRedisTest {
         test.delUnit(id);
         verify(db, times(1)).srem("unit", id);
         verify(db, times(1)).del(id);
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test
@@ -98,21 +98,21 @@ public class UnitRepositoryRedisTest {
     public void setPosition_UnitIdAndNewPosition_UnitPositionSuccessfullyUpdateToDB() {
         test.setPosition(id, position);
         verify(db, times(1)).hmset(eq(id), anyMap());
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test
     public void setStatus_UnitIdAndNewStatus_UnitStatusSuccessfullyUpdateToDB() {
         test.setStatus(id, 0);
         verify(db, times(1)).hset(id, "status", "0");
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test
     public void setError_UnitIdAndNewError_UnitErrorSuccessfullyUpdateToDB() {
         test.setError(id, 0);
         verify(db, times(1)).hset(id, "error", "0");
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test
@@ -122,13 +122,13 @@ public class UnitRepositoryRedisTest {
         poilist.add(new Position(1, 1));
         test.setPoiList(id, poilist);
         verify(db, times(2)).rpush(anyString(), anyString());
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test
     public void setSpeed_UnitIdAndNewSpeed_UnitSpeedSuccessfullyUpdateToDB() {
         test.setSpeed(id, 0);
         verify(db, times(1)).hset(id, "speed", "0");
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 }
