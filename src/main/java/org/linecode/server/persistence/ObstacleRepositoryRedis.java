@@ -35,13 +35,13 @@ public class ObstacleRepositoryRedis implements ObstacleRepository {
     @Override
     public void setObstacle(Position position) {
         db.rpush("obs", position.toString());
-        db.bgsave();
+        db.save();
     }
 
     @Override
     public void delObstacle(Position position) {
         db.lrem("obs", 0L, position.toString());
-        db.bgsave();
+        db.save();
     }
 
     @Override

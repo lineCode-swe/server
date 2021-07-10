@@ -65,7 +65,7 @@ public class MapRepositoryRedisTest {
         verify(db, times(5*5)).del(anyString());
         verify(db, times(2)).set(anyString(), anyString());
         verify(db, times(2*2)).hmset(anyString(), anyMap());
-        verify(db, times(1)).bgsave();
+        verify(db, times(1)).save();
     }
 
     @Test
