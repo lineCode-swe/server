@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
-import javax.websocket.DeploymentException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Map;
@@ -24,7 +23,7 @@ import java.util.Set;
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         if (seed()) {
             logger.info("Empty database seeded");
         } else {
@@ -47,12 +46,12 @@ public class Main {
             logger.error("Grizzly HTTP server error", e);
             e.printStackTrace();
         } finally {
-            System.out.println("Stopping Grizzly HTTP server");
+            logger.info("Stopping Grizzly HTTP server");
             server.stop();
         }
     }
 
-    private static boolean seed() {
+    private static boolean seed() throws Exception {
         Jedis db = new Jedis();
 
         if (db.exists("length") && db.exists("height")) {

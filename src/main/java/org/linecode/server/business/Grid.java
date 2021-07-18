@@ -10,14 +10,14 @@ package org.linecode.server.business;
 import org.linecode.server.Position;
 import org.linecode.server.persistence.Cell;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Grid {
 
     private final List<Cell> cells;
-    private final int length, height;
+    private final int length;
+    private final int height;
 
     public Grid(List<Cell> cells, int length, int height) {
         this.cells = cells;
@@ -48,12 +48,13 @@ public class Grid {
     }
 
     public String toString(){
-        String toReturn="[";
+        StringBuilder toReturn = new StringBuilder();
+        toReturn.append("[");
         for(Cell cella : cells){
-            toReturn += cella.toString();
+            toReturn.append(cella.toString());
         }
-        toReturn+="]";
-        return toReturn;
+        toReturn.append("]");
+        return toReturn.toString();
     }
 
     @Override
@@ -70,5 +71,8 @@ public class Grid {
         return this.cells.equals(cmp.getCells()) && this.length==cmp.getLength() && this.height==cmp.getHeight();
     }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(cells, length, height);
+    }
 }

@@ -12,7 +12,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.linecode.server.Position;
-import org.linecode.server.business.AuthStatus;
 import org.linecode.server.business.UnitStatus;
 
 import javax.inject.Inject;
@@ -21,7 +20,6 @@ import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class UnitMessageDecoder implements Decoder.Text<Message> {
 
@@ -50,10 +48,10 @@ public class UnitMessageDecoder implements Decoder.Text<Message> {
                 return new ErrorFromUnit(node.path("error").asInt());
 
             case "ObstacleListToServer":
-                List<Position> obstacleList = new ArrayList<Position>();
-                node.path("obstacleList").forEach(poi -> {
-                    obstacleList.add(new Position(poi.path("x").asInt(), poi.path("y").asInt()));
-                });
+                List<Position> obstacleList = new ArrayList<>();
+                node.path("obstacleList").forEach(poi -> obstacleList.add(new Position(
+                        poi.path("x").asInt(),
+                        poi.path("y").asInt())));
                 return new ObstacleListFromUnit(obstacleList);
 
             case "PathRequestToServer":
@@ -110,8 +108,12 @@ public class UnitMessageDecoder implements Decoder.Text<Message> {
     }
 
     @Override
-    public void init(EndpointConfig endpointConfig) {}
+    public void init(EndpointConfig endpointConfig) {
+        // Override requested but no operations needed
+    }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+        // Override requested but no operations needed
+    }
 }

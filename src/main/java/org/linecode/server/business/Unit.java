@@ -10,7 +10,8 @@ package org.linecode.server.business;
 import org.linecode.server.Position;
 
 public class Unit {
-    private String id,name;
+    private String id;
+    private String name;
     private Position base;
 
     public Unit(String id, String name, Position base) {

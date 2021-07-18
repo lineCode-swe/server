@@ -31,11 +31,13 @@ public class StartToUnitEncoder implements Encoder.Text<StartToUnit> {
         return message;
     }
 
+    @Override
+    public void init(EndpointConfig endpointConfig) {
+        // Override requested but no operations needed
+    }
 
     @Override
-    public void init(EndpointConfig endpointConfig) {}
-
-    @Override
-    public void destroy() {}
-
+    public void destroy() {
+        // Override requested but no operations needed
+    }
 }

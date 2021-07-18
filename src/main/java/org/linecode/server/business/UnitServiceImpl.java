@@ -81,7 +81,7 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public List<Unit> getUnits() {
         Set<String> temporal = repo.getUnits();
-        List<Unit> units = new ArrayList<Unit>();
+        List<Unit> units = new ArrayList<>();
         for (String id: temporal) {
             units.add(new Unit(id,repo.getName(id),repo.getBase(id)));
         }

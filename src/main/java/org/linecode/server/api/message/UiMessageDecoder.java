@@ -61,10 +61,10 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
                 );
 
             case "UnitStartToServer":
-                List<Position> poiList = new ArrayList<Position>();
-                node.path("poiList").forEach(poi -> {
-                    poiList.add(new Position(poi.path("x").asInt(), poi.path("y").asInt()));
-                });
+                List<Position> poiList = new ArrayList<>();
+                node.path("poiList").forEach(poi -> poiList.add(new Position(
+                        poi.path("x").asInt(),
+                        poi.path("y").asInt())));
                 return new UnitStartFromUi(node.path("id").asText(), poiList);
 
             case "UnitToServer":
@@ -176,8 +176,12 @@ public class UiMessageDecoder implements Decoder.Text<Message> {
     }
 
     @Override
-    public void init(EndpointConfig endpointConfig) {}
+    public void init(EndpointConfig endpointConfig) {
+        // Override requested but no operations needed
+    }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+        // Override requested but no operations needed
+    }
 }

@@ -11,6 +11,7 @@ package org.linecode.server.persistence;
 
 import org.linecode.server.Position;
 
+import java.util.Objects;
 
 
 public class Cell {
@@ -71,4 +72,8 @@ public class Cell {
                 && this.direction == cmp.getDirection() && this.locked==cmp.isLocked();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(position, locked, base, direction, poi);
+    }
 }

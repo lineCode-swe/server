@@ -15,7 +15,6 @@ import org.linecode.server.api.message.KeepAliveToUnit;
 import org.linecode.server.api.message.KeepAliveToUnitEncoder;
 import org.linecode.server.api.message.Message;
 import org.linecode.server.api.message.ObstacleListFromUnit;
-import org.linecode.server.api.message.PathRequestFromUnit;
 import org.linecode.server.api.message.PositionFromUnit;
 import org.linecode.server.api.message.SpeedFromUnit;
 import org.linecode.server.api.message.StartToUnit;
@@ -92,7 +91,7 @@ public class UnitEndpoint {
                 }
             }, 25000L, 25000L);
 
-            logger.info("UnitEndpoint: Opened connection: " + id);
+            logger.info(String.format("UnitEndpoint: Opened connection: %s", id));
         } else {
             try {
                 session.close();
@@ -105,7 +104,7 @@ public class UnitEndpoint {
     @OnClose
     public void onClose(Session session) {
         timer.cancel();
-        logger.info("UnitEndpoint: Closed connection: " + id);
+        logger.info(String.format("UnitEndpoint: Closed connection: %s", id));
     }
 
     @OnMessage
@@ -154,9 +153,11 @@ public class UnitEndpoint {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        logger.error("UnitEndpoint (" + id + "): Exception " + throwable.getClass().getName() +
-                " has been thrown: " + throwable.getMessage() +
-                "\nStack trace:" + Arrays.toString(throwable.getStackTrace()));
+        logger.error(String.format("UnitEndpoint (%s): Exception %s has been thrown: %s\nStack trace: %s",
+                session.getId(),
+                throwable.getClass().getName(),
+                throwable.getMessage(),
+                Arrays.toString(throwable.getStackTrace())));
     }
 
     private void keepAlive() {
@@ -164,10 +165,10 @@ public class UnitEndpoint {
     }
 
     public void send(Message message) {
-        logger.info("Sending " + message.getType() + " to " + id);
+        logger.info(String.format("Sending %s to %s", message.getType(), session.getId()));
         try {
             session.getBasicRemote().sendObject(message);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             onError(session, e);
         }
     }

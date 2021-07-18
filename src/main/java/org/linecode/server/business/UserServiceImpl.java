@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getUsers() {
         Set<String> keys = repo.getUsers();
-        List<User> result = new ArrayList<User>(keys.size());
+        List<User> result = new ArrayList<>(keys.size());
 
         for (String username : keys) {
             result.add(new User(username, repo.isAdmin(username)));
@@ -53,8 +53,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthStatus login(String user, String password) {
-        if (password.equals(repo.getPassword(user))){
-            if(repo.isAdmin(user)){
+        if (password.equals(repo.getPassword(user))) {
+            if(repo.isAdmin(user)) {
                 return AuthStatus.ADMIN;
             } else {
                 return AuthStatus.AUTH;
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private List<User> getEmit(Set<String> input){
-        List<User> users = new ArrayList<User>();
+        List<User> users = new ArrayList<>();
         for (String id: input) {
             users.add(new User(id,repo.isAdmin(id)));
         }
