@@ -17,6 +17,7 @@ import javax.websocket.Session;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.TimerTask;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 public class UnitEndpointTest {
     private UnitEndpoint endpoint;
-    private ResetTimer resetTimer;
+    private Timer timer;
     private UnitService unitService;
     private MapService mapService;
     private Session session;
@@ -33,73 +34,72 @@ public class UnitEndpointTest {
 
     @Before
     public void setUp() throws Exception {
-        resetTimer = mock(ResetTimer.class);
+        timer = mock(Timer.class);
         unitService = mock(UnitService.class);
         mapService = mock(MapService.class);
         session = mock(Session.class);
         remote = mock(RemoteEndpoint.Basic.class);
         when(session.getBasicRemote()).thenReturn(remote);
-        endpoint = new UnitEndpoint(resetTimer,unitService, mapService);
+        when(unitService.isUnit(anyString())).thenReturn(true);
+        endpoint = new UnitEndpoint(timer, unitService, mapService);
+        endpoint.onOpen(session, "1");
     }
 
     @Test
     public void onOpen_mockSessionAsParameter_resetTimerScheduleCalledCorrectly() {
-        when(unitService.isUnit("1")).thenReturn(true);
-        endpoint.onOpen(session,"1");
-        verify(resetTimer, times(1)).schedule(any(TimerTask.class), eq(25000L));
+        verify(timer, times(1)).schedule(any(TimerTask.class), eq(25000L), eq(25000L));
     }
 
     @Test
     public void onOpen_mockSessionAsParameter_connectionRefusedIdNotInDB() throws IOException {
         when(unitService.isUnit("1")).thenReturn(false);
-        endpoint.onOpen(session,"1");
+        endpoint.onOpen(session, "1");
         verify(session, times(1)).close();
     }
 
     @Test
     public void onMessage_mockErrorFromUnit_unitServiceUpdatedWithNewError(){
-        ErrorFromUnit message = new ErrorFromUnit("1",1);
-        endpoint.onMessage(session,message);
-        verify(unitService,times(1)).newError(message.getId(),message.getError());
+        ErrorFromUnit message = new ErrorFromUnit(1);
+        endpoint.onMessage(session, message);
+        verify(unitService, times(1)).newError(eq("1"), eq(message.getError()));
     }
 
     @Test
     public void onMessage_mockObstacleListFromUnit_unitServiceUpdatedWithNewObstacleList(){
-        ObstacleListFromUnit message = new ObstacleListFromUnit("1",new ArrayList<Position>());
-        endpoint.onMessage(session,message);
-        verify(mapService,times(1)).newObstacleList(message.getObstacleList());
-
+        ObstacleListFromUnit message = new ObstacleListFromUnit(new ArrayList<Position>());
+        endpoint.onMessage(session, message);
+        verify(mapService, times(1)).newObstacleList(message.getObstacleList());
     }
 
     @Test
     public void onMessage_mockPathRequestFromUnit_pathCalculated(){
-        PathRequestFromUnit message = new PathRequestFromUnit("1");
-        endpoint.onMessage(session,message);
-        verify(mapService,times(1)).getNextPath(message.getId());
+        PathRequestFromUnit message = new PathRequestFromUnit();
+        endpoint.onMessage(session, message);
+        verify(mapService, times(1)).getNextPath(eq("1"));
 
     }
 
     @Test
     public void onMessage_mockPositionFromUnit_unitServiceUpdatedWithNewPosition(){
-        PositionFromUnit message = new PositionFromUnit("1",new Position(0,0));
-        endpoint.onMessage(session,message);
-        verify(unitService,times(1)).newPosition(message.getId(),message.getPosition());
+        PositionFromUnit message = new PositionFromUnit(new Position(0,0));
+        endpoint.onMessage(session, message);
+        verify(unitService, times(1)).newPosition(eq("1"), eq(message.getPosition()));
 
     }
 
     @Test
     public void onMessage_mockSpeedFromUnit_unitServiceUpdatedWithNewSpeed(){
-        SpeedFromUnit message = new SpeedFromUnit("1",50);
-        endpoint.onMessage(session,message);
-        verify(unitService,times(1)).newSpeed(message.getId(),message.getSpeed());
+        SpeedFromUnit message = new SpeedFromUnit(50);
+        endpoint.onMessage(session, message);
+        verify(unitService, times(1)).newSpeed(eq("1"), eq(message.getSpeed()));
 
     }
 
     @Test
     public void onMessage_mockStatusFromUnit_unitServiceUpdatedWithNewStatus(){
-        StatusFromUnit message = new StatusFromUnit("1", UnitStatus.BASE);
+        StatusFromUnit message = new StatusFromUnit(UnitStatus.BASE);
         endpoint.onMessage(session,message);
-        verify(unitService,times(1)).newStatus(message.getId(),message.getStatus());
+        verify(unitService, times(1)).newStatus(eq("1"), eq(message.getStatus()));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class UnitEndpointTest {
         endpoint.sendStart("1");
 
         ArgumentCaptor<StartToUnit> captor = forClass(StartToUnit.class);
-        verify(remote,times(1)).sendObject(captor.capture());
+        verify(remote, times(1)).sendObject(captor.capture());
         assertEquals(mockPath,captor.getValue().getPath());
 
     }
@@ -124,7 +124,7 @@ public class UnitEndpointTest {
         endpoint.sendStop("1");
 
         ArgumentCaptor<CommandToUnit> captor = forClass(CommandToUnit.class);
-        verify(remote,times(1)).sendObject(captor.capture());
+        verify(remote, times(1)).sendObject(captor.capture());
         assertEquals(UnitStopCommand.STOP,captor.getValue().getCommand());
 
     }
@@ -136,7 +136,7 @@ public class UnitEndpointTest {
         endpoint.sendShutdown("1");
 
         ArgumentCaptor<CommandToUnit> captor = forClass(CommandToUnit.class);
-        verify(remote,times(1)).sendObject(captor.capture());
+        verify(remote, times(1)).sendObject(captor.capture());
         assertEquals(UnitStopCommand.SHUTDOWN,captor.getValue().getCommand());
 
     }
@@ -161,11 +161,4 @@ public class UnitEndpointTest {
 
         verify(session,times(1)).close();
     }
-
-
-
-
-
-
-
 }

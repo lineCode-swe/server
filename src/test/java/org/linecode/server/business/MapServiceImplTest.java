@@ -12,21 +12,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.*;
-import static org.mockito.Matchers.any;
+//import static org.mockito.Matchers.any;
 
 import static org.mockito.Mockito.*;
 
 
 
 public class MapServiceImplTest{
-
-    Grid map;
-    UnitRepository unitRepo;
-    ObstacleRepository obsRepo;
-    MapRepository mapRepo;
-    Signal1<Grid> mapSignal;
-    Signal1<List<Position>> obstaclesSignal;
-    MapServiceImpl test;
+    private Grid map;
+    private UnitRepository unitRepo;
+    private ObstacleRepository obsRepo;
+    private MapRepository mapRepo;
+    private Signal1<Grid> mapSignal;
+    private Signal1<List<Position>> obstaclesSignal;
+    private MapServiceImpl test;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -37,12 +36,9 @@ public class MapServiceImplTest{
          mapRepo= Mockito.mock(MapRepository.class);
          mapSignal= (Signal1<Grid>)Mockito.mock(Signal1.class);
          obstaclesSignal= (Signal1<List<Position>>)Mockito.mock(Signal1.class);
-         test =new MapServiceImpl(unitRepo,obsRepo,mapRepo,mapSignal,obstaclesSignal);
+         test =new MapServiceImpl(unitRepo, obsRepo, mapRepo, mapSignal, obstaclesSignal);
          test.map=map;
     }
-
-
-
 
     @Test
     public void newMap_StringWithAllTypeOfCells_Calculated() {
@@ -63,7 +59,7 @@ public class MapServiceImplTest{
         String mappa = new String(">_^<BP\nxx>_^+");
         test.newMap(mappa);
         verify(mapSignal,times(1)).emit(any(Grid.class));
-        assertEquals((new Grid(lista,6,2).getGrid()),(test.getMap().getGrid()));
+        assertEquals((new Grid(lista,6,2).getCells()),(test.getMap().getCells()));
 
 
     }
@@ -195,6 +191,8 @@ public class MapServiceImplTest{
     public void getNeighbor_AllNeighbors_ReturnNeighbors(){
         when(map.getLength()).thenReturn(10);
         when(map.getHeight()).thenReturn(10);
+        Cell cellina = new Cell(new Position(2,2),false,false,Direction.ALL,false);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
         Position cell = new Position(2,2);
         int distance = 5;
         int[][] distances = {{1,1,1,1},{1,1,5,1},{1,1,1,1},{1,1,1,1}};
@@ -206,6 +204,8 @@ public class MapServiceImplTest{
     public void getNeighbor_NoNeighbor_ReturnNull(){
         when(map.getLength()).thenReturn(10);
         when(map.getHeight()).thenReturn(10);
+        Cell cellina = new Cell(new Position(2,2),false,false,Direction.ALL,false);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
         Position cell = new Position(2,2);
         int distance = 5;
         int[][] distances = {{1,1,1,1},{1,1,1,1},{1,1,1,1},{1,1,1,1}};
@@ -246,8 +246,43 @@ public class MapServiceImplTest{
         when(cellina.isLocked()).thenReturn(false);
         Position cell = new Position(0,0);
         List<Position> path = new ArrayList<Position>();
-        assertEquals(4,test.getPath(cell,new Position(1,3),path));
+        assertEquals(4, test.getPath(cell, new Position(1, 3), path));
     }
+
+
+   /* @Test
+    public void getPath_Map(){
+        test.newMap("+++_P+\n+++++x\n+++<P+\n++>++P");
+        Cell cellina = Mockito.mock(Cell.class);
+        when(map.getCell(any(Position.class))).thenReturn(cellina);
+        when(cellina.isLocked()).thenReturn(false);
+        List<Position> poi = new ArrayList<Position>();
+       // poi.add(new Position(4,0));
+        poi.add(new Position(4,2));
+        when(unitRepo.getPoiList("123")).thenReturn(poi);
+        when(unitRepo.getPosition("123")).thenReturn(new Position(0,0));
+        when(unitRepo.getBase("123")).thenReturn(new Position(0,0));
+        Position cell = new Position(0,0);
+        List<Position> path1 = new ArrayList<Position>();
+        List<Position> path2 = new ArrayList<Position>();
+        path2.add(new Position(0,0));
+        path2.add(new Position(1,0));
+        path2.add(new Position(2,0));
+        path2.add(new Position(3,0));
+        path2.add(new Position(4,0));
+        path2.add(new Position(4,1));
+        path2.add(new Position(4,2));
+        List<Position> path3 = new ArrayList<Position>();
+        path3.add(new Position(4,0));
+        path3.add(new Position(4,1));
+        path3.add(new Position(4,2));
+        List<Position> path4 = new ArrayList<Position>();
+        path4.add(new Position(4,2));
+        path4.add(new Position(4,2));
+
+        assertEquals(path2,test.getNextPath("123"));
+    }*/
+
 
     @Test
     public void newObstacleList_ListOfObstacles_EmitSignal(){
@@ -255,8 +290,4 @@ public class MapServiceImplTest{
         test.newObstacleList(mockObstacles);
         verify(obstaclesSignal,times(1)).emit(any(ArrayList.class));
     }
-
-
-
-
 }

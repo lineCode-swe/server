@@ -8,17 +8,11 @@
 package org.linecode.server.api.message;
 
 public class SpeedFromUnit extends Message{
-    private final String id;
     private final int speed;
 
-    public SpeedFromUnit(String id, int speed) {
+    public SpeedFromUnit(int speed) {
         super("SpeedFromUnit");
-        this.id = id;
         this.speed = speed;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public int getSpeed() {

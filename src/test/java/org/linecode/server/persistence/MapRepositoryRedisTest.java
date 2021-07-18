@@ -24,54 +24,60 @@ public class MapRepositoryRedisTest {
     }
 
     @Test
-    public void getLength() {
+    public void getLength_requestToGetLength_LengthCorrectlyReturned() {
         when(db.get("length")).thenReturn("5");
         assertEquals(5, test.getLength());
-        verify(db,times(1)).get("length");
+        verify(db, times(1)).get("length");
     }
 
     @Test
-    public void getHeight() {
+    public void getHeight_requestToGetHeight_HeightCorrectlyReturned() {
         when(db.get("height")).thenReturn("5");
         assertEquals(5, test.getHeight());
-        verify(db,times(1)).get("height");
+        verify(db, times(1)).get("height");
     }
 
     @Test
-    public void setLength() {
-        test.setLength(5);
-        verify(db,times(1)).set(anyString(),anyString());
-        verify(db,times(1)).bgsave();
-    }
-
-    @Test
-    public void setHeight() {
-        test.setHeight(5);
-        verify(db,times(1)).set("height","5");
-        verify(db,times(1)).bgsave();
-    }
-
-    @Test
-    public void getCell() {
-        when(db.hget("cell:0:0","locked")).thenReturn("false");
-        when(db.hget("cell:0:0","base")).thenReturn("false");
-        when(db.hget("cell:0:0","direction")).thenReturn("RIGHT");
-        Cell cell= test.getCell(0,0);
+    public void getCell_LengthHeight_CellCorrectlyReturned() {
+        when(db.hget("cell:0:0", "locked")).thenReturn("false");
+        when(db.hget("cell:0:0", "base")).thenReturn("false");
+        when(db.hget("cell:0:0", "direction")).thenReturn("RIGHT");
+        when(db.hget("cell:0:0", "poi")).thenReturn("false");
+        Cell cell= test.getCell(0, 0);
         assertFalse(cell.isLocked());
         assertFalse(cell.isBase());
-        assertEquals(Direction.RIGHT,cell.getDirection());
+        assertFalse(cell.isPoi());
+        assertEquals(Direction.RIGHT, cell.getDirection());
+        verify(db, times(4)).hget(anyString(), anyString());
     }
 
     @Test
-    public void setCells() {
+    public void setCells_LengthHeightCellList_DeleteExistingCellsAndSetNewCellListToDB() {
+        when(db.get("length")).thenReturn("5");
+        when(db.get("height")).thenReturn("5");
         List<Cell> cellList = new ArrayList<Cell>();
-        cellList.add(new Cell(new Position(0,1), false, false, Direction.RIGHT, false));
-        cellList.add(new Cell(new Position(1,2), false, false, Direction.RIGHT, false));
-        cellList.add(new Cell(new Position(2,3), false, true, Direction.ALL, false));
-        test.setCells(cellList);
-        verify(db, times(1)).del(anyString());
-        verify(db, times(3)).sadd(anyString(), anyString());
-        verify(db, times(3)).hmset(anyString(), anyMap());
-        verify(db, times(1)).bgsave();
+        cellList.add(new Cell(new Position(0, 0), false, false, Direction.ALL, false));
+        cellList.add(new Cell(new Position(0, 1), false, false, Direction.ALL, false));
+        cellList.add(new Cell(new Position(1, 0), false, false, Direction.ALL, false));
+        cellList.add(new Cell(new Position(1, 1), false, false, Direction.ALL, false));
+        test.setCells(cellList, 2, 2);
+        verify(db, times((5+1)*(5+1))).get(anyString());
+        verify(db, times(5*5)).del(anyString());
+        verify(db, times(2)).set(anyString(), anyString());
+        verify(db, times(2*2)).hmset(anyString(), anyMap());
+        verify(db, times(1)).save();
+    }
+
+    @Test
+    public void getCells_requestToGetCellList_CellListCorrectlyReturned() {
+        when(db.get("length")).thenReturn("5");
+        when(db.get("height")).thenReturn("5");
+        when(db.hget(anyString(), eq("locked"))).thenReturn("false");
+        when(db.hget(anyString(), eq("base"))).thenReturn("false");
+        when(db.hget(anyString(), eq("direction"))).thenReturn("RIGHT");
+        when(db.hget(anyString(), eq("poi"))).thenReturn("false");
+        List<Cell> cellList = test.getCells();
+        verify(db, times((5+1)*(5+1))).get(anyString());
+        verify(db, times(5*5*4)).hget(anyString(), anyString());
     }
 }

@@ -13,8 +13,18 @@ import com.google.inject.AbstractModule;
 import org.linecode.server.api.message.AuthToUiEncoder;
 import org.linecode.server.api.message.CommandToUnitEncoder;
 import org.linecode.server.api.message.KeepAliveToUiEncoder;
+import org.linecode.server.api.message.MapToUiEncoder;
+import org.linecode.server.api.message.ObstaclesToUiEncoder;
+import org.linecode.server.api.message.UiMessageDecoder;
+import org.linecode.server.api.message.UnitErrorToUiEncoder;
+import org.linecode.server.api.message.UnitPoiToUiEncoder;
+import org.linecode.server.api.message.UnitPositionToUiEncoder;
+import org.linecode.server.api.message.UnitSpeedToUiEncoder;
+import org.linecode.server.api.message.UnitStatusToUiEncoder;
+import org.linecode.server.api.message.UnitsToUiEncoder;
+import org.linecode.server.api.message.UsersToUiEncoder;
 import org.linecode.server.api.message.KeepAliveToUnitEncoder;
-import org.linecode.server.api.message.MessageDecoder;
+import org.linecode.server.api.message.UnitMessageDecoder;
 import org.linecode.server.api.message.StartToUnitEncoder;
 import org.linecode.server.business.MapService;
 import org.linecode.server.business.MapServiceImpl;
@@ -30,6 +40,9 @@ import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.UnitRepositoryRedis;
 import org.linecode.server.persistence.UserRepository;
 import org.linecode.server.persistence.UserRepositoryRedis;
+import redis.clients.jedis.Jedis;
+
+import static org.mockito.Mockito.mock;
 
 public class EndpointModule extends AbstractModule {
     protected void configure() {
@@ -45,15 +58,21 @@ public class EndpointModule extends AbstractModule {
         bind(ResetTimer.class).to(ResetTimerImpl.class);
         bind(ObjectMapper.class).asEagerSingleton();
 
-        requestStaticInjection(MessageDecoder.class);
-
+        requestStaticInjection(UnitMessageDecoder.class);
+        requestStaticInjection(UiMessageDecoder.class);
         requestStaticInjection(KeepAliveToUiEncoder.class);
+        requestStaticInjection(UnitsToUiEncoder.class);
+        requestStaticInjection(UnitStatusToUiEncoder.class);
+        requestStaticInjection(UnitPoiToUiEncoder.class);
+        requestStaticInjection(UnitSpeedToUiEncoder.class);
+        requestStaticInjection(UnitErrorToUiEncoder.class);
+        requestStaticInjection(UnitPositionToUiEncoder.class);
+        requestStaticInjection(UsersToUiEncoder.class);
+        requestStaticInjection(MapToUiEncoder.class);
+        requestStaticInjection(ObstaclesToUiEncoder.class);
         requestStaticInjection(AuthToUiEncoder.class);
-
         requestStaticInjection(KeepAliveToUnitEncoder.class);
         requestStaticInjection(StartToUnitEncoder.class);
         requestStaticInjection(CommandToUnitEncoder.class);
-
-
     }
 }

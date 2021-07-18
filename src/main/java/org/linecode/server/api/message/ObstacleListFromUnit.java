@@ -12,17 +12,11 @@ import org.linecode.server.Position;
 import java.util.List;
 
 public class ObstacleListFromUnit extends Message{
-    private final String id;
     private final List<Position> obstacleList;
 
-    public ObstacleListFromUnit(String id, List<Position> obstacleList) {
+    public ObstacleListFromUnit(List<Position> obstacleList) {
         super("ObstacleListFromUnit");
-        this.id = id;
         this.obstacleList = obstacleList;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public List<Position> getObstacleList() {

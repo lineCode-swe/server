@@ -14,20 +14,25 @@ import java.util.TimerTask;
 public class ResetTimerImpl implements ResetTimer {
     private TimerTask task;
     private long period;
-    private final Timer timer;
+    private Timer timer;
 
-    public ResetTimerImpl(Timer timer) {
+    @Inject
+    public ResetTimerImpl() {
         this.task = null;
         this.period = 0;
-        this.timer = timer;
+        this.timer = null;
     }
 
-    public void reset() {
+    @Override
+    public synchronized void reset() {
         timer.cancel();
+        timer = new Timer();
         timer.schedule(task, period, period);
     }
 
-    public void schedule(TimerTask task, long period) {
+    @Override
+    public synchronized void schedule(TimerTask task, long period) {
+        timer = new Timer();
         this.period = period;
         this.task = task;
         timer.schedule(task, period, period);

@@ -17,13 +17,14 @@ import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.Direction;
 
 import javax.inject.Inject;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class MapServiceImpl implements MapService{
+public class MapServiceImpl implements MapService {
 
     protected Grid map;
     protected final UnitRepository unitRepo;
@@ -32,6 +33,7 @@ public class MapServiceImpl implements MapService{
     protected final Signal1<Grid> mapSignal;
     protected final Signal1<List<Position>> obstaclesSignal;
 
+    @Inject
     public MapServiceImpl(UnitRepository unitRepo, ObstacleRepository obsRepo,
                           MapRepository mapRepo,
                           Signal1<Grid> mapSignal, Signal1<List<Position>> obstaclesSignal) {
@@ -41,7 +43,7 @@ public class MapServiceImpl implements MapService{
         this.mapRepo = mapRepo;
         this.mapSignal = mapSignal;
         this.obstaclesSignal = obstaclesSignal;
-        map = new Grid(mapRepo.getCells(),mapRepo.getLength(),mapRepo.getHeight());
+        this.map = new Grid(mapRepo.getCells(), mapRepo.getLength(), mapRepo.getHeight());
     }
 
 
@@ -111,9 +113,7 @@ public class MapServiceImpl implements MapService{
         }
 
         map = new Grid(lista,x,y+1);
-        mapRepo.setHeight(y+1);
-        mapRepo.setLength(x);
-        mapRepo.setCells(lista);
+        mapRepo.setCells(lista, x, y + 1);
         mapSignal.emit(map);
 
     }
@@ -122,8 +122,24 @@ public class MapServiceImpl implements MapService{
     public List<Position> getNextPath(String id) {
         List<Position> path = new ArrayList<Position>();
         List<Position> pois = unitRepo.getPoiList(id);
-        int distance= getPath(unitRepo.getPosition(id),pois.get(0),path);
-        return path;
+        int distance = Integer.MAX_VALUE;
+        boolean sizeOfPois= pois.size()>0;
+        if(sizeOfPois){
+            distance= getPath(unitRepo.getPosition(id),pois.get(0),path);
+        } else {
+            distance= getPath(unitRepo.getPosition(id), unitRepo.getBase(id),path);
+        }
+        if(distance != Integer.MAX_VALUE) {
+            if(sizeOfPois){
+                pois.remove(0);
+                unitRepo.setPoiList(id,pois);
+            }
+            return path;
+        } else {
+            return new ArrayList<Position>();
+        }
+
+
 
     }
 
@@ -213,16 +229,40 @@ public class MapServiceImpl implements MapService{
 
     protected Position getNeighbor(Position cell, int distance, int[][] distances) {
 
-        int[][] ds = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        for (int[] d : ds) {
-            int row = cell.getX()+ d[0];
-            int col = cell.getY() + d[1];
-            if (isValid(row, col)
-                    && distances[row][col] == distance) {
-                return new Position(row, col);
+        int ds[][] = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        if(isValid(cell.getX()-1,cell.getY())) {
+            if (map.getCell(new Position(cell.getX() - 1, cell.getY())).getDirection().equals(Direction.LEFT)) {
+                ds[0][0] = 0;
+                ds[0][1] = 0;
             }
         }
-
+        if(isValid(cell.getX()+1,cell.getY())) {
+            if (map.getCell(new Position(cell.getX() + 1, cell.getY())).getDirection().equals(Direction.RIGHT)) {
+                ds[1][0] = 0;
+                ds[1][1] = 0;
+            }
+        }
+        if(isValid(cell.getX(),cell.getY()+1)) {
+            if (map.getCell(new Position(cell.getX(), cell.getY() + 1)).getDirection().equals(Direction.DOWN)) {
+                ds[3][0] = 0;
+                ds[3][1] = 0;
+            }
+        }
+        if(isValid(cell.getX(),cell.getY()-1)) {
+            if (map.getCell(new Position(cell.getX(), cell.getY() - 1)).getDirection().equals(Direction.UP)) {
+                ds[2][0] = 0;
+                ds[2][1] = 0;
+            }
+        }
+        for (int[] d : ds) {
+            int row = cell.getX() + d[0];
+            int col = cell.getY() + d[1];
+            if (isValid(row, col)
+                    && distances[row][col] == distance && !cell.equals(new Position(row,col))) {
+                return new Position(row, col);
+                }
+            }
         return null;
     }
 

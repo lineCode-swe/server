@@ -25,6 +25,8 @@ import org.linecode.server.api.message.UnitMessageDecoder;
 import org.linecode.server.api.message.UnitStopCommand;
 import org.linecode.server.business.MapService;
 import org.linecode.server.business.UnitService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.websocket.Session;
 import javax.inject.Inject;
@@ -37,6 +39,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
 import java.util.TimerTask;
 
 @ServerEndpoint(
@@ -51,24 +54,24 @@ import java.util.TimerTask;
                 CommandToUnitEncoder.class
         }
 )
-
-
 public class UnitEndpoint {
+    private final Logger logger = LoggerFactory.getLogger(UnitEndpoint.class);
+
     private Session session;
     private String id;
-    private final ResetTimer timer;
+    private final Timer timer;
     private final UnitService unitService;
     private final MapService mapService;
 
     @Inject
-    public UnitEndpoint(ResetTimer timer, UnitService unitService,
+    public UnitEndpoint(Timer timer, UnitService unitService,
                         MapService mapService) {
 
         this.timer = timer;
         this.unitService = unitService;
         this.mapService = mapService;
-        this.session=null;
-        this.id=null;
+        this.session = null;
+        this.id = null;
     }
 
     @OnOpen
@@ -87,25 +90,22 @@ public class UnitEndpoint {
                 public void run() {
                     keepAlive();
                 }
-            }, 25000);
-        } else{
+            }, 25000L, 25000L);
+
+            logger.info("UnitEndpoint: Opened connection: " + id);
+        } else {
             try {
                 session.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                onError(session, e);
             }
-
         }
-
     }
 
     @OnClose
     public void onClose(Session session) {
-        try {
-            this.session.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        timer.cancel();
+        logger.info("UnitEndpoint: Closed connection: " + id);
     }
 
     @OnMessage
@@ -113,7 +113,7 @@ public class UnitEndpoint {
         switch (message.getType()) {
             case "ErrorFromUnit":
                 ErrorFromUnit errorFromUnit = (ErrorFromUnit) message;
-                unitService.newError(errorFromUnit.getId(),errorFromUnit.getError());
+                unitService.newError(id, errorFromUnit.getError());
                 break;
 
             case "ObstacleListFromUnit":
@@ -122,40 +122,49 @@ public class UnitEndpoint {
                 break;
 
             case "PathRequestFromUnit":
-                PathRequestFromUnit pathRequestFromUnit = (PathRequestFromUnit) message;
-                List<Position> path = mapService.getNextPath(pathRequestFromUnit.getId());
-                send(new StartToUnit(path));
+                List<Position> path = mapService.getNextPath(id);
+                if (!path.isEmpty()) {
+                    send(new StartToUnit(path));
+                } else {
+                    send(new ErrorFromUnit(404));
+                    unitService.newError(id,404);
+                }
                 break;
 
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
-                unitService.newPosition(positionFromUnit.getId(),positionFromUnit.getPosition());
+                unitService.newPosition(id, positionFromUnit.getPosition());
                 break;
 
             case "SpeedFromUnit":
                 SpeedFromUnit speedFromUnit = (SpeedFromUnit) message;
-                unitService.newSpeed(speedFromUnit.getId(),speedFromUnit.getSpeed());
+                unitService.newSpeed(id, speedFromUnit.getSpeed());
                 break;
 
             case "StatusFromUnit":
                 StatusFromUnit statusFromUnit = (StatusFromUnit) message;
-                unitService.newStatus(statusFromUnit.getId(),statusFromUnit.getStatus());
+                unitService.newStatus(id, statusFromUnit.getStatus());
                 break;
 
+            case "":
+            default:
+                onError(session, new Exception("UnitEndpoint: unrecognized type of message"));
         }
-
     }
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        System.out.println(Arrays.toString(throwable.getStackTrace()));
+        logger.error("UnitEndpoint (" + id + "): Exception " + throwable.getClass().getName() +
+                " has been thrown: " + throwable.getMessage() +
+                "\nStack trace:" + Arrays.toString(throwable.getStackTrace()));
     }
 
     private void keepAlive() {
         send(new KeepAliveToUnit("keepalive"));
     }
 
-    public void send(Object message) {
+    public void send(Message message) {
+        logger.info("Sending " + message.getType() + " to " + id);
         try {
             session.getBasicRemote().sendObject(message);
         } catch (Throwable e) {
@@ -163,11 +172,15 @@ public class UnitEndpoint {
         }
     }
 
-
-
     public void sendStart(String id) {
         if (this.id.equals(id)){
-            send(new StartToUnit(mapService.getNextPath(id)));
+            List<Position> path = mapService.getNextPath(id);
+            if (!path.isEmpty()) {
+                send(new StartToUnit(path));
+            } else {
+                send(new ErrorFromUnit(404));
+                unitService.newError(id,404);
+            }
         }
     }
 

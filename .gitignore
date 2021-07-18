@@ -1,6 +1,9 @@
 # Target folder
 target
 
+# Redis persistence folder
+data
+
 # Compiled class file
 *.class
 

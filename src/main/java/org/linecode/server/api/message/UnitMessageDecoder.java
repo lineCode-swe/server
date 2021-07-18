@@ -40,44 +40,33 @@ public class UnitMessageDecoder implements Decoder.Text<Message> {
         switch (node.path("type").asText()) {
             case "PositionToServer":
                 return new PositionFromUnit(
-                        node.path("id").asText(),
-                        new Position(node.path("position").path("x").asInt(),node.path("position").path("y").asInt())
+                        new Position(
+                                node.path("position").path("x").asInt(),
+                                node.path("position").path("y").asInt()
+                        )
                 );
 
             case "ErrorToServer":
-                return new ErrorFromUnit(
-                        node.path("id").asText(),
-                        node.path("error").asInt()
-                );
+                return new ErrorFromUnit(node.path("error").asInt());
 
             case "ObstacleListToServer":
-                List<Position> temporal = new ArrayList<Position>();
-                Consumer<JsonNode> data = (JsonNode subnode) -> temporal.add(new Position(subnode.path("x").asInt()
-                        ,subnode.path("y").asInt()));
-                node.path("position").forEach(data);
-                return new ObstacleListFromUnit(
-                       node.path("id").asText(), temporal
-                );
+                List<Position> obstacleList = new ArrayList<Position>();
+                node.path("obstacleList").forEach(poi -> {
+                    obstacleList.add(new Position(poi.path("x").asInt(), poi.path("y").asInt()));
+                });
+                return new ObstacleListFromUnit(obstacleList);
 
             case "PathRequestToServer":
 
-                return new PathRequestFromUnit(
-                        node.path("id").asText()
-                );
+                return new PathRequestFromUnit();
 
             case "SpeedToServer":
 
-                return new SpeedFromUnit(
-                        node.path("id").asText(),
-                        node.path("speed").asInt()
-                );
+                return new SpeedFromUnit(node.path("speed").asInt());
 
             case "StatusToServer":
 
-                return new StatusFromUnit(
-                        node.path("id").asText(),
-                        UnitStatus.valueOf(node.path("status").asText())
-                );
+                return new StatusFromUnit(UnitStatus.valueOf(node.path("status").asText()));
 
             case "":
             default:
@@ -96,41 +85,23 @@ public class UnitMessageDecoder implements Decoder.Text<Message> {
 
         switch (node.path("type").asText()) {
             case "PositionToServer":
-                return !(
-                        node.path("id").isMissingNode() ||
-                                node.path("position").isMissingNode()
-                );
+                return !(node.path("position").isMissingNode());
 
             case "ErrorToServer":
-                return !(
-                        node.path("id").isMissingNode() || node.path("err").isMissingNode()
-                );
+                return !(node.path("error").isMissingNode());
 
             case "ObstacleListToServer":
-                return !(
-                        node.path("id").isMissingNode() ||
-                                node.path("obstacles").isMissingNode()
-                );
+                return !(node.path("obstacles").isMissingNode());
 
             case "PathRequestToServer":
-
-                return !(
-                        node.path("id").isMissingNode() ||
-                                node.path("pathRequest").isMissingNode()
-                );
+                return true;
 
             case "SpeedToServer":
 
-                return !(
-                        node.path("id").isMissingNode() ||
-                                node.path("speed").isMissingNode()
-                );
+                return !(node.path("speed").isMissingNode());
 
             case "StatusToServer":
-                return !(
-                        node.path("id").isMissingNode() ||
-                                node.path("status").isMissingNode()
-                );
+                return !(node.path("status").isMissingNode());
 
             case "":
             default:

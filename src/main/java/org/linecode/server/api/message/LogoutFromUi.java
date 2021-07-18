@@ -9,14 +9,7 @@
 package org.linecode.server.api.message;
 
 public class LogoutFromUi extends Message {
-    private final String user;
-
-    public LogoutFromUi(String user) {
+    public LogoutFromUi() {
         super("LogoutFromUi");
-        this.user = user;
-    }
-
-    public String getUser() {
-        return user;
     }
 }
