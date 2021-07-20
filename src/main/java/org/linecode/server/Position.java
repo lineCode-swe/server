@@ -9,8 +9,11 @@
 
 package org.linecode.server;
 
+import java.util.Objects;
+
 public class Position {
-    private final int x,y;
+    private final int x;
+    private final int y;
 
     public Position() {
         this.x=0;
@@ -52,4 +55,8 @@ public class Position {
         return this.x == cmp.getX() && this.y == cmp.getY();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
 }

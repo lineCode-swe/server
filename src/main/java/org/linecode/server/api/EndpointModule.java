@@ -40,11 +40,9 @@ import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.UnitRepositoryRedis;
 import org.linecode.server.persistence.UserRepository;
 import org.linecode.server.persistence.UserRepositoryRedis;
-import redis.clients.jedis.Jedis;
-
-import static org.mockito.Mockito.mock;
 
 public class EndpointModule extends AbstractModule {
+    @Override
     protected void configure() {
         bind(UserRepository.class).to(UserRepositoryRedis.class).asEagerSingleton();
         bind(UnitRepository.class).to(UnitRepositoryRedis.class).asEagerSingleton();

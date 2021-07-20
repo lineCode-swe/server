@@ -17,7 +17,6 @@ import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.Direction;
 
 import javax.inject.Inject;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -56,7 +55,6 @@ public class MapServiceImpl implements MapService {
         }
 
         obstaclesSignal.emit(obstacles);
-
     }
 
     @Override
@@ -67,8 +65,9 @@ public class MapServiceImpl implements MapService {
     @Override
     public void newMap(String mapSchema) {
         char[] characters = mapSchema.toCharArray();
-        List<Cell> lista= new ArrayList<Cell>();
-        int x=0,y=0;
+        List<Cell> lista= new ArrayList<>();
+        int x = 0;
+        int y = 0;
 
         for (int j=0; j<mapSchema.length();++j){
             switch(characters[j]) {
@@ -115,32 +114,30 @@ public class MapServiceImpl implements MapService {
         map = new Grid(lista,x,y+1);
         mapRepo.setCells(lista, x, y + 1);
         mapSignal.emit(map);
-
     }
 
     @Override
     public List<Position> getNextPath(String id) {
-        List<Position> path = new ArrayList<Position>();
+        List<Position> path = new ArrayList<>();
         List<Position> pois = unitRepo.getPoiList(id);
         int distance = Integer.MAX_VALUE;
-        boolean sizeOfPois= pois.size()>0;
-        if(sizeOfPois){
-            distance= getPath(unitRepo.getPosition(id),pois.get(0),path);
+        boolean sizeOfPois = !pois.isEmpty();
+
+        if (sizeOfPois) {
+            distance = getPath(unitRepo.getPosition(id), pois.get(0), path);
         } else {
-            distance= getPath(unitRepo.getPosition(id), unitRepo.getBase(id),path);
+            distance = getPath(unitRepo.getPosition(id), unitRepo.getBase(id), path);
         }
-        if(distance != Integer.MAX_VALUE) {
+
+        if (distance != Integer.MAX_VALUE) {
             if(sizeOfPois){
                 pois.remove(0);
-                unitRepo.setPoiList(id,pois);
+                unitRepo.setPoiList(id, pois);
             }
             return path;
         } else {
-            return new ArrayList<Position>();
+            return new ArrayList<>();
         }
-
-
-
     }
 
      protected int getPath(Position start, Position end, List<Position> path) {
@@ -192,8 +189,8 @@ public class MapServiceImpl implements MapService {
     }
 
     protected void addNeighbors(Position pos, List<Position> list) {
+        int[][] ds;
 
-        int[][] ds = new int[0][0];
         if (map.getCell(pos) != null) {
             switch (map.getCell(pos).getDirection()) {
                 case UP:
@@ -229,32 +226,32 @@ public class MapServiceImpl implements MapService {
 
     protected Position getNeighbor(Position cell, int distance, int[][] distances) {
 
-        int ds[][] = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        int[][] ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
-        if(isValid(cell.getX()-1,cell.getY())) {
-            if (map.getCell(new Position(cell.getX() - 1, cell.getY())).getDirection().equals(Direction.LEFT)) {
-                ds[0][0] = 0;
-                ds[0][1] = 0;
-            }
+        if(isValid(cell.getX() - 1, cell.getY()) &&
+                map.getCell(new Position(cell.getX() - 1, cell.getY())).getDirection().equals(Direction.LEFT)) {
+            ds[0][0] = 0;
+            ds[0][1] = 0;
         }
-        if(isValid(cell.getX()+1,cell.getY())) {
-            if (map.getCell(new Position(cell.getX() + 1, cell.getY())).getDirection().equals(Direction.RIGHT)) {
-                ds[1][0] = 0;
-                ds[1][1] = 0;
-            }
+
+        if(isValid(cell.getX() + 1, cell.getY()) &&
+                map.getCell(new Position(cell.getX() + 1, cell.getY())).getDirection().equals(Direction.RIGHT)) {
+            ds[1][0] = 0;
+            ds[1][1] = 0;
         }
-        if(isValid(cell.getX(),cell.getY()+1)) {
-            if (map.getCell(new Position(cell.getX(), cell.getY() + 1)).getDirection().equals(Direction.DOWN)) {
-                ds[3][0] = 0;
-                ds[3][1] = 0;
-            }
+
+        if(isValid(cell.getX(), cell.getY()+1) &&
+                map.getCell(new Position(cell.getX(), cell.getY() + 1)).getDirection().equals(Direction.DOWN)) {
+            ds[3][0] = 0;
+            ds[3][1] = 0;
         }
-        if(isValid(cell.getX(),cell.getY()-1)) {
-            if (map.getCell(new Position(cell.getX(), cell.getY() - 1)).getDirection().equals(Direction.UP)) {
-                ds[2][0] = 0;
-                ds[2][1] = 0;
-            }
+
+        if(isValid(cell.getX(), cell.getY() - 1) &&
+                map.getCell(new Position(cell.getX(), cell.getY() - 1)).getDirection().equals(Direction.UP)) {
+            ds[2][0] = 0;
+            ds[2][1] = 0;
         }
+
         for (int[] d : ds) {
             int row = cell.getX() + d[0];
             int col = cell.getY() + d[1];

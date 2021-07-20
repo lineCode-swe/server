@@ -32,8 +32,12 @@ public class UnitErrorToUiEncoder implements Encoder.Text<UnitErrorToUi> {
     }
 
     @Override
-    public void init(EndpointConfig endpointConfig) {}
+    public void init(EndpointConfig endpointConfig) {
+        // Override requested but no operations needed
+    }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+        // Override requested but no operations needed
+    }
 }

@@ -70,7 +70,7 @@ public class MapRepositoryRedis implements MapRepository{
 
     @Override
     public List<Cell> getCells() {
-        List<Cell> cellsList = new ArrayList<Cell>();
+        List<Cell> cellsList = new ArrayList<>();
         for (int i = 0; i < getHeight(); ++i) {
             for (int j = 0; j < getLength(); ++j) {
                 String cellKey = "cell:" + j + ":" + i;

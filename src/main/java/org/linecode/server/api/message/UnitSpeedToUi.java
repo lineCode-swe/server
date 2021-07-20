@@ -18,6 +18,10 @@ public class UnitSpeedToUi extends Message {
         this.speed = speed;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public int getSpeed() {
         return speed;
     }

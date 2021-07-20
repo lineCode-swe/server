@@ -133,13 +133,13 @@ public class UiEndpoint {
         sendUsers(userService.getUsers());
         // TODO: inviare anche ostacoli
 
-        logger.info("UIEndpoint: Opened connection: " + session.getId());
+        logger.info(String.format("UIEndpoint: Opened connection: %s", session.getId()));
     }
 
     @OnClose
     public void onClose(Session session) {
         timer.cancel();
-        logger.info("UIEndpoint: Closed connection: " + session.getId());
+        logger.info(String.format("UIEndpoint: Closed connection: %s", session.getId()));
     }
 
     @OnMessage
@@ -198,9 +198,11 @@ public class UiEndpoint {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        logger.error("UIEndpoint (" + session.getId() + "): Exception " + throwable.getClass().getName() +
-                " has been thrown: " + throwable.getMessage() +
-                "\nStack trace:" + Arrays.toString(throwable.getStackTrace()));
+        logger.error(String.format("UiEndpoint (%s): Exception %s has been thrown: %s\nStack trace: %s",
+                session.getId(),
+                throwable.getClass().getName(),
+                throwable.getMessage(),
+                Arrays.toString(throwable.getStackTrace())));
     }
 
     public void login(LoginFromUi loginFromUi) {
@@ -286,10 +288,10 @@ public class UiEndpoint {
     }
 
     private void send(Message message) {
-        logger.info("Sending " + message.getType() + " to " + session.getId());
+        logger.info(String.format("Sending %s to %s", message.getType(), session.getId()));
         try {
             session.getBasicRemote().sendObject(message);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             onError(session, e);
         }
     }
