@@ -79,11 +79,11 @@ public class Main {
         db.hmset("cell:4:1", Map.of("locked", "true", "poi", "false", "base", "false", "direction", "ALL"));
         db.hmset("cell:5:1", Map.of("locked", "false", "poi", "false", "base", "false", "direction", "ALL"));
 
-        db.hmset("cell:0:2", Map.of("locked", "false", "poi", "false", "base", "true", "direction", "ALL"));
+        db.hmset("cell:0:2", Map.of("locked", "false", "poi", "false", "base", "false", "direction", "ALL"));
         db.hmset("cell:1:2", Map.of("locked", "false", "poi", "false", "base", "false", "direction", "ALL"));
         db.hmset("cell:2:2", Map.of("locked", "false", "poi", "false", "base", "false", "direction", "RIGHT"));
         db.hmset("cell:3:2", Map.of("locked", "false", "poi", "false", "base", "false", "direction", "ALL"));
-        db.hmset("cell:4:2", Map.of("locked", "true", "poi", "true", "base", "false", "direction", "ALL"));
+        db.hmset("cell:4:2", Map.of("locked", "true", "poi", "false", "base", "false", "direction", "ALL"));
         db.hmset("cell:5:2", Map.of("locked", "false", "poi", "false", "base", "false", "direction", "ALL"));
 
         db.hmset("cell:0:3", Map.of("locked", "false", "poi", "false", "base", "true", "direction", "ALL"));
