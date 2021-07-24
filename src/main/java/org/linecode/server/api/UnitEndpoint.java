@@ -35,6 +35,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
@@ -128,6 +129,11 @@ public class UnitEndpoint {
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
                 unitService.newPosition(id, positionFromUnit.getPosition());
+                List<Position> pois = unitService.getPoiList(id);
+                if(pois.get(0).equals(positionFromUnit.getPosition())){
+                    pois.remove(0);
+                    unitService.setPoiList(id,pois);
+                }
                 List<Position> obstacles = positionFromUnit.getObstacles();
                 mapService.newObstacleList(obstacles,positionFromUnit.getPosition());
                 if(!obstacles.isEmpty() || mapService.checkPremises(positionFromUnit.getPosition())){
@@ -200,7 +206,15 @@ public class UnitEndpoint {
 
     public void sendBase(String id){
         if (this.id.equals(id)) {
-            send(new CommandToUnit(UnitStopCommand.BASE));
+            send(new CommandToUnit(UnitStopCommand.STOP));
+            unitService.setPoiList(id, new ArrayList<Position>());
+            List<Position> path = mapService.getNextPath(id);
+            if (!path.isEmpty()) {
+                send(new StartToUnit(path));
+            } else {
+                send(new ErrorFromUnit(404));
+                unitService.newError(id, 404);
+            }
         }
     }
 

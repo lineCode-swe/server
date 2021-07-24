@@ -19,6 +19,7 @@ public interface UnitService {
     public boolean isUnit(String id);
     public List<Unit> getUnits();
     public List<Position> getPoiList(String id);
+    public void setPoiList(String id,List<Position> pois);
     public void newPosition(String id,Position position);
     public void newStatus(String id,UnitStatus status);
     public void newError(String id,int error);

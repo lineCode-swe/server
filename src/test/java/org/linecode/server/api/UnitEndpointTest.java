@@ -74,6 +74,9 @@ public class UnitEndpointTest {
 
     @Test
     public void onMessage_mockPositionFromUnit_unitServiceUpdatedWithNewPosition(){
+        List<Position> pois = new ArrayList<Position>();
+        pois.add(new Position(1,1));
+        when(unitService.getPoiList("1")).thenReturn(pois);
         PositionFromUnit message = new PositionFromUnit(new Position(0,0), new ArrayList<Position>());
         endpoint.onMessage(session, message);
         verify(unitService, times(1)).newPosition(eq("1"), eq(message.getPosition()));
@@ -142,8 +145,7 @@ public class UnitEndpointTest {
         endpoint.sendBase("1");
 
         ArgumentCaptor<CommandToUnit> captor = forClass(CommandToUnit.class);
-        verify(remote,times(1)).sendObject(captor.capture());
-        assertEquals(UnitStopCommand.BASE,captor.getValue().getCommand());
+        verify(remote,times(2)).sendObject(captor.capture());
 
     }
 

@@ -95,6 +95,12 @@ public class UnitServiceImpl implements UnitService {
     }
 
     @Override
+    public void setPoiList(String id,List<Position> pois) {
+        repo.setPoiList(id,pois);
+        poiSignal.emit(id,pois);
+    }
+
+    @Override
     public void newPosition(String id, Position position) {
         repo.setPosition(id, position);
         positionSignal.emit(id,position);
