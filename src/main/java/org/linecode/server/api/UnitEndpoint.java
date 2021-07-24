@@ -130,9 +130,11 @@ public class UnitEndpoint {
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
                 unitService.newPosition(id, positionFromUnit.getPosition());
                 List<Position> pois = unitService.getPoiList(id);
-                if(pois.get(0).equals(positionFromUnit.getPosition())){
-                    pois.remove(0);
-                    unitService.setPoiList(id,pois);
+                if(!pois.isEmpty()) {
+                    if (pois.get(0).equals(positionFromUnit.getPosition())) {
+                        pois.remove(0);
+                        unitService.setPoiList(id, pois);
+                    }
                 }
                 List<Position> obstacles = positionFromUnit.getObstacles();
                 mapService.newObstacleList(obstacles,positionFromUnit.getPosition());
