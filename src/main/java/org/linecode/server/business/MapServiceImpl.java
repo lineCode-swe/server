@@ -49,7 +49,25 @@ public class MapServiceImpl implements MapService {
 
 
     @Override
-    public void newObstacleList(List<Position> obstacles) {
+    public void newObstacleList(List<Position> obstacles, Position p) {
+        int[][] premises = new int[][]{{-1, -1},{-1, 0}, {1, 0}, {0, -1}, {0, 1},{1 , 1},{-1, 1},{1, -1}};
+        int x= p.getX();
+        int y= p.getY();
+        List<Position> vicinanze = new ArrayList<Position>();
+
+        for (int[] d : premises) {
+            int row = x + d[0];
+            int col = y + d[1];
+            if (isValid(row, col)) {
+                vicinanze.add(new Position(row, col));
+            }
+        }
+
+        for(Position cella : vicinanze){
+            obsRepo.delObstacle(cella);
+        }
+
+
         for(Position obstacle : obstacles){
             obsRepo.setObstacle(obstacle);
         }
@@ -289,5 +307,27 @@ public class MapServiceImpl implements MapService {
     @Override
     public void connectObstaclesSignal(Slot1<List<Position>> slot) {
         obstaclesSignal.connect(slot);
+    }
+
+    @Override
+    public boolean checkPremises(Position position) {
+        int[][] premises = new int[][]{{-1, -1},{-1, 0}, {1, 0}, {0, -1}, {0, 1},{1 , 1},{-1, 1},{1, -1}};
+        int x= position.getX();
+        int y= position.getY();
+        List<Position> vicinanze = new ArrayList<Position>();
+
+        for (int[] d : premises) {
+            int row = x + d[0];
+            int col = y + d[1];
+            if (isValid(row, col)) {
+                vicinanze.add(new Position(row, col));
+            }
+        }
+        boolean toReturn= false;
+        Iterator<Position> iterate = vicinanze.iterator();
+        while(iterate.hasNext() && !toReturn){
+            toReturn = checkUnit(iterate.next());
+        }
+        return toReturn;
     }
 }

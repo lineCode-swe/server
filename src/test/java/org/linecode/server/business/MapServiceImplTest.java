@@ -287,7 +287,7 @@ public class MapServiceImplTest{
     @Test
     public void newObstacleList_ListOfObstacles_EmitSignal(){
         List<Position> mockObstacles = new ArrayList<Position>();
-        test.newObstacleList(mockObstacles);
+        test.newObstacleList(mockObstacles,new Position(0,0));
         verify(obstaclesSignal,times(1)).emit(any(ArrayList.class));
     }
 }

@@ -13,10 +13,12 @@ import org.linecode.server.Position;
 import java.util.List;
 
 public interface MapService {
-    public void newObstacleList(List<Position> obstacles);
+    public void newObstacleList(List<Position> obstacles,Position p);
     public Grid getMap();
     public void newMap(String mapSchema);
     public List<Position> getNextPath(String id);
     public void connectMapSignal(Slot1<Grid> slot);
     public void connectObstaclesSignal(Slot1<List<Position>> slot);
+
+    public boolean checkPremises(Position position);
 }

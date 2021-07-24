@@ -65,13 +65,6 @@ public class UnitEndpointTest {
     }
 
     @Test
-    public void onMessage_mockObstacleListFromUnit_unitServiceUpdatedWithNewObstacleList(){
-        ObstacleListFromUnit message = new ObstacleListFromUnit(new ArrayList<Position>());
-        endpoint.onMessage(session, message);
-        verify(mapService, times(1)).newObstacleList(message.getObstacleList());
-    }
-
-    @Test
     public void onMessage_mockPathRequestFromUnit_pathCalculated(){
         PathRequestFromUnit message = new PathRequestFromUnit();
         endpoint.onMessage(session, message);
@@ -81,9 +74,10 @@ public class UnitEndpointTest {
 
     @Test
     public void onMessage_mockPositionFromUnit_unitServiceUpdatedWithNewPosition(){
-        PositionFromUnit message = new PositionFromUnit(new Position(0,0));
+        PositionFromUnit message = new PositionFromUnit(new Position(0,0), new ArrayList<Position>());
         endpoint.onMessage(session, message);
         verify(unitService, times(1)).newPosition(eq("1"), eq(message.getPosition()));
+        verify(mapService, times(1)).newObstacleList(eq(message.getObstacles()),eq(message.getPosition()));
 
     }
 

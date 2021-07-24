@@ -14,7 +14,6 @@ import org.linecode.server.api.message.ErrorFromUnit;
 import org.linecode.server.api.message.KeepAliveToUnit;
 import org.linecode.server.api.message.KeepAliveToUnitEncoder;
 import org.linecode.server.api.message.Message;
-import org.linecode.server.api.message.ObstacleListFromUnit;
 import org.linecode.server.api.message.PositionFromUnit;
 import org.linecode.server.api.message.SpeedFromUnit;
 import org.linecode.server.api.message.StartToUnit;
@@ -115,10 +114,6 @@ public class UnitEndpoint {
                 unitService.newError(id, errorFromUnit.getError());
                 break;
 
-            case "ObstacleListFromUnit":
-                ObstacleListFromUnit obstacleListFromUnit = (ObstacleListFromUnit) message;
-                mapService.newObstacleList(obstacleListFromUnit.getObstacleList());
-                break;
 
             case "PathRequestFromUnit":
                 List<Position> path = mapService.getNextPath(id);
@@ -133,6 +128,18 @@ public class UnitEndpoint {
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
                 unitService.newPosition(id, positionFromUnit.getPosition());
+                List<Position> obstacles = positionFromUnit.getObstacles();
+                mapService.newObstacleList(obstacles,positionFromUnit.getPosition());
+                if(!obstacles.isEmpty() || mapService.checkPremises(positionFromUnit.getPosition())){
+                    sendStop(id);
+                    List<Position> newPath = mapService.getNextPath(id);
+                    if (!newPath.isEmpty()) {
+                        send(new StartToUnit(newPath));
+                    } else {
+                        send(new ErrorFromUnit(404));
+                        unitService.newError(id,404);
+                    }
+                }
                 break;
 
             case "SpeedFromUnit":
