@@ -1,3 +1,11 @@
+<!--
+  ~ PORTACS
+  ~ piattaforma di controllo mobilità autonoma
+  ~
+  ~ Copyright (c) lineCode group <linecode.swe@gmail.com> 2020 - 2021
+  ~ Distributed under open-source license (see accompanying file LICENSE).
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="clean-verify" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>

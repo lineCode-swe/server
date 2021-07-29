@@ -2,9 +2,9 @@
  * PORTACS
  * piattaforma di controllo mobilità autonoma
  *
- * Copyright lineCode group <linecode.swe@gmail.com> 2020 - 2021
- * Distributed under open-source licence (see accompanying file LICENCE).
- */
+ * Copyright (c) lineCode group <linecode.swe@gmail.com> 2020 - 2021
+ * Distributed under open-source license (see accompanying file LICENSE).
+ ******************************************************************************/
 package org.linecode.server.api.message;
 
 public class PathRequestFromUnit extends Message{
