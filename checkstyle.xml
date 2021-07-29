@@ -29,12 +29,7 @@
         </module>
 
         <module name="CyclomaticComplexity">
-            <property name="max" value="15" />
-        </module>
-
-        <module name="MethodLength">
-            <property name="tokens" value="METHOD_DEF" />
-            <property name="max" value="60" />
+            <property name="max" value="20" />
         </module>
 
         <module name="EmptyCatchBlock">
@@ -49,6 +44,5 @@
 
         <module name="LeftCurly"/>
 
-<!--        <module name="UncommentedMain" />-->
     </module>
 </module>

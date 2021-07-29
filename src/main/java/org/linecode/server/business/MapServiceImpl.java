@@ -69,44 +69,59 @@ public class MapServiceImpl implements MapService {
         int x = 0;
         int y = 0;
 
-        for (int j=0; j<mapSchema.length();++j){
+        for (int j = 0; j < mapSchema.length(); ++j){
             switch(characters[j]) {
+                case 'X':
                 case 'x':
                     lista.add(new Cell(new Position(x, y), true, false, Direction.NONE,false));
                     ++x;
                     break;
+
                 case '^':
                     lista.add(new Cell(new Position(x, y), false, false, Direction.UP,false));
                     ++x;
                     break;
+
                 case '_':
                     lista.add(new Cell(new Position(x, y), false, false, Direction.DOWN,false));
                     ++x;
                     break;
+
                 case '>':
                     lista.add(new Cell(new Position(x, y), false, false, Direction.RIGHT,false));
                     ++x;
                     break;
+
                 case '<':
                     lista.add(new Cell(new Position(x, y), false, false, Direction.LEFT,false));
                     ++x;
                     break;
+
                 case 'B':
+                case 'b':
                     lista.add(new Cell(new Position(x, y), false, true, Direction.ALL,false));
                     ++x;
                     break;
+
                 case 'P':
+                case 'p':
                     lista.add(new Cell(new Position(x, y), false, false, Direction.ALL,true));
                     ++x;
                     break;
+
                 case '\n':
                     ++y;
                     x = 0;
                     break;
-                default:
+
                 case '+':
                     lista.add(new Cell(new Position(x, y), false, false, Direction.ALL,false));
                     ++x;
+                    break;
+
+                case ' ':
+                case '\r':
+                default:
                     break;
             }
         }
