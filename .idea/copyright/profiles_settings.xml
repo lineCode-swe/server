@@ -1,0 +1,12 @@
+<component name="CopyrightManager">
+  <settings default="lineCode">
+    <module2copyright>
+      <element module="Production" copyright="lineCode" />
+      <element module="Tests" copyright="lineCode" />
+      <element module="Project Files" copyright="lineCode" />
+    </module2copyright>
+    <LanguageOptions name="__TEMPLATE__">
+      <option name="separateAfter" value="true" />
+    </LanguageOptions>
+  </settings>
+</component>
