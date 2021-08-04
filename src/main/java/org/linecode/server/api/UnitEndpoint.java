@@ -125,6 +125,8 @@ public class UnitEndpoint {
                 break;
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
+                System.out.println("Arrivata posizione da unit");
+                System.out.print(positionFromUnit.getObstacles());
                 unitService.newPosition(id, positionFromUnit.getPosition());
                 List<Position> pois = unitService.getPoiList(id);
                 if(!pois.isEmpty()) {
@@ -151,7 +153,6 @@ public class UnitEndpoint {
                     }
                 }
                 break;
-
             case "SpeedFromUnit":
                 SpeedFromUnit speedFromUnit = (SpeedFromUnit) message;
                 unitService.newSpeed(id, speedFromUnit.getSpeed());
