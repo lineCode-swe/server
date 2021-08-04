@@ -81,7 +81,7 @@ public class UnitMessageDecoder implements Decoder.Text<Message> {
 
         switch (node.path("type").asText()) {
             case "PositionToServer":
-                return !(node.path("position").isMissingNode());
+                return !(node.path("position").isMissingNode() || node.path("obstacles").isMissingNode());
 
             case "ErrorToServer":
                 return !(node.path("error").isMissingNode());
