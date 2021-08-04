@@ -151,7 +151,7 @@ public class UnitEndpoint {
                         send(new ErrorFromUnit(404));
                         unitService.newError(id,404);
                     }
-                }
+                } logger.info("Nessun ostacolo rilevato");
                 break;
             case "SpeedFromUnit":
                 SpeedFromUnit speedFromUnit = (SpeedFromUnit) message;
