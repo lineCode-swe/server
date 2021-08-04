@@ -114,8 +114,6 @@ public class UnitEndpoint {
                 ErrorFromUnit errorFromUnit = (ErrorFromUnit) message;
                 unitService.newError(id, errorFromUnit.getError());
                 break;
-
-
             case "PathRequestFromUnit":
                 List<Position> path = mapService.getNextPath(id);
                 if (!path.isEmpty()) {
@@ -125,13 +123,13 @@ public class UnitEndpoint {
                     unitService.newError(id,404);
                 }
                 break;
-
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
                 unitService.newPosition(id, positionFromUnit.getPosition());
                 List<Position> pois = unitService.getPoiList(id);
                 if(!pois.isEmpty()) {
                     if (pois.get(0).equals(positionFromUnit.getPosition())) {
+                        logger.info(String.format("UnitEndpoint: Unità è arrivata al poi : ", id));
                         pois.remove(0);
                         unitService.setPoiList(id, pois);
                     }
@@ -139,11 +137,15 @@ public class UnitEndpoint {
                 List<Position> obstacles = positionFromUnit.getObstacles();
                 mapService.newObstacleList(obstacles,positionFromUnit.getPosition());
                 if(!obstacles.isEmpty() || mapService.checkPremises(positionFromUnit.getPosition())){
+                    logger.info(String.format("UnitEndpoint: Rilevati ostacoli nelle vicinanze di : ", id));
+                    logger.info(String.format("UnitEndpoint: Invio segnale stop a : ", id));
                     sendStop(id);
                     List<Position> newPath = mapService.getNextPath(id);
                     if (!newPath.isEmpty()) {
+                        logger.info(String.format("UnitEndpoint: Ricalcolo e invio del percorso a : ", id));
                         send(new StartToUnit(newPath));
                     } else {
+                        logger.info(String.format("UnitEndpoint: Percorso incalcolabile, errore inviato a : ", id));
                         send(new ErrorFromUnit(404));
                         unitService.newError(id,404);
                     }
@@ -154,12 +156,10 @@ public class UnitEndpoint {
                 SpeedFromUnit speedFromUnit = (SpeedFromUnit) message;
                 unitService.newSpeed(id, speedFromUnit.getSpeed());
                 break;
-
             case "StatusFromUnit":
                 StatusFromUnit statusFromUnit = (StatusFromUnit) message;
                 unitService.newStatus(id, statusFromUnit.getStatus());
                 break;
-
             case "":
             default:
                 onError(session, new Exception("UnitEndpoint: unrecognized type of message"));
