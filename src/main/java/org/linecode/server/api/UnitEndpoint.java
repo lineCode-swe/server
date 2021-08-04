@@ -125,8 +125,8 @@ public class UnitEndpoint {
                 break;
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
-                System.out.println("Arrivata posizione da unit");
-                System.out.print(positionFromUnit.getObstacles());
+                logger.info("Arrivata posizione da unit");
+                logger.info(positionFromUnit.getObstacles().toString());
                 unitService.newPosition(id, positionFromUnit.getPosition());
                 List<Position> pois = unitService.getPoiList(id);
                 if(!pois.isEmpty()) {
