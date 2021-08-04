@@ -38,7 +38,7 @@ public class UnitMessageDecoder implements Decoder.Text<Message> {
         switch (node.path("type").asText()) {
             case "PositionToServer":
                 List<Position> obstacleList = new ArrayList<Position>();
-                node.path("obstacleList").forEach(poi -> obstacleList.add(new Position(
+                node.path("obstacles").forEach(poi -> obstacleList.add(new Position(
                         poi.path("x").asInt(),
                         poi.path("y").asInt())));
                 return new PositionFromUnit(
