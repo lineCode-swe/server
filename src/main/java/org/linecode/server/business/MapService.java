@@ -16,9 +16,9 @@ public interface MapService {
     public void newObstacleList(List<Position> obstacles,Position p);
     public Grid getMap();
     public void newMap(String mapSchema);
-    public List<Position> getNextPath(String id);
+    public List<Position> getNextPath(String id, List<Position> premesis);
     public void connectMapSignal(Slot1<Grid> slot);
     public void connectObstaclesSignal(Slot1<List<Position>> slot);
 
-    public boolean checkPremises(Position position);
+    public List<Position> checkPremises(Position position);
 }

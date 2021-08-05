@@ -220,7 +220,7 @@ public class MapServiceImplTest{
         when(cellina.isLocked()).thenReturn(false);
         Position cell = new Position(0,0);
         List<Position> path = new ArrayList<Position>();
-        assertEquals(6,test.getPath(cell,new Position(4,2),path));
+        assertEquals(6,test.getPath(cell,new Position(4,2),path,new ArrayList<Position>()));
 
 
     }
@@ -233,7 +233,7 @@ public class MapServiceImplTest{
         when(cellina.isLocked()).thenReturn(false);
         Position cell = new Position(0,0);
         List<Position> path = new ArrayList<Position>();
-        assertEquals(7,test.getPath(cell,new Position(4,3),path));
+        assertEquals(7,test.getPath(cell,new Position(4,3),path,new ArrayList<Position>()));
 
     }
 
@@ -246,7 +246,7 @@ public class MapServiceImplTest{
         when(cellina.isLocked()).thenReturn(false);
         Position cell = new Position(0,0);
         List<Position> path = new ArrayList<Position>();
-        assertEquals(4, test.getPath(cell, new Position(1, 3), path));
+        assertEquals(4, test.getPath(cell, new Position(1, 3), path,new ArrayList<Position>()));
     }
 
 

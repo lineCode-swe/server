@@ -14,6 +14,7 @@ import org.linecode.server.api.message.ErrorFromUnit;
 import org.linecode.server.api.message.KeepAliveToUnit;
 import org.linecode.server.api.message.KeepAliveToUnitEncoder;
 import org.linecode.server.api.message.Message;
+import org.linecode.server.api.message.PathRequestFromUnit;
 import org.linecode.server.api.message.PositionFromUnit;
 import org.linecode.server.api.message.SpeedFromUnit;
 import org.linecode.server.api.message.StartToUnit;
@@ -115,7 +116,8 @@ public class UnitEndpoint {
                 unitService.newError(id, errorFromUnit.getError());
                 break;
             case "PathRequestFromUnit":
-                List<Position> path = mapService.getNextPath(id);
+                PathRequestFromUnit pathRequestFromUnit = (PathRequestFromUnit) message;
+                List<Position> path = mapService.getNextPath(id,mapService.checkPremises(unitService.getPosition(id)));
                 if (!path.isEmpty()) {
                     send(new StartToUnit(path));
                 } else {
@@ -138,11 +140,12 @@ public class UnitEndpoint {
                 }
                 List<Position> obstacles = positionFromUnit.getObstacles();
                 mapService.newObstacleList(obstacles,positionFromUnit.getPosition());
-                if(!obstacles.isEmpty() || mapService.checkPremises(positionFromUnit.getPosition())){
+                List<Position> premises = mapService.checkPremises(positionFromUnit.getPosition());
+                if(!obstacles.isEmpty() || !premises.isEmpty()){
                     logger.info(String.format("UnitEndpoint: Rilevati ostacoli nelle vicinanze di : ", id));
                     logger.info(String.format("UnitEndpoint: Invio segnale stop a : ", id));
                     sendStop(id);
-                    List<Position> newPath = mapService.getNextPath(id);
+                    List<Position> newPath = mapService.getNextPath(id,premises);
                     if (!newPath.isEmpty()) {
                         logger.info(String.format("UnitEndpoint: Ricalcolo e invio del percorso a : ", id));
                         send(new StartToUnit(newPath));
@@ -191,7 +194,7 @@ public class UnitEndpoint {
 
     public void sendStart(String id) {
         if (this.id.equals(id)){
-            List<Position> path = mapService.getNextPath(id);
+            List<Position> path = mapService.getNextPath(id,mapService.checkPremises(unitService.getPosition(id)));
             if (!path.isEmpty()) {
                 send(new StartToUnit(path));
             } else {
@@ -211,7 +214,7 @@ public class UnitEndpoint {
         if (this.id.equals(id)) {
             send(new CommandToUnit(UnitStopCommand.STOP));
             unitService.setPoiList(id, new ArrayList<Position>());
-            List<Position> path = mapService.getNextPath(id);
+            List<Position> path = mapService.getNextPath(id,mapService.checkPremises(unitService.getPosition(id)));
             if (!path.isEmpty()) {
                 send(new StartToUnit(path));
             } else {

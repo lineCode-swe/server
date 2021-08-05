@@ -4,7 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import org.linecode.server.Position;
-import org.linecode.server.api.message.*;
+import org.linecode.server.api.message.CommandToUnit;
+import org.linecode.server.api.message.ErrorFromUnit;
+import org.linecode.server.api.message.PathRequestFromUnit;
+import org.linecode.server.api.message.PositionFromUnit;
+import org.linecode.server.api.message.SpeedFromUnit;
+import org.linecode.server.api.message.StartToUnit;
+import org.linecode.server.api.message.StatusFromUnit;
+import org.linecode.server.api.message.UnitStopCommand;
 import org.linecode.server.business.MapService;
 import org.linecode.server.business.UnitService;
 import org.linecode.server.business.UnitStatus;
@@ -68,7 +75,7 @@ public class UnitEndpointTest {
     public void onMessage_mockPathRequestFromUnit_pathCalculated(){
         PathRequestFromUnit message = new PathRequestFromUnit();
         endpoint.onMessage(session, message);
-        verify(mapService, times(1)).getNextPath(eq("1"));
+        verify(mapService, times(1)).getNextPath(eq("1"),eq(new ArrayList<Position>()));
 
     }
 
@@ -104,7 +111,7 @@ public class UnitEndpointTest {
         when(unitService.isUnit("1")).thenReturn(true);
         List<Position> mockPath = new ArrayList<>();
         mockPath.add(new Position(1,1));
-        when(mapService.getNextPath("1")).thenReturn(mockPath);
+        when(mapService.getNextPath("1",new ArrayList<Position>())).thenReturn(mockPath);
         endpoint.onOpen(session,"1");
         endpoint.sendStart("1");
 
