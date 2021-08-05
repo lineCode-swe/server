@@ -72,7 +72,7 @@ public class MapServiceImpl implements MapService {
             obsRepo.setObstacle(obstacle);
         }
 
-        obstaclesSignal.emit(obstacles);
+        obstaclesSignal.emit(obsRepo.getObstaclesList());
     }
 
     @Override
