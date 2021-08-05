@@ -10,11 +10,14 @@ package org.linecode.server.business;
 import com.github.msteinbeck.sig4j.signal.Signal1;
 import com.github.msteinbeck.sig4j.slot.Slot1;
 import org.linecode.server.Position;
+import org.linecode.server.api.UnitEndpoint;
 import org.linecode.server.persistence.Cell;
 import org.linecode.server.persistence.MapRepository;
 import org.linecode.server.persistence.ObstacleRepository;
 import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.Direction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ public class MapServiceImpl implements MapService {
     protected final MapRepository mapRepo;
     protected final Signal1<Grid> mapSignal;
     protected final Signal1<List<Position>> obstaclesSignal;
+    private final Logger logger = LoggerFactory.getLogger(MapServiceImpl.class);
 
     @Inject
     public MapServiceImpl(UnitRepository unitRepo, ObstacleRepository obsRepo,
@@ -59,16 +63,19 @@ public class MapServiceImpl implements MapService {
             int row = x + d[0];
             int col = y + d[1];
             if (isValid(row, col)) {
+                logger.info("Vicinanza per ostacoli valida : "+ new Position(row, col));
                 vicinanze.add(new Position(row, col));
             }
         }
 
         for(Position cella : vicinanze){
+            logger.info("Ostacolo deleted in posizione: "+cella);
             obsRepo.delObstacle(cella);
         }
 
 
         for(Position obstacle : obstacles){
+            logger.info("Ostacolo generated in posizione: "+obstacle);
             obsRepo.setObstacle(obstacle);
         }
 
@@ -140,12 +147,14 @@ public class MapServiceImpl implements MapService {
         List<Position> pois = unitRepo.getPoiList(id);
         int distance = Integer.MAX_VALUE;
         boolean sizeOfPois = !pois.isEmpty();
+
         List<Position> invalidCells = new ArrayList<Position>();
         if(!premesis.isEmpty()) {
             for (Position cellsPrem : premesis) {
                 addNeighbors(cellsPrem, invalidCells);
             }
         }
+        logger.info("Le celle invalide per il calcolo del percorso sono : "+ invalidCells);
 
         if (sizeOfPois) {
             distance = getPath(unitRepo.getPosition(id), pois.get(0), path,invalidCells);
@@ -156,7 +165,7 @@ public class MapServiceImpl implements MapService {
         if (distance != Integer.MAX_VALUE){
             return path;
         } else {
-            return new ArrayList<>();
+            return new ArrayList<Position>();
         }
     }
 
@@ -178,6 +187,7 @@ public class MapServiceImpl implements MapService {
             for (Position cell : currentCells) {
                 if (distances[cell.getX()][cell.getY()] == Integer.MAX_VALUE
                         && checkValidity(cell,invalidCells,start)) {
+                    logger.info("Cella valida per il percorso : "+ cell);
                     distances[cell.getX()][cell.getY()] = distance;
                     addNeighbors(cell, nextCells);
                 }
@@ -193,7 +203,6 @@ public class MapServiceImpl implements MapService {
             for (int d = distances[end.getX()][end.getY()]-1; d >= 0; d--) {
                 cell = getNeighbor(cell, d, distances);
                 path.add(0,cell);
-
             }
         }
 
@@ -328,13 +337,16 @@ public class MapServiceImpl implements MapService {
             int row = x + d[0];
             int col = y + d[1];
             if (isValid(row, col)) {
+                logger.info("Posizione valida per checkpremesis: " + new Position(row, col));
                 vicinanze.add(new Position(row, col));
             }
         }
         List<Position> toReturn= new ArrayList<Position>();
         Iterator<Position> iterate = vicinanze.iterator();
         while(iterate.hasNext()){
+            logger.info("Checking vicinanza per unità : "+iterate.next());
             if(checkUnit(iterate.next())){
+                logger.info("Trovata unità in : "+ iterate.next());
                 toReturn.add(iterate.next());
             }
         }
