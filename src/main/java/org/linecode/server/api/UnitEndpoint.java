@@ -127,13 +127,14 @@ public class UnitEndpoint {
                 break;
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
-                logger.info("Arrivata posizione da unit");
+
                 logger.info(positionFromUnit.getObstacles().toString());
                 unitService.newPosition(id, positionFromUnit.getPosition());
+                logger.info("Arrivata posizione : " + positionFromUnit.getPosition() + "Da : " + id);
                 List<Position> pois = unitService.getPoiList(id);
                 if(!pois.isEmpty()) {
                     if (pois.get(0).equals(positionFromUnit.getPosition())) {
-                        logger.info(String.format("UnitEndpoint: Unità è arrivata al poi : ", id));
+                        logger.info(String.format("UnitEndpoint: Unita e arrivata al poi : %s", id));
                         pois.remove(0);
                         unitService.setPoiList(id, pois);
                     }
@@ -142,15 +143,14 @@ public class UnitEndpoint {
                 mapService.newObstacleList(obstacles,positionFromUnit.getPosition());
                 List<Position> premises = mapService.checkPremises(positionFromUnit.getPosition());
                 if(!obstacles.isEmpty() || !premises.isEmpty()){
-                    logger.info(String.format("UnitEndpoint: Rilevati ostacoli nelle vicinanze di : ", id));
-                    logger.info(String.format("UnitEndpoint: Invio segnale stop a : ", id));
-                    sendStop(id);
+                    logger.info(String.format("UnitEndpoint: Rilevati ostacoli nelle vicinanze di : %s", id));
+                    //sendStop(id);
                     List<Position> newPath = mapService.getNextPath(id,premises);
                     if (!newPath.isEmpty()) {
-                        logger.info(String.format("UnitEndpoint: Ricalcolo e invio del percorso a : ", id));
+                        logger.info(String.format("UnitEndpoint: Ricalcolo e invio del percorso a : %s", id));
                         send(new StartToUnit(newPath));
                     } else {
-                        logger.info(String.format("UnitEndpoint: Percorso incalcolabile, errore inviato a : ", id));
+                        logger.info(String.format("UnitEndpoint: Percorso incalcolabile, errore inviato a : %s", id));
                         send(new ErrorFromUnit(404));
                         unitService.newError(id,404);
                     }
@@ -195,9 +195,12 @@ public class UnitEndpoint {
     public void sendStart(String id) {
         if (this.id.equals(id)){
             List<Position> path = mapService.getNextPath(id,mapService.checkPremises(unitService.getPosition(id)));
+            logger.info(path.toString());
             if (!path.isEmpty()) {
+                logger.info("PATH CALCOLATO");
                 send(new StartToUnit(path));
             } else {
+                logger.info("ERRORE PATH INCALCOLABILE");
                 send(new ErrorFromUnit(404));
                 unitService.newError(id,404);
             }

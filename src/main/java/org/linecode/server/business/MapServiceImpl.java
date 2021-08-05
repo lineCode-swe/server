@@ -63,7 +63,6 @@ public class MapServiceImpl implements MapService {
             int row = x + d[0];
             int col = y + d[1];
             if (isValid(row, col)) {
-                logger.info("Vicinanza per ostacoli valida : "+ new Position(row, col));
                 vicinanze.add(new Position(row, col));
             }
         }
@@ -143,19 +142,19 @@ public class MapServiceImpl implements MapService {
 
     @Override
     public List<Position> getNextPath(String id,List<Position> premesis) {
+        logger.info("Sono dentro getNextPath");
         List<Position> path = new ArrayList<Position>();
         List<Position> pois = unitRepo.getPoiList(id);
         int distance = Integer.MAX_VALUE;
         boolean sizeOfPois = !pois.isEmpty();
-
         List<Position> invalidCells = new ArrayList<Position>();
         if(!premesis.isEmpty()) {
             for (Position cellsPrem : premesis) {
-                addNeighbors(cellsPrem, invalidCells);
+                addInvalids(cellsPrem, invalidCells);
             }
         }
+        invalidCells.remove(unitRepo.getPosition(id));
         logger.info("Le celle invalide per il calcolo del percorso sono : "+ invalidCells);
-
         if (sizeOfPois) {
             distance = getPath(unitRepo.getPosition(id), pois.get(0), path,invalidCells);
         } else {
@@ -187,7 +186,6 @@ public class MapServiceImpl implements MapService {
             for (Position cell : currentCells) {
                 if (distances[cell.getX()][cell.getY()] == Integer.MAX_VALUE
                         && checkValidity(cell,invalidCells,start)) {
-                    logger.info("Cella valida per il percorso : "+ cell);
                     distances[cell.getX()][cell.getY()] = distance;
                     addNeighbors(cell, nextCells);
                 }
@@ -258,6 +256,42 @@ public class MapServiceImpl implements MapService {
         }
     }
 
+    protected void addInvalids(Position pos, List<Position> list) {
+        int[][] ds;
+
+        if (map.getCell(pos) != null) {
+            switch (map.getCell(pos).getDirection()) {
+                case UP:
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}};
+                    break;
+                case DOWN:
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, 1}};
+                    break;
+                case LEFT:
+                    ds = new int[][]{{-1, 0}, {0, -1}, {0, 1}};
+                    break;
+                case RIGHT:
+                    ds = new int[][]{{1, 0}, {0, -1}, {0, 1}};
+                    break;
+                case NONE:
+                    ds = new int[][]{};
+                    break;
+                default:
+                case ALL:
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+                    break;
+            }
+
+            for (int[] d : ds) {
+                int row = pos.getX() + d[0];
+                int col = pos.getY() + d[1];
+                if (isValid(row, col) && !list.contains(new Position(row, col))) {
+                    list.add(new Position(row, col));
+                }
+            }
+        }
+    }
+
     protected Position getNeighbor(Position cell, int distance, int[][] distances) {
 
         int[][] ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
@@ -303,7 +337,8 @@ public class MapServiceImpl implements MapService {
         Set<String> temporalListUnit = unitRepo.getUnits();
         Iterator<String> iterate = temporalListUnit.iterator();
         while(iterate.hasNext() && !unitPlaced){
-            unitPlaced= unitRepo.getPosition(iterate.next()).equals(cell);
+            String unitId = iterate.next();
+            unitPlaced= unitRepo.getPosition(unitId).equals(cell);
         }
         return unitPlaced;
 
@@ -337,19 +372,19 @@ public class MapServiceImpl implements MapService {
             int row = x + d[0];
             int col = y + d[1];
             if (isValid(row, col)) {
-                logger.info("Posizione valida per checkpremesis: " + new Position(row, col));
                 vicinanze.add(new Position(row, col));
             }
         }
         List<Position> toReturn= new ArrayList<Position>();
         Iterator<Position> iterate = vicinanze.iterator();
         while(iterate.hasNext()){
-            logger.info("Checking vicinanza per unità : "+iterate.next());
-            if(checkUnit(iterate.next())){
-                logger.info("Trovata unità in : "+ iterate.next());
-                toReturn.add(iterate.next());
+            Position prossimo = iterate.next();
+            if(checkUnit(prossimo) && !prossimo.equals(position)){
+                logger.info("Trovata unita in : "+ prossimo );
+                toReturn.add(prossimo);
             }
         }
         return toReturn;
+
     }
 }
