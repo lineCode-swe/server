@@ -11,5 +11,6 @@ package org.linecode.server.api.message;
 public enum UnitStopCommand {
     STOP,
     BASE,
-    SHUTDOWN
+    SHUTDOWN,
+    ERROR
 }

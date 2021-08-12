@@ -24,6 +24,7 @@ import org.linecode.server.api.message.UnitMessageDecoder;
 import org.linecode.server.api.message.UnitStopCommand;
 import org.linecode.server.business.MapService;
 import org.linecode.server.business.UnitService;
+import org.linecode.server.business.UnitStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,42 +120,41 @@ public class UnitEndpoint {
                 PathRequestFromUnit pathRequestFromUnit = (PathRequestFromUnit) message;
                 List<Position> path = mapService.getNextPath(id,mapService.checkPremises(unitService.getPosition(id)));
                 if (!path.isEmpty()) {
-                    send(new StartToUnit(path));
+                    pathFound(path);
                 } else {
-                    send(new ErrorFromUnit(404));
-                    unitService.newError(id,404);
+                    unitError(404);
                 }
                 break;
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
-
-                logger.info(positionFromUnit.getObstacles().toString());
-                unitService.newPosition(id, positionFromUnit.getPosition());
-                logger.info("Arrivata posizione : " + positionFromUnit.getPosition() + "Da : " + id);
-                List<Position> pois = unitService.getPoiList(id);
-                if(!pois.isEmpty()) {
-                    if (pois.get(0).equals(positionFromUnit.getPosition())) {
-                        logger.info(String.format("UnitEndpoint: Unita e arrivata al poi : %s", id));
-                        pois.remove(0);
-                        unitService.setPoiList(id, pois);
+                Position unitPosition = positionFromUnit.getPosition();
+                if(unitService.getUnitsPosition().contains(unitPosition) &&
+                        !unitService.getBase(id).equals(unitPosition)){
+                    unitError(123);
+                    unitService.newPosition(id, unitPosition);
+                } else {
+                    unitService.newPosition(id, unitPosition);
+                    List<Position> pois = unitService.getPoiList(id);
+                    if (!pois.isEmpty()) {
+                        if (pois.get(0).equals(unitPosition)) {
+                            pois.remove(0);
+                            unitService.setPoiList(id, pois);
+                        }
+                    }
+                    List<Position> obstacles = positionFromUnit.getObstacles();
+                    mapService.newObstacleList(obstacles, unitPosition);
+                    List<Position> premises = mapService.checkPremises(unitPosition);
+                    if (!obstacles.isEmpty() || !premises.isEmpty()) {
+                        logger.info(String.format("UnitEndpoint: Rilevati ostacoli nelle vicinanze di : %s", id));
+                        List<Position> newPath = mapService.getNextPath(id, premises);
+                        if (!newPath.isEmpty()) {
+                            logger.info(String.format("UnitEndpoint: Ricalcolo e invio del percorso a : %s", id));
+                            pathFound(newPath);
+                        } else {
+                            unitError(404);
+                        }
                     }
                 }
-                List<Position> obstacles = positionFromUnit.getObstacles();
-                mapService.newObstacleList(obstacles,positionFromUnit.getPosition());
-                List<Position> premises = mapService.checkPremises(positionFromUnit.getPosition());
-                if(!obstacles.isEmpty() || !premises.isEmpty()){
-                    logger.info(String.format("UnitEndpoint: Rilevati ostacoli nelle vicinanze di : %s", id));
-                    //sendStop(id);
-                    List<Position> newPath = mapService.getNextPath(id,premises);
-                    if (!newPath.isEmpty()) {
-                        logger.info(String.format("UnitEndpoint: Ricalcolo e invio del percorso a : %s", id));
-                        send(new StartToUnit(newPath));
-                    } else {
-                        logger.info(String.format("UnitEndpoint: Percorso incalcolabile, errore inviato a : %s", id));
-                        send(new ErrorFromUnit(404));
-                        unitService.newError(id,404);
-                    }
-                } logger.info("Nessun ostacolo rilevato");
                 break;
             case "SpeedFromUnit":
                 SpeedFromUnit speedFromUnit = (SpeedFromUnit) message;
@@ -167,9 +167,9 @@ public class UnitEndpoint {
             case "":
             default:
                 onError(session, new Exception("UnitEndpoint: unrecognized type of message"));
+                break;
         }
     }
-
     @OnError
     public void onError(Session session, Throwable throwable) {
         logger.error(String.format("UnitEndpoint (%s): Exception %s has been thrown: %s\nStack trace: %s",
@@ -198,31 +198,31 @@ public class UnitEndpoint {
             logger.info(path.toString());
             if (!path.isEmpty()) {
                 logger.info("PATH CALCOLATO");
-                send(new StartToUnit(path));
+                pathFound(path);
             } else {
-                logger.info("ERRORE PATH INCALCOLABILE");
-                send(new ErrorFromUnit(404));
-                unitService.newError(id,404);
+                unitError(404);
             }
         }
     }
 
     public void sendStop(String id) {
         if (this.id.equals(id)){
+            unitService.newStatus(id,UnitStatus.STOP);
             send(new CommandToUnit(UnitStopCommand.STOP));
+
         }
     }
 
     public void sendBase(String id){
         if (this.id.equals(id)) {
             send(new CommandToUnit(UnitStopCommand.STOP));
+            unitService.newStatus(id,UnitStatus.STOP);
             unitService.setPoiList(id, new ArrayList<Position>());
             List<Position> path = mapService.getNextPath(id,mapService.checkPremises(unitService.getPosition(id)));
             if (!path.isEmpty()) {
-                send(new StartToUnit(path));
+                pathFound(path);
             } else {
-                send(new ErrorFromUnit(404));
-                unitService.newError(id, 404);
+                unitError(404);
             }
         }
     }
@@ -241,5 +241,17 @@ public class UnitEndpoint {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void unitError(int error){
+        send(new CommandToUnit(UnitStopCommand.ERROR));
+        unitService.newStatus(id, UnitStatus.ERROR);
+        unitService.newError(id,error);
+    }
+
+    public void pathFound(List<Position> path){
+        unitService.newError(id,0);
+        unitService.newStatus(id,UnitStatus.GOINGTO);
+        send(new StartToUnit(path));
     }
 }
