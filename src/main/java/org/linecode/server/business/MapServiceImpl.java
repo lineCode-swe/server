@@ -10,11 +10,14 @@ package org.linecode.server.business;
 import com.github.msteinbeck.sig4j.signal.Signal1;
 import com.github.msteinbeck.sig4j.slot.Slot1;
 import org.linecode.server.Position;
+import org.linecode.server.api.UnitEndpoint;
 import org.linecode.server.persistence.Cell;
 import org.linecode.server.persistence.MapRepository;
 import org.linecode.server.persistence.ObstacleRepository;
 import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.Direction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -31,6 +34,7 @@ public class MapServiceImpl implements MapService {
     protected final MapRepository mapRepo;
     protected final Signal1<Grid> mapSignal;
     protected final Signal1<List<Position>> obstaclesSignal;
+    private final Logger logger = LoggerFactory.getLogger(MapServiceImpl.class);
 
     @Inject
     public MapServiceImpl(UnitRepository unitRepo, ObstacleRepository obsRepo,
@@ -49,12 +53,32 @@ public class MapServiceImpl implements MapService {
 
 
     @Override
-    public void newObstacleList(List<Position> obstacles) {
+    public void newObstacleList(List<Position> obstacles, Position p) {
+        int[][] premises = new int[][]{{-1, -1},{-1, 0}, {1, 0}, {0, -1}, {0, 1},{1 , 1},{-1, 1},{1, -1}};
+        int x= p.getX();
+        int y= p.getY();
+        List<Position> vicinanze = new ArrayList<Position>();
+
+        for (int[] d : premises) {
+            int row = x + d[0];
+            int col = y + d[1];
+            if (isValid(row, col)) {
+                vicinanze.add(new Position(row, col));
+            }
+        }
+
+        for(Position cella : vicinanze){
+            logger.info("Ostacolo deleted in posizione: "+cella);
+            obsRepo.delObstacle(cella);
+        }
+
+
         for(Position obstacle : obstacles){
+            logger.info("Ostacolo generated in posizione: "+obstacle);
             obsRepo.setObstacle(obstacle);
         }
 
-        obstaclesSignal.emit(obstacles);
+        obstaclesSignal.emit(obsRepo.getObstaclesList());
     }
 
     @Override
@@ -132,30 +156,34 @@ public class MapServiceImpl implements MapService {
     }
 
     @Override
-    public List<Position> getNextPath(String id) {
-        List<Position> path = new ArrayList<>();
+    public List<Position> getNextPath(String id,List<Position> premesis) {
+        logger.info("Sono dentro getNextPath");
+        List<Position> path = new ArrayList<Position>();
         List<Position> pois = unitRepo.getPoiList(id);
         int distance = Integer.MAX_VALUE;
         boolean sizeOfPois = !pois.isEmpty();
-
+        List<Position> invalidCells = new ArrayList<Position>();
+        if(!premesis.isEmpty()) {
+            for (Position cellsPrem : premesis) {
+                addInvalids(cellsPrem, invalidCells);
+            }
+        }
+        invalidCells.remove(unitRepo.getPosition(id));
+        logger.info("Le celle invalide per il calcolo del percorso sono : "+ invalidCells);
         if (sizeOfPois) {
-            distance = getPath(unitRepo.getPosition(id), pois.get(0), path);
+            distance = getPath(unitRepo.getPosition(id), pois.get(0), path,invalidCells);
         } else {
-            distance = getPath(unitRepo.getPosition(id), unitRepo.getBase(id), path);
+            distance = getPath(unitRepo.getPosition(id), unitRepo.getBase(id), path,invalidCells);
         }
 
-        if (distance != Integer.MAX_VALUE) {
-            if(sizeOfPois){
-                pois.remove(0);
-                unitRepo.setPoiList(id, pois);
-            }
+        if (distance != Integer.MAX_VALUE){
             return path;
         } else {
-            return new ArrayList<>();
+            return new ArrayList<Position>();
         }
     }
 
-     protected int getPath(Position start, Position end, List<Position> path) {
+     protected int getPath(Position start, Position end, List<Position> path, List<Position> invalidCells) {
         int[][] distances = new int[map.getLength()][map.getHeight()];
         for (int i = 0; i < map.getLength(); ++i) {
             for (int j = 0; j < map.getHeight(); ++j){
@@ -172,10 +200,7 @@ public class MapServiceImpl implements MapService {
 
             for (Position cell : currentCells) {
                 if (distances[cell.getX()][cell.getY()] == Integer.MAX_VALUE
-                        && !checkObstacle(cell)
-                        && (!checkUnit(cell) || cell.equals(start))
-                        && map.getCell(cell) != null
-                        && !map.getCell(cell).isLocked()) {
+                        && checkValidity(cell,invalidCells,start)) {
                     distances[cell.getX()][cell.getY()] = distance;
                     addNeighbors(cell, nextCells);
                 }
@@ -191,11 +216,18 @@ public class MapServiceImpl implements MapService {
             for (int d = distances[end.getX()][end.getY()]-1; d >= 0; d--) {
                 cell = getNeighbor(cell, d, distances);
                 path.add(0,cell);
-
             }
         }
 
         return distances[end.getX()][end.getY()];
+    }
+
+    protected boolean checkValidity(Position cell,List<Position> invalidCells,Position start){
+        return  !checkObstacle(cell)
+                && (!checkUnit(cell) || cell.equals(start))
+                && map.getCell(cell) != null
+                && !map.getCell(cell).isLocked()
+                && !invalidCells.contains(cell);
     }
 
     protected boolean isValid(int x, int y) {
@@ -233,6 +265,42 @@ public class MapServiceImpl implements MapService {
                 int row = pos.getX() + d[0];
                 int col = pos.getY() + d[1];
                 if (isValid(row, col)) {
+                    list.add(new Position(row, col));
+                }
+            }
+        }
+    }
+
+    protected void addInvalids(Position pos, List<Position> list) {
+        int[][] ds;
+
+        if (map.getCell(pos) != null) {
+            switch (map.getCell(pos).getDirection()) {
+                case UP:
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}};
+                    break;
+                case DOWN:
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, 1}};
+                    break;
+                case LEFT:
+                    ds = new int[][]{{-1, 0}, {0, -1}, {0, 1}};
+                    break;
+                case RIGHT:
+                    ds = new int[][]{{1, 0}, {0, -1}, {0, 1}};
+                    break;
+                case NONE:
+                    ds = new int[][]{};
+                    break;
+                default:
+                case ALL:
+                    ds = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+                    break;
+            }
+
+            for (int[] d : ds) {
+                int row = pos.getX() + d[0];
+                int col = pos.getY() + d[1];
+                if (isValid(row, col) && !list.contains(new Position(row, col))) {
                     list.add(new Position(row, col));
                 }
             }
@@ -284,7 +352,8 @@ public class MapServiceImpl implements MapService {
         Set<String> temporalListUnit = unitRepo.getUnits();
         Iterator<String> iterate = temporalListUnit.iterator();
         while(iterate.hasNext() && !unitPlaced){
-            unitPlaced= unitRepo.getPosition(iterate.next()).equals(cell);
+            String unitId = iterate.next();
+            unitPlaced= unitRepo.getPosition(unitId).equals(cell);
         }
         return unitPlaced;
 
@@ -304,5 +373,33 @@ public class MapServiceImpl implements MapService {
     @Override
     public void connectObstaclesSignal(Slot1<List<Position>> slot) {
         obstaclesSignal.connect(slot);
+    }
+
+    //TODO : MODIFICARE ARCHITETTURA
+    @Override
+    public List<Position> checkPremises(Position position) {
+        int[][] premises = new int[][]{{-1, -1},{-1, 0}, {1, 0}, {0, -1}, {0, 1},{1 , 1},{-1, 1},{1, -1}};
+        int x= position.getX();
+        int y= position.getY();
+        List<Position> vicinanze = new ArrayList<Position>();
+
+        for (int[] d : premises) {
+            int row = x + d[0];
+            int col = y + d[1];
+            if (isValid(row, col)) {
+                vicinanze.add(new Position(row, col));
+            }
+        }
+        List<Position> toReturn= new ArrayList<Position>();
+        Iterator<Position> iterate = vicinanze.iterator();
+        while(iterate.hasNext()){
+            Position prossimo = iterate.next();
+            if(checkUnit(prossimo) && !prossimo.equals(position)){
+                logger.info("Trovata unita in : "+ prossimo );
+                toReturn.add(prossimo);
+            }
+        }
+        return toReturn;
+
     }
 }

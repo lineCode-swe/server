@@ -37,22 +37,20 @@ public class UnitMessageDecoder implements Decoder.Text<Message> {
 
         switch (node.path("type").asText()) {
             case "PositionToServer":
+                List<Position> obstacleList = new ArrayList<Position>();
+                node.path("obstacles").forEach(poi -> obstacleList.add(new Position(
+                        poi.path("x").asInt(),
+                        poi.path("y").asInt())));
                 return new PositionFromUnit(
                         new Position(
                                 node.path("position").path("x").asInt(),
                                 node.path("position").path("y").asInt()
-                        )
-                );
+                        ),
+                        obstacleList);
 
             case "ErrorToServer":
                 return new ErrorFromUnit(node.path("error").asInt());
 
-            case "ObstacleListToServer":
-                List<Position> obstacleList = new ArrayList<>();
-                node.path("obstacleList").forEach(poi -> obstacleList.add(new Position(
-                        poi.path("x").asInt(),
-                        poi.path("y").asInt())));
-                return new ObstacleListFromUnit(obstacleList);
 
             case "PathRequestToServer":
 
@@ -83,7 +81,7 @@ public class UnitMessageDecoder implements Decoder.Text<Message> {
 
         switch (node.path("type").asText()) {
             case "PositionToServer":
-                return !(node.path("position").isMissingNode());
+                return !(node.path("position").isMissingNode() || node.path("obstacles").isMissingNode());
 
             case "ErrorToServer":
                 return !(node.path("error").isMissingNode());

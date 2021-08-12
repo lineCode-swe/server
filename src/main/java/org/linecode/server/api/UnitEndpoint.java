@@ -14,7 +14,7 @@ import org.linecode.server.api.message.ErrorFromUnit;
 import org.linecode.server.api.message.KeepAliveToUnit;
 import org.linecode.server.api.message.KeepAliveToUnitEncoder;
 import org.linecode.server.api.message.Message;
-import org.linecode.server.api.message.ObstacleListFromUnit;
+import org.linecode.server.api.message.PathRequestFromUnit;
 import org.linecode.server.api.message.PositionFromUnit;
 import org.linecode.server.api.message.SpeedFromUnit;
 import org.linecode.server.api.message.StartToUnit;
@@ -36,6 +36,7 @@ import javax.websocket.OnOpen;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
@@ -114,14 +115,9 @@ public class UnitEndpoint {
                 ErrorFromUnit errorFromUnit = (ErrorFromUnit) message;
                 unitService.newError(id, errorFromUnit.getError());
                 break;
-
-            case "ObstacleListFromUnit":
-                ObstacleListFromUnit obstacleListFromUnit = (ObstacleListFromUnit) message;
-                mapService.newObstacleList(obstacleListFromUnit.getObstacleList());
-                break;
-
             case "PathRequestFromUnit":
-                List<Position> path = mapService.getNextPath(id);
+                PathRequestFromUnit pathRequestFromUnit = (PathRequestFromUnit) message;
+                List<Position> path = mapService.getNextPath(id,mapService.checkPremises(unitService.getPosition(id)));
                 if (!path.isEmpty()) {
                     send(new StartToUnit(path));
                 } else {
@@ -129,22 +125,45 @@ public class UnitEndpoint {
                     unitService.newError(id,404);
                 }
                 break;
-
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
-                unitService.newPosition(id, positionFromUnit.getPosition());
-                break;
 
+                logger.info(positionFromUnit.getObstacles().toString());
+                unitService.newPosition(id, positionFromUnit.getPosition());
+                logger.info("Arrivata posizione : " + positionFromUnit.getPosition() + "Da : " + id);
+                List<Position> pois = unitService.getPoiList(id);
+                if(!pois.isEmpty()) {
+                    if (pois.get(0).equals(positionFromUnit.getPosition())) {
+                        logger.info(String.format("UnitEndpoint: Unita e arrivata al poi : %s", id));
+                        pois.remove(0);
+                        unitService.setPoiList(id, pois);
+                    }
+                }
+                List<Position> obstacles = positionFromUnit.getObstacles();
+                mapService.newObstacleList(obstacles,positionFromUnit.getPosition());
+                List<Position> premises = mapService.checkPremises(positionFromUnit.getPosition());
+                if(!obstacles.isEmpty() || !premises.isEmpty()){
+                    logger.info(String.format("UnitEndpoint: Rilevati ostacoli nelle vicinanze di : %s", id));
+                    //sendStop(id);
+                    List<Position> newPath = mapService.getNextPath(id,premises);
+                    if (!newPath.isEmpty()) {
+                        logger.info(String.format("UnitEndpoint: Ricalcolo e invio del percorso a : %s", id));
+                        send(new StartToUnit(newPath));
+                    } else {
+                        logger.info(String.format("UnitEndpoint: Percorso incalcolabile, errore inviato a : %s", id));
+                        send(new ErrorFromUnit(404));
+                        unitService.newError(id,404);
+                    }
+                } logger.info("Nessun ostacolo rilevato");
+                break;
             case "SpeedFromUnit":
                 SpeedFromUnit speedFromUnit = (SpeedFromUnit) message;
                 unitService.newSpeed(id, speedFromUnit.getSpeed());
                 break;
-
             case "StatusFromUnit":
                 StatusFromUnit statusFromUnit = (StatusFromUnit) message;
                 unitService.newStatus(id, statusFromUnit.getStatus());
                 break;
-
             case "":
             default:
                 onError(session, new Exception("UnitEndpoint: unrecognized type of message"));
@@ -175,10 +194,13 @@ public class UnitEndpoint {
 
     public void sendStart(String id) {
         if (this.id.equals(id)){
-            List<Position> path = mapService.getNextPath(id);
+            List<Position> path = mapService.getNextPath(id,mapService.checkPremises(unitService.getPosition(id)));
+            logger.info(path.toString());
             if (!path.isEmpty()) {
+                logger.info("PATH CALCOLATO");
                 send(new StartToUnit(path));
             } else {
+                logger.info("ERRORE PATH INCALCOLABILE");
                 send(new ErrorFromUnit(404));
                 unitService.newError(id,404);
             }
@@ -193,7 +215,15 @@ public class UnitEndpoint {
 
     public void sendBase(String id){
         if (this.id.equals(id)) {
-            send(new CommandToUnit(UnitStopCommand.BASE));
+            send(new CommandToUnit(UnitStopCommand.STOP));
+            unitService.setPoiList(id, new ArrayList<Position>());
+            List<Position> path = mapService.getNextPath(id,mapService.checkPremises(unitService.getPosition(id)));
+            if (!path.isEmpty()) {
+                send(new StartToUnit(path));
+            } else {
+                send(new ErrorFromUnit(404));
+                unitService.newError(id, 404);
+            }
         }
     }
 
