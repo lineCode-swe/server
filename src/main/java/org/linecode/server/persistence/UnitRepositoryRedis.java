@@ -9,6 +9,10 @@
 package org.linecode.server.persistence;
 
 import org.linecode.server.Position;
+import org.linecode.server.api.UnitEndpoint;
+import org.linecode.server.business.UnitStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
@@ -21,6 +25,8 @@ import java.util.Set;
 public class UnitRepositoryRedis implements UnitRepository {
 
     private final Jedis db;
+
+    private final Logger logger = LoggerFactory.getLogger(UnitRepository.class);
 
     @Inject
     public UnitRepositoryRedis(Jedis db) {
@@ -55,6 +61,24 @@ public class UnitRepositoryRedis implements UnitRepository {
         return db.smembers("unit");
     }
 
+    //TODO
+    @Override
+    public List<Position> getPositionUnits(){
+        Set<String> units = getUnits();
+        List<Position> toReturn = new ArrayList<Position>();
+        for(String unit : units){
+            toReturn.add(getPosition(unit));
+        }
+        return toReturn;
+    }
+    // TODO
+    @Override
+    public UnitStatus getStatus(String id) {
+        logger.info("AAAAAAAAAAAAAAAAAAAAAA: " + db.hget(id,"status") + " " +
+                UnitStatus.valueOf(db.hget(id,"status")));
+        return UnitStatus.valueOf(db.hget(id,"status"));
+    }
+
     @Override
     public String getName(String id) {
         return db.hget(id,"name");
@@ -77,6 +101,18 @@ public class UnitRepositoryRedis implements UnitRepository {
         int x=Integer.parseInt(db.hget(id,"position_x"));
         int y=Integer.parseInt(db.hget(id,"position_y"));
         return new Position(x,y);
+    }
+
+    @Override
+    public List<String> getUnit(Position cella) {
+        List<String> toReturn= new ArrayList<String>();
+        Set<String> units = getUnits();
+        for(String unit : units){
+            if(getPosition(unit).equals(cella)){
+                toReturn.add(unit);
+            }
+        }
+        return toReturn;
     }
 
     @Override

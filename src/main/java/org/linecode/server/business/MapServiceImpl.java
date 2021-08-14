@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 public class MapServiceImpl implements MapService {
 
@@ -68,13 +68,10 @@ public class MapServiceImpl implements MapService {
         }
 
         for(Position cella : vicinanze){
-            logger.info("Ostacolo deleted in posizione: "+cella);
             obsRepo.delObstacle(cella);
         }
 
-
         for(Position obstacle : obstacles){
-            logger.info("Ostacolo generated in posizione: "+obstacle);
             obsRepo.setObstacle(obstacle);
         }
 
@@ -157,8 +154,8 @@ public class MapServiceImpl implements MapService {
 
     @Override
     public List<Position> getNextPath(String id,List<Position> premesis) {
-        logger.info("Sono dentro getNextPath");
         List<Position> path = new ArrayList<Position>();
+        Position unitPosition= unitRepo.getPosition(id);
         List<Position> pois = unitRepo.getPoiList(id);
         int distance = Integer.MAX_VALUE;
         boolean sizeOfPois = !pois.isEmpty();
@@ -168,12 +165,12 @@ public class MapServiceImpl implements MapService {
                 addInvalids(cellsPrem, invalidCells);
             }
         }
-        invalidCells.remove(unitRepo.getPosition(id));
+        invalidCells.remove(unitPosition);
         logger.info("Le celle invalide per il calcolo del percorso sono : "+ invalidCells);
         if (sizeOfPois) {
-            distance = getPath(unitRepo.getPosition(id), pois.get(0), path,invalidCells);
+            distance = getPath(unitPosition, pois.get(0), path,invalidCells);
         } else {
-            distance = getPath(unitRepo.getPosition(id), unitRepo.getBase(id), path,invalidCells);
+            distance = getPath(unitPosition, unitRepo.getBase(id), path,invalidCells);
         }
 
         if (distance != Integer.MAX_VALUE){
@@ -225,7 +222,7 @@ public class MapServiceImpl implements MapService {
     protected boolean checkValidity(Position cell,List<Position> invalidCells,Position start){
         return  !checkObstacle(cell)
                 && (!checkUnit(cell) || cell.equals(start))
-                && map.getCell(cell) != null
+                && (map.getCell(cell)!=null)
                 && !map.getCell(cell).isLocked()
                 && !invalidCells.contains(cell);
     }
@@ -303,7 +300,7 @@ public class MapServiceImpl implements MapService {
                 if (isValid(row, col) && !list.contains(new Position(row, col))) {
                     list.add(new Position(row, col));
                 }
-            }
+            } list.add(pos);
         }
     }
 
@@ -347,23 +344,31 @@ public class MapServiceImpl implements MapService {
     }
 
     private boolean checkUnit(Position cell){
-
-        boolean unitPlaced = false;
-        Set<String> temporalListUnit = unitRepo.getUnits();
-        Iterator<String> iterate = temporalListUnit.iterator();
-        while(iterate.hasNext() && !unitPlaced){
-            String unitId = iterate.next();
-            unitPlaced= unitRepo.getPosition(unitId).equals(cell);
-        }
-        return unitPlaced;
+       List<Position> positions = unitRepo.getPositionUnits();
+       return positions.contains(cell);
 
     }
+    /*//TODO
+    private boolean checkUnitStatus(Position cell){
+       List<String> unit = unitRepo.getUnit(cell);
+       if(!unit.isEmpty()){
+           logger.info("BBBBBBBBBBBB: "+unit.get(0) + " STATUS : " +unitRepo.getStatus(unit.get(0))
+           + " |DESIRED STATUS = " + UnitStatus.GOINGTO);
+           return unitRepo.getStatus(unit.get(0)).equals(UnitStatus.GOINGTO);
+       }
+       return true;
+    }*/
     
     private boolean checkObstacle(Position cell){
 
         return obsRepo.getObstaclesList().contains(cell);
 
     }
+    /*//Todo
+    private boolean checkSharedCells(Position cell){
+        List<Position> units = unitRepo.getPositionUnits();
+        return units.size()>1;
+    }*/
 
     @Override
     public void connectMapSignal(Slot1<Grid> slot) {
@@ -375,7 +380,6 @@ public class MapServiceImpl implements MapService {
         obstaclesSignal.connect(slot);
     }
 
-    //TODO : MODIFICARE ARCHITETTURA
     @Override
     public List<Position> checkPremises(Position position) {
         int[][] premises = new int[][]{{-1, -1},{-1, 0}, {1, 0}, {0, -1}, {0, 1},{1 , 1},{-1, 1},{1, -1}};

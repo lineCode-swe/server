@@ -88,6 +88,13 @@ public class UnitServiceImpl implements UnitService {
         return units;
     }
 
+    // TODO
+    @Override
+    public List<Position> getUnitsPosition(){
+        return repo.getPositionUnits();
+    }
+
+
     @Override
     public List<Position> getPoiList(String id) {
         return repo.getPoiList(id);
@@ -97,6 +104,17 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public Position getPosition(String id) {
         return repo.getPosition(id);
+    }
+
+    //TODO
+    @Override
+    public Position getBase(String id) {
+        return repo.getBase(id);
+    }
+
+    @Override
+    public UnitStatus getStatus(String id) {
+        return repo.getStatus(id);
     }
 
     @Override
