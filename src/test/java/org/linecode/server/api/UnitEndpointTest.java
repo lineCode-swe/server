@@ -154,7 +154,7 @@ public class UnitEndpointTest {
     }
 
     @Test
-    public void sendBase_mockSession_ShutdownSentToUnit() throws EncodeException, IOException {
+    public void sendBase_mockSession_BaseSentToUnit() throws EncodeException, IOException {
         when(unitService.isUnit("1")).thenReturn(true);
         endpoint.onOpen(session,"1");
         endpoint.sendBase("1");
