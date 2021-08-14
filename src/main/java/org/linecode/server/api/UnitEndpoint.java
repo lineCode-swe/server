@@ -78,8 +78,10 @@ public class UnitEndpoint {
     @OnOpen
     public void onOpen(Session session, @PathParam("id") String id) {
         if(unitService.isUnit(id)) {
+
             this.session = session;
             this.id = id;
+            unitService.newStatus(id,UnitStatus.BASE);
             unitService.connectStartSignal(this::sendStart);
             unitService.connectStopSignal(this::sendStop);
             unitService.connectUnitCloseSignal(this::closeConnection);
@@ -106,6 +108,8 @@ public class UnitEndpoint {
     @OnClose
     public void onClose(Session session) {
         timer.cancel();
+        unitService.newStatus(id,UnitStatus.DISCONNECTED);
+        unitService.newPosition(id, new Position(-1,-1));
         logger.info(String.format("UnitEndpoint: Closed connection: %s", id));
     }
 

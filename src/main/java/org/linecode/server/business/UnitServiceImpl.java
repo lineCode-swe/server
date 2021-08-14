@@ -114,7 +114,17 @@ public class UnitServiceImpl implements UnitService {
 
     @Override
     public UnitStatus getStatus(String id) {
-        return repo.getStatus(id);
+        return UnitStatus.values()[repo.getStatus(id)];
+    }
+
+    @Override
+    public int getSpeed(String id) {
+        return repo.getSpeed(id);
+    }
+
+    @Override
+    public int getError(String id) {
+        return repo.getError(id);
     }
 
     @Override

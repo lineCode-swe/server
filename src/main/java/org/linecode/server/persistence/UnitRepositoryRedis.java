@@ -9,8 +9,6 @@
 package org.linecode.server.persistence;
 
 import org.linecode.server.Position;
-import org.linecode.server.api.UnitEndpoint;
-import org.linecode.server.business.UnitStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
@@ -39,9 +37,9 @@ public class UnitRepositoryRedis implements UnitRepository {
         keyValue.put("name",name);
         keyValue.put("base_x",String.valueOf(base.getX()));
         keyValue.put("base_y",String.valueOf(base.getY()));
-        keyValue.put("position_x","0");
-        keyValue.put("position_y","0");
-        keyValue.put("status","0");
+        keyValue.put("position_x","-1");
+        keyValue.put("position_y","-1");
+        keyValue.put("status","4");
         keyValue.put("error","0");
         keyValue.put("speed","0");
         db.sadd("unit",id);
@@ -73,12 +71,21 @@ public class UnitRepositoryRedis implements UnitRepository {
     }
     // TODO
     @Override
-    public UnitStatus getStatus(String id) {
-        logger.info("AAAAAAAAAAAAAAAAAAAAAA: " + db.hget(id,"status") + " " +
-                UnitStatus.valueOf(db.hget(id,"status")));
-        return UnitStatus.valueOf(db.hget(id,"status"));
+    public int getStatus(String id) {
+        return Integer.parseInt(db.hget(id,"status"));
     }
 
+    @Override
+    // TODO
+    public int getError(String id){
+        return Integer.parseInt(db.hget(id,"error"));
+    }
+
+    // TODO
+    @Override
+    public int getSpeed(String id){
+        return Integer.parseInt(db.hget(id,"speed"));
+    }
     @Override
     public String getName(String id) {
         return db.hget(id,"name");

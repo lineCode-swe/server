@@ -128,10 +128,21 @@ public class UiEndpoint {
         unitService.connectPoiListSignal(this::sendUnitPoi);
         userService.connectUsersSignal(this::sendUsers);
 
+        List<Unit> unitList = unitService.getUnits();
+
         sendMap(mapService.getMap());
-        sendUnits(unitService.getUnits());
+        sendUnits(unitList);
         sendUsers(userService.getUsers());
-        // TODO: inviare anche ostacoli
+        sendObstacle(mapService.getObstacles());
+
+        for(Unit unit: unitList) {
+            String id = unit.getId();
+            sendUnitStatus(id,unitService.getStatus(id));
+            sendUnitPosition(id,unitService.getPosition(id));
+            sendUnitError(id,unitService.getError(id));
+            sendUnitSpeed(id, unitService.getSpeed(id));
+        }
+
 
         logger.info(String.format("UIEndpoint: Opened connection: %s", session.getId()));
     }

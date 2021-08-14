@@ -10,7 +10,6 @@
 package org.linecode.server.persistence;
 
 import org.linecode.server.Position;
-import org.linecode.server.business.UnitStatus;
 
 import java.util.List;
 import java.util.Set;
@@ -20,8 +19,15 @@ public interface UnitRepository {
     public void delUnit(String id);
     public boolean isUnit(String id);
     public Set<String> getUnits();
-    public UnitStatus getStatus(String id);
+    public int getStatus(String id);
     public List<Position> getPositionUnits();
+
+    // TODO
+    int getError(String id);
+
+    // TODO
+    int getSpeed(String id);
+
     public String getName(String id);
     public Position getBase(String id);
     public Position getPosition(String id);
