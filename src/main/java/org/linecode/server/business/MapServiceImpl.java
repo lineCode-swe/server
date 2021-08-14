@@ -84,6 +84,11 @@ public class MapServiceImpl implements MapService {
     }
 
     @Override
+    public List<Position> getObstacles() {
+        return obsRepo.getObstaclesList();
+    }
+
+    @Override
     public void newMap(String mapSchema) {
         char[] characters = mapSchema.toCharArray();
         List<Cell> lista= new ArrayList<>();

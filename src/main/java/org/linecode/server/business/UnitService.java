@@ -18,13 +18,16 @@ public interface UnitService {
     public void delUnit(String id);
     public boolean isUnit(String id);
     public List<Unit> getUnits();
-
-    List<Position> getUnitsPosition();
-
+    //TODO
+    public List<Position> getUnitsPosition();
     public List<Position> getPoiList(String id);
     public Position getPosition(String id);
     public Position getBase(String id);
     public UnitStatus getStatus(String id);
+    //TODO
+    public int getSpeed(String id);
+    //TODO
+    public int getError(String id);
     public void setPoiList(String id,List<Position> pois);
     public void newPosition(String id,Position position);
     public void newStatus(String id,UnitStatus status);

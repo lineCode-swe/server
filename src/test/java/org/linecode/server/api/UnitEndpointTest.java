@@ -111,7 +111,7 @@ public class UnitEndpointTest {
     public void onMessage_mockStatusFromUnit_unitServiceUpdatedWithNewStatus(){
         StatusFromUnit message = new StatusFromUnit(UnitStatus.BASE);
         endpoint.onMessage(session,message);
-        verify(unitService, times(1)).newStatus(eq("1"), eq(message.getStatus()));
+        verify(unitService, times(2)).newStatus(eq("1"), eq(message.getStatus()));
     }
 
     @Test
