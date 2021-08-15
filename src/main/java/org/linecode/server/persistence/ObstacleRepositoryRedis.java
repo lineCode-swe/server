@@ -12,6 +12,7 @@ import org.linecode.server.Position;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class ObstacleRepositoryRedis implements ObstacleRepository {
     private final Jedis db;
 
     @Inject
-    public ObstacleRepositoryRedis(Jedis db) {
+    public ObstacleRepositoryRedis(@Named("ObstacleRepo") Jedis db) {
         this.db = db;
     }
 

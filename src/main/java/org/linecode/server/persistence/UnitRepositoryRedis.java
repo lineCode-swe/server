@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,7 @@ public class UnitRepositoryRedis implements UnitRepository {
     private final Logger logger = LoggerFactory.getLogger(UnitRepository.class);
 
     @Inject
-    public UnitRepositoryRedis(Jedis db) {
+    public UnitRepositoryRedis(@Named("UnitRepo") Jedis db) {
         this.db = db;
     }
 

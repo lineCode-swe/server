@@ -14,6 +14,8 @@ import org.linecode.server.api.UnitEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -22,6 +24,8 @@ import java.util.Set;
 
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
+    public static final JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), "localhost");
 
     public static void main(String[] args) throws Exception {
         if (seed()) {
@@ -52,9 +56,11 @@ public class Main {
     }
 
     private static boolean seed() throws Exception {
-        Jedis db = new Jedis();
+        Jedis db = jedisPool.getResource();
 
         if (db.exists("length") && db.exists("height")) {
+            db.disconnect();
+            db.close();
             return false;
         }
 
@@ -95,6 +101,7 @@ public class Main {
 
         db.save();
         db.disconnect();
+        db.close();
         return true;
     }
 }

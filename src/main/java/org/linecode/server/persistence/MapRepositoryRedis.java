@@ -9,20 +9,24 @@
 package org.linecode.server.persistence;
 
 import org.linecode.server.Position;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MapRepositoryRedis implements MapRepository{
+    private final Logger logger = LoggerFactory.getLogger(MapRepositoryRedis.class);
 
     private final Jedis db;
 
     @Inject
-    public MapRepositoryRedis(Jedis db) {
+    public MapRepositoryRedis(@Named("MapRepo") Jedis db) {
         this.db = db;
     }
 

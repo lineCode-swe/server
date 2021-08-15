@@ -11,6 +11,7 @@ package org.linecode.server.persistence;
 import redis.clients.jedis.Jedis;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class UserRepositoryRedis implements UserRepository {
     private final Jedis db;
 
     @Inject
-    public UserRepositoryRedis(Jedis db) {
+    public UserRepositoryRedis(@Named("UserRepo") Jedis db) {
         this.db = db;
     }
 
