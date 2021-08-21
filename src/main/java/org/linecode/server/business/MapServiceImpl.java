@@ -348,7 +348,7 @@ public class MapServiceImpl implements MapService {
         return null;
     }
 
-    private boolean checkUnit(Position cell){
+    public boolean checkUnit(Position cell){
        List<Position> positions = unitRepo.getPositionUnits();
        return positions.contains(cell);
 
@@ -364,7 +364,7 @@ public class MapServiceImpl implements MapService {
        return true;
     }*/
     
-    private boolean checkObstacle(Position cell){
+    public boolean checkObstacle(Position cell){
 
         return obsRepo.getObstaclesList().contains(cell);
 
@@ -404,7 +404,6 @@ public class MapServiceImpl implements MapService {
         while(iterate.hasNext()){
             Position prossimo = iterate.next();
             if(checkUnit(prossimo) && !prossimo.equals(position)){
-                logger.info("Trovata unita in : "+ prossimo );
                 toReturn.add(prossimo);
             }
         }
