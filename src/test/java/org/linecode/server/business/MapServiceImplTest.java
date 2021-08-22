@@ -258,40 +258,6 @@ public class MapServiceImplTest{
     }
 
 
-   /* @Test
-    public void getPath_Map(){
-        test.newMap("+++_P+\n+++++x\n+++<P+\n++>++P");
-        Cell cellina = Mockito.mock(Cell.class);
-        when(map.getCell(any(Position.class))).thenReturn(cellina);
-        when(cellina.isLocked()).thenReturn(false);
-        List<Position> poi = new ArrayList<Position>();
-       // poi.add(new Position(4,0));
-        poi.add(new Position(4,2));
-        when(unitRepo.getPoiList("123")).thenReturn(poi);
-        when(unitRepo.getPosition("123")).thenReturn(new Position(0,0));
-        when(unitRepo.getBase("123")).thenReturn(new Position(0,0));
-        Position cell = new Position(0,0);
-        List<Position> path1 = new ArrayList<Position>();
-        List<Position> path2 = new ArrayList<Position>();
-        path2.add(new Position(0,0));
-        path2.add(new Position(1,0));
-        path2.add(new Position(2,0));
-        path2.add(new Position(3,0));
-        path2.add(new Position(4,0));
-        path2.add(new Position(4,1));
-        path2.add(new Position(4,2));
-        List<Position> path3 = new ArrayList<Position>();
-        path3.add(new Position(4,0));
-        path3.add(new Position(4,1));
-        path3.add(new Position(4,2));
-        List<Position> path4 = new ArrayList<Position>();
-        path4.add(new Position(4,2));
-        path4.add(new Position(4,2));
-
-        assertEquals(path2,test.getNextPath("123"));
-    }*/
-
-
     @Test
     public void newObstacleList_ListOfObstacles_EmitSignal(){
         List<Position> mockObstacles = new ArrayList<Position>();
@@ -299,4 +265,36 @@ public class MapServiceImplTest{
         test.newObstacleList(mockObstacles,new Position(0,0));
         verify(obstaclesSignal,times(1)).emit(any(ArrayList.class));
     }
+
+    @Test
+    public void checkPremises_PositionOfUnit_UnitFoundInPremesis(){
+        Position unita = new Position(2,2);
+        List<Position> toReturn = new ArrayList<Position>();
+        when(map.getLength()).thenReturn(10);
+        when(map.getHeight()).thenReturn(10);
+        toReturn.add(new Position(3,2));
+        when(unitRepo.getPositionUnits()).thenReturn(toReturn);
+        assertEquals(toReturn,test.checkPremises(unita));
+
+    }
+
+    @Test
+    public void addInvaldis_invalidCell_invalidCellsCalculated(){
+        Position unita = new Position(2,2);
+        List<Position> toPass = new ArrayList<Position>();
+        List<Position> toReturn = new ArrayList<Position>();
+        when(map.getLength()).thenReturn(10);
+        when(map.getHeight()).thenReturn(10);
+        when(map.getCell(unita)).thenReturn(new Cell(unita,true,true,Direction.ALL,true));
+        toReturn.add(new Position(1,2));
+        toReturn.add(new Position(3,2));
+        toReturn.add(new Position(2,1));
+        toReturn.add(new Position(2,3));
+        toReturn.add(new Position(2,2));
+        test.addInvalids(unita,toPass);
+        assertEquals(toReturn,toPass);
+
+    }
+
+
 }

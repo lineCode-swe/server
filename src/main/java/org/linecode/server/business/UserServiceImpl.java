@@ -30,13 +30,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void newUser(String user, String password, Boolean admin) {
         repo.newUser(user, password, admin);
-        userSignal.emit(getEmit(repo.getUsers()));
+        userSignal.emit(getUsers());
     }
 
     @Override
     public void delUser(String user) {
         repo.delUser(user);
-        userSignal.emit(getEmit(repo.getUsers()));
+        userSignal.emit(getUsers());
     }
 
     @Override
@@ -69,11 +69,4 @@ public class UserServiceImpl implements UserService {
         userSignal.connect(slot);
     }
 
-    private List<User> getEmit(Set<String> input){
-        List<User> users = new ArrayList<>();
-        for (String id: input) {
-            users.add(new User(id,repo.isAdmin(id)));
-        }
-        return users;
-    }
 }

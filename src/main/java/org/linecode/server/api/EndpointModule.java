@@ -10,6 +10,8 @@ package org.linecode.server.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
+import org.linecode.server.Main;
 import org.linecode.server.api.message.AuthToUiEncoder;
 import org.linecode.server.api.message.CommandToUnitEncoder;
 import org.linecode.server.api.message.KeepAliveToUiEncoder;
@@ -40,10 +42,16 @@ import org.linecode.server.persistence.UnitRepository;
 import org.linecode.server.persistence.UnitRepositoryRedis;
 import org.linecode.server.persistence.UserRepository;
 import org.linecode.server.persistence.UserRepositoryRedis;
+import redis.clients.jedis.Jedis;
 
 public class EndpointModule extends AbstractModule {
     @Override
     protected void configure() {
+        bind(Jedis.class).annotatedWith(Names.named("MapRepo")).toInstance(Main.jedisPool.getResource());
+        bind(Jedis.class).annotatedWith(Names.named("UnitRepo")).toInstance(Main.jedisPool.getResource());
+        bind(Jedis.class).annotatedWith(Names.named("ObstacleRepo")).toInstance(Main.jedisPool.getResource());
+        bind(Jedis.class).annotatedWith(Names.named("UserRepo")).toInstance(Main.jedisPool.getResource());
+
         bind(UserRepository.class).to(UserRepositoryRedis.class).asEagerSingleton();
         bind(UnitRepository.class).to(UnitRepositoryRedis.class).asEagerSingleton();
         bind(ObstacleRepository.class).to(ObstacleRepositoryRedis.class).asEagerSingleton();
@@ -53,7 +61,6 @@ public class EndpointModule extends AbstractModule {
         bind(UnitService.class).to(UnitServiceImpl.class).asEagerSingleton();
         bind(MapService.class).to(MapServiceImpl.class).asEagerSingleton();
 
-        bind(ResetTimer.class).to(ResetTimerImpl.class);
         bind(ObjectMapper.class).asEagerSingleton();
 
         requestStaticInjection(UnitMessageDecoder.class);

@@ -132,10 +132,12 @@ public class UnitEndpoint {
             case "PositionFromUnit":
                 PositionFromUnit positionFromUnit = (PositionFromUnit) message;
                 Position unitPosition = positionFromUnit.getPosition();
+                List<Position> obstacles = positionFromUnit.getObstacles();
                 if(unitService.getUnitsPosition().contains(unitPosition) &&
                         !unitService.getBase(id).equals(unitPosition)){
-                    unitError(123);
+                    mapService.newObstacleList(obstacles, unitPosition);
                     unitService.newPosition(id, unitPosition);
+                    unitError(123);
                 } else {
                     unitService.newPosition(id, unitPosition);
                     List<Position> pois = unitService.getPoiList(id);
@@ -145,7 +147,7 @@ public class UnitEndpoint {
                             unitService.setPoiList(id, pois);
                         }
                     }
-                    List<Position> obstacles = positionFromUnit.getObstacles();
+
                     mapService.newObstacleList(obstacles, unitPosition);
                     List<Position> premises = mapService.checkPremises(unitPosition);
                     if (!obstacles.isEmpty() || !premises.isEmpty()) {

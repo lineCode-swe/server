@@ -10,16 +10,22 @@ package org.linecode.server.business;
 
 import com.github.msteinbeck.sig4j.signal.Signal1;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.linecode.server.api.message.CommandToUnit;
+import org.linecode.server.api.message.UnitStopCommand;
 import org.linecode.server.persistence.UserRepository;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.util.List;
+import java.util.Set;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentCaptor.forClass;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 public class UserServiceImplTest {
     private UserService test;
@@ -54,5 +60,16 @@ public class UserServiceImplTest {
         when(userRepo.isAdmin(Mockito.anyString())).thenReturn(false);
 
         assertEquals(AuthStatus.AUTH, test.login("ciao","password"));
+    }
+    @Test
+    public void newUser_newUserAdded_SignalEmitted(){
+        test.newUser("Admin","admin",true);
+        verify(signal, times(1)).emit(any(List.class));
+    }
+
+    @Test
+    public void delUser_userDeleted_SignalEmitted(){
+        test.delUser("Admin");
+        verify(signal, times(1)).emit(any(List.class));
     }
 }
