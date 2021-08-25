@@ -8,7 +8,7 @@ L'applicativo si propone come motore di calcolo con lo scopo di coordinare unit√
 
 ## Installazione, dipendenze ed esecuzione
 Dipendenze:
- - Java
+ - Java 13
  - Maven
  
  Clonare repo con:
